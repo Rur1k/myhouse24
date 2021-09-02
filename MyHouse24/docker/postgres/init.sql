@@ -1,0 +1,5 @@
+CREATE USER admin WITH PASSWORD 'devpass';
+
+CREATE DATABASE myhouse24_db;
+GRANT ALL PRIVILEGES ON DATABASE myhouse24_db TO admin;
+
