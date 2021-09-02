@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def admin(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/base.html', data)
