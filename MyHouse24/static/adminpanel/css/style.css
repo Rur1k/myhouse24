@@ -1,0 +1,9 @@
+.main-header .logo img {
+    height: 40px;
+    margin: 5px auto;
+}
+
+.content-header {
+    padding: 15px;
+    border-bottom: 1px solid #d2d6de
+}

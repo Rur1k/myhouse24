@@ -5,4 +5,4 @@ def admin(request):
     data = {
 
     }
-    return render(request, 'adminpanel/base.html', data)
+    return render(request, 'adminpanel/statistics.html', data)
