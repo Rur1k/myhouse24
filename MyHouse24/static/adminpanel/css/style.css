@@ -7,3 +7,13 @@
     padding: 15px;
     border-bottom: 1px solid #d2d6de
 }
+
+.main-header .navbar .header-title {
+    float: left;
+    padding: 15px, 10px;
+}
+
+.row {
+    margin-right: -15px;
+    margin-left: -15px;
+}

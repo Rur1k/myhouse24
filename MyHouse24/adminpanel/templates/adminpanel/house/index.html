@@ -1,0 +1,50 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Дома{% endblock %}
+{% block page_name %}Дома{% endblock %}
+{% block mini_page_name %}Дома{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="pull-right margin-bottom">
+            <a class="btn btn-success" href="">Добавить дом</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <box>
+            <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                    <a href="{% url 'house' %}" class="btn btn-default btn-sm">
+                        <span class="hidden-xs">Очистить</span>
+                        <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div id="w0" class="grid-view">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-bordered table-hover table-striped linkedRow">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px; min-width: 40px">#</th>
+                                <th>
+                                    <a class="asc" href="" data-sort="">Название</a>
+                                </th>
+                                <th>
+                                    <a class="asc" href="" data-sort="">Адрес</a>
+                                </th>
+                                <th style="width: 80px; min-width: 80px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box-footer"></div>
+        </box>
+    </div>
+</div>
+
+{% endblock %}
