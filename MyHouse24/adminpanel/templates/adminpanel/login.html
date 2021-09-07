@@ -38,13 +38,13 @@
         <div class="login-box">
             <div class="login-logo">
                 <a href="">
-                    <img src="{% static 'logo.svg' %}" alt="logo" width="200px">
+                    <img src="{% static 'logo.svg' %}" alt="logo" width="100%">
                 </a>
             </div>
             <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Для жильца</a></li>
-                    <li><a href="">Для администрации</a></li>
+                <ul class="nav nav-tabs nav-justified">
+                    <li class="nav-item"><a href="">Для жильца</a></li>
+                    <li class="nav-item active"><a href="">Для администрации</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -52,20 +52,20 @@
 
                             <div id="preloader"></div>
 
-                            <p class="login-box-msg">Вход в личный кабинет</p>
+                            <p class="login-box-msg">Вход в панель управления</p>
 
                             <form id="login-form" action="" method="post">
-                                <input type="hidden" name="_csrf-cabinet" value="eDP393RDbGRRD290sK9jaB0N-IZHAta5veus2ZSEf2sySZWRGBwVLRxWIgX13Fc3TWu3tWpwh8_w2-uJ0vUFBQ==">
+                                {% csrf_token %}
                                 <div class="form-group has-feedback field-loginform-username required">
-                                    <input type="text" id="loginform-username" class="form-control" name="LoginForm[username]" placeholder="E-mail или ID" aria-required="true"><span class='fa fa-envelope form-control-feedback'></span>
+                                    {{ form.email }}<span class='fa fa-envelope form-control-feedback'></span>
                                 </div>
                                 <div class="form-group has-feedback field-loginform-password required">
-                                <input type="password" id="loginform-password" class="form-control" name="LoginForm[password]" placeholder="Пароль" aria-required="true"><span class='fa fa-lock form-control-feedback'></span>
+                                {{ form.password }}<span class='fa fa-lock form-control-feedback'></span>
                             </div>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="checkbox icheck">
-                                            <input type="hidden" name="LoginForm[rememberMe]" value="0"><label><input type="checkbox" id="loginform-rememberme" name="LoginForm[rememberMe]" value="1" checked> Запомнить меня</label>                                </div>
+                                            <input type="hidden" value="0"><label><input type="checkbox" id="loginform-rememberme" name="" value="1" checked> Запомнить меня</label>                                </div>
                                     </div>
                                     <div class="col-xs-12">
                                         <button type="submit" class="btn btn-primary btn-block" name="login-button">Вход</button>                            </div>

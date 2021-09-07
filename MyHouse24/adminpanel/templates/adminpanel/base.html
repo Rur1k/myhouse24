@@ -35,8 +35,8 @@
     </head>
 
     <body class="hold-transition skin-black-light sidebar-mini fixed">
+        {% if request.user.is_superuser %}
         <div class="wrapper">
-
             <header class="main-header">
                 <!-- Logo -->
                 <a href="" class="logo">
@@ -61,68 +61,58 @@
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                                                <!-- Notifications -->
-                                <li class="dropdown notifications-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-child fa-lg"></i>
-                                                                        <span class="label label-warning">4</span>
-                                                                </a>
-                                    <ul class="dropdown-menu">
+                            <!-- Notifications -->
+                            <li class="dropdown notifications-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-child fa-lg"></i>
+                                    <span class="label label-warning">{}</span>
+                                </a>
+                                <ul class="dropdown-menu">
 
-                                                                        <li class="header">Новых пользователей: 4</li>
+                                    <li class="header">Новых пользователей: {}</li>
+                                    <li>
+                                        <!-- inner menu: contains the actual data -->
+                                        <ul class="menu">
                                             <li>
-                                                <!-- inner menu: contains the actual data -->
-                                                <ul class="menu">
-                                                                                                <li>
-                                                            <a href="/admin/user/105">
-                                                                hehe@som.com <!--<i class="fa fa-angle-right pull-right" aria-hidden="true"></i>-->
-                                                            </a>
-                                                        </li>
-                                                                                                <li>
-                                                            <a href="/admin/user/104">
-                                                                Кузьменко Оксана Дмитриевна <!--<i class="fa fa-angle-right pull-right" aria-hidden="true"></i>-->
-                                                            </a>
-                                                        </li>
-                                                                                                <li>
-                                                            <a href="/admin/user/103">
-                                                                Коваль Борис Сергеевич <!--<i class="fa fa-angle-right pull-right" aria-hidden="true"></i>-->
-                                                            </a>
-                                                        </li>
-                                                                                                <li>
-                                                            <a href="/admin/user/102">
-                                                                Ефросинин Аристарх Петрович <!--<i class="fa fa-angle-right pull-right" aria-hidden="true"></i>-->
-                                                            </a>
-                                                        </li>
-                                                                                        </ul>
+                                                <a href="">
+                                                    Имя пользователя
+                                                </a>
                                             </li>
-                                                                    <li class="footer"><a href="/admin/user/index">Перейти в раздел пользователей</a></li>
-
-                                    </ul>
-                                </li>
-                                                            <!-- User Account -->
-                                                <li class="dropdown user user-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <!--<img src="/admin/dist/img/user2-160x160.jpg" class="user-image" alt="admin admin">-->
-                                                                                                <i class="fa fa-user-circle text-purple"></i>
-                                        <span class="hidden-xs">admin admin</span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <!-- User image -->
-                                        <li class="user-header">
-                                            <!--<img src="/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="admin admin">-->
-                                            <span><i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i></span>
-                                            <p>admin admin (Директор)</p>
-                                        </li>
-                                        <!-- Menu Footer-->
-                                        <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a class="btn btn-default btn-flat" href="/admin/user-admin/update-my">Профиль</a>                                </div>
-                                            <div class="pull-right">
-                                                <a class="btn btn-default btn-flat" href="/admin/site/logout" data-method="post">Выход</a>                                </div>
-                                        </li>
-                                    </ul>
-                                </li>
+                                            <li>
+                                                <a href="">
+                                                    Имя пользователя
+                                                </a>
+                                            </li>
                                         </ul>
+                                    </li>
+                                    <li class="footer"><a href="">Перейти в раздел пользователей</a></li>
+
+                                </ul>
+                            </li>
+                            <!-- User Account -->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-user-circle text-purple"></i>
+                                    <span class="hidden-xs">{{ request.fist_name }} {{ request.last_name }}</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- User image -->
+                                    <li class="user-header">
+                                        <span><i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i></span>
+                                        <p>{{ request.fist_name }} {{ request.last_name }} (Роль)</p>
+                                    </li>
+                                    <!-- Menu Footer-->
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a class="btn btn-default btn-flat" href="">Профиль</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a class="btn btn-default btn-flat" href="{% url 'logout_admin' %}" data-method="post">Выход</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
 
                 </nav>
@@ -260,10 +250,13 @@
                 <strong>Copyright &copy; 2021 </strong> All rights
                 reserved.
             </footer>
-
         </div>
         <!-- ./wrapper -->
-
+        {% else %}
+        <div class="text-center">
+            <H1>Вы не авторизованы! Для получения доступа к странице, <a href="{% url 'login_admin' %}">авторизуйтесь</a></H1>
+        </div>
+        {% endif %}
         <!-- jQuery 3 -->
         <script src="{% static 'adminpanel/bower_components/jquery/dist/jquery.min.js'%}"></script>
         <!-- Bootstrap 3.3.7 -->
@@ -286,4 +279,5 @@
         <!-- AdminLTE for demo purposes -->
         <script src="{% static 'adminpanel/dist/js/demo.js'%}"></script>
     </body>
+
 </html>
