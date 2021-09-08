@@ -1,0 +1,103 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Новый дом{% endblock %}
+{% block page_name %}Новый дом{% endblock %}
+{% block mini_page_name %}Новый дом{% endblock %}
+{% block content %}
+<div class="box">
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="box-body row">
+            <div class="col-md-4 row">
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Название</label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Адрес</label>
+                    {{ form.address }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Изображение #1. Размер:(522х350)</label>
+                    {{ form.image_1 }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Изображение #2. Размер:(248х160)</label>
+                    {{ form.image_2 }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Изображение #3. Размер:(248х160)</label>
+                    {{ form.image_3 }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Изображение #4. Размер:(248х160)</label>
+                    {{ form.image_4 }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Изображение #5. Размер:(248х160)</label>
+                    {{ form.image_5 }}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <img src="{% static 'img/default.jpg' %}" class="img-responsive largeImg
+                                    margin-bottom-30"/>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg
+                                margin-bottom-30"/>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg
+                                margin-bottom-30"/>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg
+                                    margin-bottom-30"/>
+                    </div>
+                    <div class="col-xs-6 col-md-3">
+                        <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg
+                                    margin-bottom-30"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab-sections" data-toggle="tab">Секции</a>
+                        </li>
+                        <li class="">
+                            <a href="#tab-floors" data-toggle="tab">Этажи</a>
+                        </li>
+                        <li class="">
+                            <a href="#tab-houseuseradmin" data-toggle="tab">Пользователи</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-panel clearfix" id="tab-sections">
+                            <div>Список секций</div>
+                            <button class="btn btn-success pull-right" type="button">Добавить</button>
+                        </div>
+                        <div class="tab-panel clearfix" id="tab-floors">
+                            <div>Список этажей</div>
+                            <button class="btn btn-success pull-right" type="button">Добавить</button>
+                        </div>
+                        <div class="tab-panel clearfix" id="tab-houseuseradmin">
+                            <div>Список персонала</div>
+                            <button class="btn btn-success pull-right" type="button">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'house' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

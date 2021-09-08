@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import LoginForm
+from .forms import LoginForm, HouseForm
+from .models import House
 
 
 # Логика входа в админку
@@ -40,6 +41,28 @@ def admin(request):
 # Бизнес логика вкладки "Дома"
 def house(request):
     data = {
-
+        'list': House.objects.all()
     }
     return render(request, 'adminpanel/house/index.html', data)
+
+def create_house(request):
+    if request.method == 'POST':
+        form = HouseForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('house')
+        else:
+            print(form.errors)
+
+    form = HouseForm()
+    data = {
+        'form': form,
+    }
+    return render(request, "adminpanel/house/create.html", data)
+
+def info_house(request, id):
+    house = House.objects.get(id=id)
+    data = {
+        'house': house
+    }
+    return render(request, "adminpanel/house/info.html", data)
