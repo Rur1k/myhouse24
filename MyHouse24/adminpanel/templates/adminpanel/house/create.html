@@ -65,14 +65,14 @@
             <div class="col-md-9">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#tab-sections" data-toggle="tab">Секции</a>
+                        <li class="tablinks">
+                            <a href="#tab-sections" onclick="openContent(event, 'tab-sections')" data-toggle="tab">Секции</a>
                         </li>
-                        <li class="">
-                            <a href="#tab-floors" data-toggle="tab">Этажи</a>
+                        <li class="tablinks">
+                            <a href="#tab-floors" onclick="openContent(event, 'tab-floors')" data-toggle="tab">Этажи</a>
                         </li>
-                        <li class="">
-                            <a href="#tab-houseuseradmin" data-toggle="tab">Пользователи</a>
+                        <li class="tablinks">
+                            <a href="#tab-houseuseradmin" onclick="openContent(event, 'tab-houseuseradmin')" data-toggle="tab">Пользователи</a>
                         </li>
                     </ul>
                     <div class="tab-content">

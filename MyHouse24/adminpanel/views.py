@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.views.generic import UpdateView, DeleteView
 from .forms import LoginForm, HouseForm
 from .models import House
 

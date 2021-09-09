@@ -37,7 +37,6 @@ class HouseForm(forms.ModelForm):
             }),
             'image_1': forms.ClearableFileInput(attrs={
                 'id': 'image_1',
-                'onchange': 'preview()'
             }),
             'image_2': forms.ClearableFileInput(attrs={
                 'class id': 'image_2',
