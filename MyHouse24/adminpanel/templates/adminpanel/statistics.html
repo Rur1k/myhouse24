@@ -15,13 +15,13 @@
         <div class="col-lg-4 col-sm-6 col-xs-12">
             <div class="small-box bg-primary">
                 <div class="inner">
-                    <h3>0</h3>
+                    <h3>{{ count_house }}</h3>
                     <p>Домов</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-building"></i>
                 </div>
-                <a href="" class="small-box-footer">
+                <a href="{% url 'house' %}" class="small-box-footer">
                     Перейти в дома <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>

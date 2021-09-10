@@ -39,3 +39,10 @@ function searchTable(idSearch, idTable, classField) {
         }
     }
 }
+
+// Добавление секций дома
+$('#add_section').click(function() {
+        var form_idx = $('#id_form-TOTAL_FORMS').val();
+        $('#form_set_section').append($('#empty_form_section').html().replace(/prefix/g, form_idx));
+        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });

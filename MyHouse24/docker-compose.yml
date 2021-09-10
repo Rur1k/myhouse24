@@ -42,6 +42,4 @@ services:
       - postgresdb
       - web
       - nginx
-    ports:
-      - "8080:8080"
     network_mode: host

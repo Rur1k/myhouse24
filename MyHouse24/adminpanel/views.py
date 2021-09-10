@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.forms import formset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
-from .forms import LoginForm, HouseForm
-from .models import House
+from .forms import LoginForm, HouseForm, SectionForm
+from .models import House, Section
 
 
 # Логика входа в админку
@@ -35,7 +36,7 @@ def logout_admin(request):
 # Страница с статистикой
 def admin(request):
     data = {
-
+        'count_house': House.objects.count()
     }
     return render(request, 'adminpanel/statistics.html', data)
 
@@ -48,17 +49,29 @@ def house(request):
     return render(request, 'adminpanel/house/index.html', data)
 
 def create_house(request):
+    form = HouseForm()
+    SectionFormSet = formset_factory(SectionForm, extra=0)
+
     if request.method == 'POST':
         form = HouseForm(request.POST, request.FILES)
+        form_section = SectionFormSet(request.POST)
         if form.is_valid():
             form.save()
+            if form_section.is_valid():
+                print(form_section)
+                for subform in form_section:
+                    subform_save = subform.save(commit=False)
+                    subform_save.house = form.save(commit=False)
+                    subform_save.save()
+            else:
+                print(form_section.errors)
             return redirect('house')
         else:
             print(form.errors)
 
-    form = HouseForm()
     data = {
         'form': form,
+        'SectionFormSet': SectionFormSet(),
     }
     return render(request, "adminpanel/house/create.html", data)
 
