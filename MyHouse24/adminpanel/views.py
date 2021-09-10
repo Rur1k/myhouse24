@@ -42,7 +42,8 @@ def admin(request):
 # Бизнес логика вкладки "Дома"
 def house(request):
     data = {
-        'list': House.objects.all()
+        'list': House.objects.all(),
+        'count': House.objects.count(),
     }
     return render(request, 'adminpanel/house/index.html', data)
 
