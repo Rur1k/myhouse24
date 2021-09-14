@@ -7,6 +7,7 @@
 <div class="box">
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ SectionFormSet.management_form }}
         <div class="box-body row">
             <div class="col-md-4 row">
                 <div class="col-md-12 margin-bottom-20">
@@ -77,21 +78,20 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-panel clearfix" id="tab-sections">
-                            {{ SectionFormSet.management_form }}
                             <div id="form_set_section" class="row">
-                                {% for formset in SectionFormSet %}
-                                <div class="col-md-12 margin-bottom-20">
-                                    <label>Название</label>
-                                    <div class="input-group">
-                                        {{ formset.name }}
-                                        <span class="input-group-btn">
-                                            <a href="" class="btn btn-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                        </span>
-                                    </div>
-                                </div>
-                                {% endfor %}
+<!--                                {% for formset in SectionFormSet %}-->
+<!--                                <div class="col-md-12 margin-bottom-20">-->
+<!--                                    <label>Название</label>-->
+<!--                                    <div class="input-group">-->
+<!--                                        {{ formset.name }}-->
+<!--                                        <span class="input-group-btn">-->
+<!--                                            <a href="" class="btn btn-danger">-->
+<!--                                                <i class="fa fa-trash"></i>-->
+<!--                                            </a>-->
+<!--                                        </span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                {% endfor %}-->
                                 <div id="empty_form_section" style="display:none">
                                     <div class="col-md-12 margin-bottom-20">
                                         <label>Название</label>
@@ -107,6 +107,11 @@
                                 </div>
                             </div>
                             <input id="add_section" class="btn btn-success pull-right" type="button" value="Добавить">
+                            <script>
+                                $('#add_section').click(function() {
+                                    cloneMore('#is_copy_selection', 'service');
+                                });
+                            </script>
                         </div>
                         <div class="tab-panel clearfix" id="tab-floors">
                             <div>Список этажей</div>

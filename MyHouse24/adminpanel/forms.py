@@ -60,6 +60,7 @@ class SectionForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'value': 'Секция '
+                'value': 'Секция'
             }),
         }
+

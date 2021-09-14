@@ -53,17 +53,21 @@ def create_house(request):
     SectionFormSet = formset_factory(SectionForm, extra=0)
 
     if request.method == 'POST':
+        print(request.POST)
         form = HouseForm(request.POST, request.FILES)
-        form_section = SectionFormSet(request.POST)
+        form_section = SectionFormSet(request.POST, prefix='section')
         if form.is_valid():
             form.save()
+            counter_section = 0
             if form_section.is_valid():
-                print(form_section)
                 for subform in form_section:
-                    subform_save = subform.save(commit=False)
-                    subform_save.house = form.save(commit=False)
-                    subform_save.save()
+                    obj = subform.save(commit=False)
+                    obj.house = form.save(commit=False)
+                    obj.name = request.POST.get(f'section-__{counter_section}__-name')
+                    obj.save()
+                    counter_section+=1
             else:
+                print('Ошибки')
                 print(form_section.errors)
             return redirect('house')
         else:
@@ -71,7 +75,7 @@ def create_house(request):
 
     data = {
         'form': form,
-        'SectionFormSet': SectionFormSet(),
+        'SectionFormSet': SectionFormSet(prefix='section'),
     }
     return render(request, "adminpanel/house/create.html", data)
 
