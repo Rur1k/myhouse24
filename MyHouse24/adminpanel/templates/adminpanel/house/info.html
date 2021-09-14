@@ -22,11 +22,19 @@
                     </tr>
                     <tr>
                         <th>Секций</th>
+                        {% if sections %}
+                        <td>{{ sections }}</td>
+                        {% else %}
                         <td>0</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <th>Этажей</th>
+                        {% if floors %}
+                        <td>{{ floors }}</td>
+                        {% else %}
                         <td>0</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <th>Пользователи</th>

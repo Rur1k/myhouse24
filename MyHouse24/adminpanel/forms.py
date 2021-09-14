@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import House, Section
+from .models import House, Section, Floor
 
 # Формы авторизации
 class LoginForm(forms.Form):
@@ -61,6 +61,17 @@ class SectionForm(forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'value': 'Секция'
+            }),
+        }
+
+class FloorForm(forms.ModelForm):
+    class Meta:
+        model = Floor
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'value': 'Этаж'
             }),
         }
 

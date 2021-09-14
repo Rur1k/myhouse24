@@ -46,3 +46,10 @@ $('#add_section').click(function() {
         $('#form_set_section').append($('#empty_form_section').html().replace(/prefix/g, form_idx));
         $('#id_section-TOTAL_FORMS').val(parseInt(form_idx) + 1);
     });
+
+// Добавление этажей дома
+$('#add_floor').click(function() {
+        var form_idx = $('#id_floor-TOTAL_FORMS').val();
+        $('#form_set_floor').append($('#empty_form_floor').html().replace(/prefix/g, form_idx));
+        $('#id_floor-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
