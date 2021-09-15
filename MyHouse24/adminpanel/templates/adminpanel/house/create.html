@@ -80,19 +80,19 @@
                     <div class="tab-content">
                         <div class="tab-panel clearfix" id="tab-sections">
                             <div id="form_set_section" class="row">
-<!--                                {% for formset in SectionFormSet %}-->
-<!--                                <div class="col-md-12 margin-bottom-20">-->
-<!--                                    <label>Название</label>-->
-<!--                                    <div class="input-group">-->
-<!--                                        {{ formset.name }}-->
-<!--                                        <span class="input-group-btn">-->
-<!--                                            <a href="" class="btn btn-danger">-->
-<!--                                                <i class="fa fa-trash"></i>-->
-<!--                                            </a>-->
-<!--                                        </span>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                {% endfor %}-->
+                                {% for formset in SectionFormSet %}
+                                <div class="col-md-12 margin-bottom-20">
+                                    <label>Название</label>
+                                    <div class="input-group">
+                                        {{ formset.name }}
+                                        <span class="input-group-btn">
+                                            <a href="" class="btn btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
                             <div id="empty_form_section" style="display:none">
                                     <div id="id_form_section_" class="col-md-12 margin-bottom-20 form-section">
@@ -116,7 +116,7 @@
                         <div class="tab-panel clearfix" id="tab-floors">
                              <div id="form_set_floor" class="row">
                                 <div id="empty_form_floor" style="display:none">
-                                    <div class="col-md-12 margin-bottom-20">
+                                    <div id='id_form_floor_' class="col-md-12 margin-bottom-20 form-floor">
                                         <label>Название</label>
                                         <div class="input-group">
                                             {{ FloorFormSet.empty_form.name }}

@@ -50,7 +50,7 @@ def house(request):
 
 def create_house(request):
     form = HouseForm()
-    SectionFormSet = formset_factory(SectionForm, extra=0, can_delete=True)
+    SectionFormSet = formset_factory(SectionForm, extra=0, max_num=10, can_delete=True)
     FloorFormSet = formset_factory(FloorForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
@@ -59,27 +59,21 @@ def create_house(request):
         form_section = SectionFormSet(request.POST, prefix='section')
         form_floor = FloorFormSet(request.POST, prefix='floor')
         if form.is_valid():
-            # form.save() # Сохранение дома
-            counter_section = 0
-            counter_floor = 0
+            form.save() # Сохранение дома
             # Сохранение секций дома
             if form_section.is_valid():
                 for subform in form_section:
-                    print(subform)
-                    # obj = subform.save(commit=False)
-                    # obj.house = form.save(commit=False)
-                    # obj.save()
+                    obj = subform.save(commit=False)
+                    obj.house = form.save(commit=False)
+                    obj.save()
             else:
                 print(form_section.errors)
             # Сохранение этажей
             if form_floor.is_valid():
                 for subform in form_floor:
-
                     obj = subform.save(commit=False)
                     obj.house = form.save(commit=False)
-                    obj.name = request.POST.get(f'floor-__{counter_floor}__-name')
                     obj.save()
-                    counter_floor+=1
             else:
                 print(form_floor.errors)
             return redirect('house')
