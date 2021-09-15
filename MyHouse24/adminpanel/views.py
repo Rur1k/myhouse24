@@ -59,22 +59,22 @@ def create_house(request):
         form_section = SectionFormSet(request.POST, prefix='section')
         form_floor = FloorFormSet(request.POST, prefix='floor')
         if form.is_valid():
-            form.save() # Сохранение дома
+            # form.save() # Сохранение дома
             counter_section = 0
             counter_floor = 0
             # Сохранение секций дома
             if form_section.is_valid():
                 for subform in form_section:
-                    obj = subform.save(commit=False)
-                    obj.house = form.save(commit=False)
-                    obj.name = request.POST.get(f'section-__{counter_section}__-name')
-                    obj.save()
-                    counter_section+=1
+                    print(subform)
+                    # obj = subform.save(commit=False)
+                    # obj.house = form.save(commit=False)
+                    # obj.save()
             else:
                 print(form_section.errors)
             # Сохранение этажей
             if form_floor.is_valid():
                 for subform in form_floor:
+
                     obj = subform.save(commit=False)
                     obj.house = form.save(commit=False)
                     obj.name = request.POST.get(f'floor-__{counter_floor}__-name')

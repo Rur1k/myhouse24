@@ -45,6 +45,7 @@ $('#add_section').click(function() {
         var form_idx = $('#id_section-TOTAL_FORMS').val();
         $('#form_set_section').append($('#empty_form_section').html().replace(/prefix/g, form_idx));
         $('#id_section-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_section').find('div#id_form_section_').attr('id', 'id_form_section_'+ parseInt(form_idx))
     });
 
 // Добавление этажей дома
@@ -53,3 +54,11 @@ $('#add_floor').click(function() {
         $('#form_set_floor').append($('#empty_form_floor').html().replace(/prefix/g, form_idx));
         $('#id_floor-TOTAL_FORMS').val(parseInt(form_idx) + 1);
     });
+
+// Удаление по кнопке
+$(document).on('click', '.delete-section', function(e){
+    if (confirm('Удалить?')) {
+        e.preventDefault();
+        $(this).parents('.form-section').remove();
+    }
+});
