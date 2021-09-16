@@ -50,7 +50,7 @@ def house(request):
 
 def create_house(request):
     form = HouseForm()
-    SectionFormSet = formset_factory(SectionForm, extra=0, max_num=10, can_delete=True)
+    SectionFormSet = formset_factory(SectionForm, extra=0, can_delete=True)
     FloorFormSet = formset_factory(FloorForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
@@ -63,17 +63,19 @@ def create_house(request):
             # Сохранение секций дома
             if form_section.is_valid():
                 for subform in form_section:
-                    obj = subform.save(commit=False)
-                    obj.house = form.save(commit=False)
-                    obj.save()
+                    if not subform.cleaned_data['DELETE']:
+                        obj = subform.save(commit=False)
+                        obj.house = form.save(commit=False)
+                        obj.save()
             else:
                 print(form_section.errors)
             # Сохранение этажей
             if form_floor.is_valid():
                 for subform in form_floor:
-                    obj = subform.save(commit=False)
-                    obj.house = form.save(commit=False)
-                    obj.save()
+                    if not subform.cleaned_data['DELETE']:
+                        obj = subform.save(commit=False)
+                        obj.house = form.save(commit=False)
+                        obj.save()
             else:
                 print(form_floor.errors)
             return redirect('house')
@@ -99,3 +101,4 @@ def info_house(request, id):
         'floors': count_floor,
     }
     return render(request, "adminpanel/house/info.html", data)
+

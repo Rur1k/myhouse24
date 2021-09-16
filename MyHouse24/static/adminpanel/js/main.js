@@ -1,3 +1,25 @@
+//Переключение вкладок
+//function openContent(evt, TabInfo) {
+//    // Declare all variables
+//    var i, tab-panel, tablinks;
+//
+//    // Get all elements with class="tabcontent" and hide them
+//    tabcontent = document.getElementsByClassName("tab-panel");
+//    for (i = 0; i < tab-panel.length; i++) {
+//        tab-panel[i].style.display = "none";
+//    }
+//
+//    // Get all elements with class="tablinks" and remove the class "active"
+//    tablinks = document.getElementsByClassName("tablinks");
+//    for (i = 0; i < tablinks.length; i++) {
+//        tablinks[i].className = tablinks[i].className.replace(" active", "");
+//    }
+//
+//    // Show the current tab, and add an "active" class to the button that opened the tab
+//    document.getElementById(cityName).style.display = "block";
+//    evt.currentTarget.className += " active";
+//}
+
 // Сортировка таблиц
 document.addEventListener('DOMContentLoaded', () => {
     const getSort = ({ target }) => {
@@ -46,6 +68,7 @@ $('#add_section').click(function() {
         $('#form_set_section').append($('#empty_form_section').html().replace(/prefix/g, form_idx));
         $('#id_section-TOTAL_FORMS').val(parseInt(form_idx) + 1);
         $('#form_set_section').find('#id_section-__'+parseInt(form_idx)+'__-name').attr('name', 'section-'+parseInt(form_idx)+'-name');
+        $('#form_set_section').find('#id_section-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'section-'+parseInt(form_idx)+'-DELETE');
         $('#form_set_section').find('div#id_form_section_').attr('id', 'id_form_section_'+ parseInt(form_idx));
     });
 
@@ -54,12 +77,19 @@ $('#add_floor').click(function() {
         var form_idx = $('#id_floor-TOTAL_FORMS').val();
         $('#form_set_floor').append($('#empty_form_floor').html().replace(/prefix/g, form_idx));
         $('#id_floor-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_floor').find('#id_floor-__'+parseInt(form_idx)+'__-name').attr('name', 'floor-'+parseInt(form_idx)+'-name');
+        $('#form_set_floor').find('#id_floor-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'floor-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_floor').find('div#id_form_floor_').attr('id', 'id_form_floor_'+ parseInt(form_idx));
     });
 
-// Удаление по кнопке
-$(document).on('click', '.delete-section', function(e){
+// Удаление блока
+$(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
-        $(this).parents('.form-section').hide();
+        $(this).parent().find('input[type=checkbox]').attr('checked','checked');
+        $(this).parents('.form-section, .form-floor').hide();
     }
 });
+
+
+
