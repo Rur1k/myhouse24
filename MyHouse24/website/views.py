@@ -4,4 +4,4 @@ def main(request):
     data = {
 
     }
-    return render(request, 'website/base.html', data)
+    return render(request, 'website/index.html', data)

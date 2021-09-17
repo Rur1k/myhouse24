@@ -32,15 +32,30 @@
 
                 <div class="collapse navbar-collapse" id="menuBtn">
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active"><a href="/">Главная<span class="sr-only">(current)</span></a></li>
+                        <li class=""><a href="/">Главная</a></li>
                         <li class=""><a href="">О нас</a></li>
                         <li class=""><a href="">Услуги</a></li>
                         <li class=""><a href="">Контакты</a></li>
-                        <li><a href="{% url 'login_admin' %}"><i class="fas fa-sign-in-alt"></i> Вход</a></li>
+                        <li><a href="{% url 'login_admin' %}"><i class="fa fa-sign-in"></i> Вход</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <p class="text-muted">Разработано в учебных целях. На базе системы управления <a href="https://avada-media.ua/moydom24/">"МойДом24"</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- jQuery 3 -->
+        <script src="{% static 'adminpanel/bower_components/jquery/dist/jquery.min.js'%}"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="{% static 'adminpanel/bower_components/bootstrap/dist/js/bootstrap.min.js'%}"></script>
     </body>
