@@ -39,7 +39,7 @@
                         <td class="house-address">{{ house.address }}</td>
                         <td class="text-center">
                             <div class="btn-group pull-center">
-                                <a class="btn btn-default btn-sm" href="#" title="Редактировать" data-toggle="tooltip">
+                                <a class="btn btn-default btn-sm" href="{% url 'update_house' house.id %}" title="Редактировать" data-toggle="tooltip">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                                 <a class="btn btn-default btn-sm" href="#" title="Удалить" data-toggle="tooltip">
