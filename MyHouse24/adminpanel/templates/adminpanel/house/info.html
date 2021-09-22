@@ -6,7 +6,7 @@
 {% block content %}
 <div class="box col-md-12">
     <div class="box-header with-border text-right">
-        <a href="#" class="btn btn-primary">Редактировать дом</a>
+        <a href="{% url 'update_house' house.id %}" class="btn btn-primary">Редактировать дом</a>
     </div>
     <div class="box-body row">
         <div class="col-md-4 row">

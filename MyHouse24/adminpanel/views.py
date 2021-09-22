@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.forms import formset_factory
+from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from .forms import LoginForm, HouseForm, SectionForm, FloorForm
@@ -50,8 +50,8 @@ def house(request):
 
 def create_house(request):
     form = HouseForm()
-    SectionFormSet = formset_factory(SectionForm, extra=0, can_delete=True)
-    FloorFormSet = formset_factory(FloorForm, extra=0, can_delete=True)
+    SectionFormSet = modelformset_factory(Section, form=SectionForm, fields=['name'], extra=0, can_delete=True)
+    FloorFormSet = modelformset_factory(Floor, form=FloorForm, fields=['name'], extra=0, can_delete=True)
 
     if request.method == 'POST':
         print(request.POST)
@@ -85,83 +85,47 @@ def create_house(request):
 
     data = {
         'form': form,
-        'SectionFormSet': SectionFormSet(prefix='section'),
-        'FloorFormSet': FloorFormSet(prefix='floor'),
+        'SectionFormSet': SectionFormSet(prefix='section', queryset=Section.objects.none()),
+        'FloorFormSet': FloorFormSet(prefix='floor', queryset=Floor.objects.none()),
     }
     return render(request, "adminpanel/house/create.html", data)
 
 def update_house(request, id):
-    house_data = House.objects.get(id=id)
+    house_data = get_object_or_404(House, id=id)
     sections = Section.objects.filter(house=id)
-    floors = Floor.objects.filter(house=id)
+    SectionFormSet = modelformset_factory(Section, form=SectionForm, fields=['name'], extra=0, can_delete=True)
 
-    SectionFormSet = formset_factory(SectionForm, extra=0, can_delete=True)
-    FloorFormSet = formset_factory(FloorForm, extra=0, can_delete=True)
-
-    if request.method == 'POST':
-        form_section = SectionFormSet(request.POST, prefix='section')
-        form_floor = FloorFormSet(request.POST, prefix='floor')
-
-        name = request.POST.get('name')
-        address = request.POST.get('address')
-        image_1 = request.POST.get('image_1')
-        image_2 = request.POST.get('image_2')
-        image_3 = request.POST.get('image_3')
-        image_4 = request.POST.get('image_4')
-        image_5 = request.POST.get('image_5')
-
-        House.objects.filter(id=id).update(
-            name = name,
-            address = address,
-            image_1 = image_1,
-            image_2 = image_2,
-            image_3 = image_3,
-            image_4 = image_4,
-            image_5 = image_5,
-            )
-
-        if form_section.is_valid():
-            for subform in form_section:
-                if not subform.cleaned_data['DELETE']:
-                    obj = subform.save(commit=False)
-                    obj.house = house_data
-                    obj.save()
-        else:
-            print(form_section.errors)
-        # Сохранение этажей
-        if form_floor.is_valid():
-            for subform in form_floor:
-                if not subform.cleaned_data['DELETE']:
-                    obj = subform.save(commit=False)
-                    obj.house = house_data
-                    obj.save()
-        else:
-            print(form_floor.errors)
-        return redirect('house')
-
-    house_form = HouseForm(initial={
-        'name': house_data.name,
-        'address': house_data.address,
-        'image_1': house_data.image_1,
-        'image_2': house_data.image_2,
-        'image_3': house_data.image_3,
-        'image_4': house_data.image_4,
-        'image_5': house_data.image_5,
-    })
-
-    # section_list = []
-    # for section in sections:
-    #     section_list.append(section)
-    #
-    # floor_list = []
-    # for floor in floors:
-    #     floor_list.append(floor)
-
+    if request.method == "POST":
+        house_form = HouseForm(request.POST, request.FILES, instance=house_data)
+        section_formset = SectionFormSet(request.POST, prefix='section', queryset=sections)
+        if house_form.is_valid():
+            house_form.save()
+            print(section_formset)
+            for sub in section_formset:
+                sub.save()
+            if section_formset.is_valid():
+                for subform in section_formset:
+                    print(subform.cleaned_data)
+                    # subform.save()
+                    # if not subform.cleaned_data['DELETE']:
+                    #     if subform in sections:
+                    #         print("Пройдена проверка уже созданность")
+                    #         subform.save()
+                    #     else:
+                    #         obj = subform.save(commit=False)
+                    #         obj.house = house_form.save(commit=False)
+                    #         obj.save()
+            else:
+                print ('ERRORS')
+                print(section_formset.errors)
+        return redirect('info_house', id=id)
+    else:
+        house_form = HouseForm(instance=house_data)
+        sections_form = SectionFormSet(prefix='section', queryset=sections)
 
     data = {
         'house': house_form,
-        # 'sections': SectionFormSet(section_list),
-        # 'floors': FloorFormSet(floor_list),
+        'sections': sections_form,
     }
     return render(request, 'adminpanel/house/update.html', data)
 
