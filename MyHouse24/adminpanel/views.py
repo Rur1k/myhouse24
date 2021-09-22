@@ -93,39 +93,52 @@ def create_house(request):
 def update_house(request, id):
     house_data = get_object_or_404(House, id=id)
     sections = Section.objects.filter(house=id)
-    SectionFormSet = modelformset_factory(Section, form=SectionForm, fields=['name'], extra=0, can_delete=True)
+    floors = Floor.objects.filter(house=id)
+    SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=0, can_delete=True)
+    FloorFormSet = modelformset_factory(Floor, form=FloorForm, extra=0, can_delete=True)
 
+    print(sections)
     if request.method == "POST":
+        print(request.POST)
         house_form = HouseForm(request.POST, request.FILES, instance=house_data)
         section_formset = SectionFormSet(request.POST, prefix='section', queryset=sections)
+        floor_formset = FloorFormSet(request.POST, prefix='floor', queryset=floors)
+
         if house_form.is_valid():
             house_form.save()
-            print(section_formset)
-            for sub in section_formset:
-                sub.save()
+            # Редактирование/Добавление/Удаление секций
             if section_formset.is_valid():
                 for subform in section_formset:
-                    print(subform.cleaned_data)
-                    # subform.save()
-                    # if not subform.cleaned_data['DELETE']:
-                    #     if subform in sections:
-                    #         print("Пройдена проверка уже созданность")
-                    #         subform.save()
-                    #     else:
-                    #         obj = subform.save(commit=False)
-                    #         obj.house = house_form.save(commit=False)
-                    #         obj.save()
-            else:
-                print ('ERRORS')
-                print(section_formset.errors)
+                    if not subform.cleaned_data['DELETE']:
+                        obj = subform.save(commit=False)
+                        obj.house = house_form.save(commit=False)
+                        obj.save()
+                    else:
+                        if subform.cleaned_data['id'] in sections:
+                            obj = subform.save(commit=False)
+                            Section.objects.filter(id=obj.id).delete()
+            # Редактирование/Добавление/Удаление этажей
+            if floor_formset.is_valid():
+                for subform in floor_formset:
+                    if not subform.cleaned_data['DELETE']:
+                        obj = subform.save(commit=False)
+                        obj.house = house_form.save(commit=False)
+                        obj.save()
+                    else:
+
+                        if subform.cleaned_data['id'] in floors:
+                            obj = subform.save(commit=False)
+                            Floor.objects.filter(id=obj.id).delete()
         return redirect('info_house', id=id)
     else:
         house_form = HouseForm(instance=house_data)
         sections_form = SectionFormSet(prefix='section', queryset=sections)
+        floors_form = FloorFormSet(prefix='floor', queryset=floors)
 
     data = {
         'house': house_form,
         'sections': sections_form,
+        'floors': floors_form,
     }
     return render(request, 'adminpanel/house/update.html', data)
 

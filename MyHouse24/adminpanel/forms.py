@@ -56,7 +56,7 @@ class HouseForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['name']
+        fields = ['id','name']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -67,7 +67,7 @@ class SectionForm(forms.ModelForm):
 class FloorForm(forms.ModelForm):
     class Meta:
         model = Floor
-        fields = ['name']
+        fields = ['id','name']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',

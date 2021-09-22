@@ -8,7 +8,7 @@
     <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {{ sections.management_form }}
-        {{ FloorFormSet.management_form }}
+        {{ floors.management_form }}
         <div class="box-body row">
             <div class="col-md-4 row">
                 <div class="col-md-12 margin-bottom-20">
@@ -81,59 +81,80 @@
                         <div class="tab-panel clearfix" id="tab-sections">
                             <div id="form_set_section" class="row">
                                 {% for formset in sections %}
-                                <div class="col-md-12 margin-bottom-20">
+                                <div class="col-md-12 margin-bottom-20 form-section">
                                     <label>Название</label>
+                                    <div>{{ formset.id }}</div>
                                     <div class="input-group">
                                         {{ formset.name }}
                                         <span class="input-group-btn">
-                                            <a href="" class="btn btn-danger">
-                                                <i class="fa fa-trash"></i>
+                                            <a href="" class="btn btn-danger delete-form">
+                                                <i class="fa fa-trash">
+                                                    <div hidden="hidden">{{ formset.DELETE }}</div>
+                                                </i>
                                             </a>
                                         </span>
                                     </div>
                                 </div>
                                 {% endfor %}
                             </div>
-<!--                            <div id="empty_form_section" style="display:none">-->
-<!--                                    <div id="id_form_section_" class="col-md-12 margin-bottom-20 form-section">-->
-<!--                                        <label>Название</label>-->
-<!--                                        <div class="input-group">-->
-<!--                                            {{ sections.empty_form.name }}-->
-<!--                                            <span class="input-group-btn">-->
-<!--                                                <button type="button" class="btn btn-danger delete-form">-->
-<!--                                                    <i class="fa fa-trash">-->
-<!--                                                        <div class="hidden">-->
-<!--                                                            {{ SectionFormSet.empty_form.DELETE }}-->
-<!--                                                        </div>-->
-<!--                                                    </i>-->
-<!--                                                </button>-->
-<!--                                            </span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <div id="empty_form_section" style="display:none">
+                                    <div id="id_form_section_" class="col-md-12 margin-bottom-20 form-section">
+                                        <label>Название</label>
+                                        <div class="input-group">
+                                            {{ sections.empty_form.name }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger delete-form">
+                                                    <i class="fa fa-trash">
+                                                        <div class="hidden">
+                                                            {{ sections.empty_form.DELETE }}
+                                                        </div>
+                                                    </i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             <input id="add_section" class="btn btn-success pull-right" type="button" value="Добавить">
                         </div>
                         <div class="tab-panel clearfix" id="tab-floors">
-<!--                             <div id="form_set_floor" class="row">-->
-<!--                                <div id="empty_form_floor" style="display:none">-->
-<!--                                    <div id='id_form_floor_' class="col-md-12 margin-bottom-20 form-floor">-->
-<!--                                        <label>Название</label>-->
-<!--                                        <div class="input-group">-->
-<!--                                            {{ FloorFormSet.empty_form.name }}-->
-<!--                                            <span class="input-group-btn">-->
-<!--                                                <button type="button" class="btn btn-danger delete-form">-->
-<!--                                                    <i class="fa fa-trash">-->
-<!--                                                        <div class="hidden">-->
-<!--                                                            {{ FloorFormSet.empty_form.DELETE }}-->
-<!--                                                        </div>-->
-<!--                                                    </i>-->
-<!--                                                </button>-->
-<!--                                            </span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <input id="add_floor" class="btn btn-success pull-right" type="button" value="Добавить">-->
+                            <div id="form_set_floor" class="row">
+                                {% for formset in floors %}
+                                <div class="col-md-12 margin-bottom-20 form-floor">
+                                    <label>Название</label>
+                                    <div>{{ formset.id }}</div>
+                                    <div class="input-group">
+                                        {{ formset.name }}
+                                        <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger delete-form">
+                                                    <i class="fa fa-trash">
+                                                        <div class="hidden">
+                                                            {{ formset.DELETE }}
+                                                        </div>
+                                                    </i>
+                                                </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <div id="empty_form_floor" style="display:none">
+                                    <div id='id_form_floor_' class="col-md-12 margin-bottom-20 form-floor">
+                                        <label>Название</label>
+                                        <div class="input-group">
+                                            {{ floors.empty_form.name }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger delete-form">
+                                                    <i class="fa fa-trash">
+                                                        <div class="hidden">
+                                                            {{ floors.empty_form.DELETE }}
+                                                        </div>
+                                                    </i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="add_floor" class="btn btn-success pull-right" type="button" value="Добавить">
                         </div>
                         <div class="tab-panel clearfix" id="tab-houseuseradmin">
                             <div>Список персонала</div>

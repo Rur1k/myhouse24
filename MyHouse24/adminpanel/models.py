@@ -12,7 +12,7 @@ class House(models.Model):
 
 
 class Section(models.Model):
-    id = models.AutoField(unique=True, primary_key=True, blank=True)
+    id = models.AutoField(unique=True, primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=64)
 
