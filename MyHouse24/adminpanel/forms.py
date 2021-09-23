@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import House, Section, Floor
+from .models import House, Section, Floor, MainPageSlider, MainPageInfo, MainPageNearby, SeoInfo
 
 # Формы авторизации
 class LoginForm(forms.Form):
@@ -75,3 +75,100 @@ class FloorForm(forms.ModelForm):
             }),
         }
 
+
+# Формы для настройки сайта
+class MainPageSliderForm(forms.ModelForm):
+    class Meta:
+        model = MainPageSlider
+        fields = [
+            'id',
+            'slide_1',
+            'slide_2',
+            'slide_3',
+        ]
+
+        widgets = {
+            'slide_1': forms.ClearableFileInput(attrs={
+                'id': 'slide_1',
+                'class': 'margin-bottom-30'
+            }),
+            'slide_2': forms.ClearableFileInput(attrs={
+                'id': 'slide_2',
+                'class': 'margin-bottom-30'
+            }),
+            'slide_3': forms.ClearableFileInput(attrs={
+                'id': 'slide_3',
+                'class': 'margin-bottom-30'
+            }),
+        }
+
+
+class MainPageInfoForm(forms.ModelForm):
+    class Meta:
+        model = MainPageInfo
+        fields = [
+            'id',
+            'title',
+            'description',
+            'is_apps',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'is_apps': forms.CheckboxInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+
+class MainPageNearbyForm(forms.ModelForm):
+    class Meta:
+        model = MainPageNearby
+        fields = [
+            'id',
+            'title',
+            'description',
+            'image',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'image': forms.ClearableFileInput(attrs={}),
+        }
+
+# SEO форма
+class SeoInfoForm(forms.ModelForm):
+    class Meta:
+        model = SeoInfo
+        fields = [
+            'id',
+            'title',
+            'description',
+            'keyword',
+            'page',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'keyword': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'page': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }

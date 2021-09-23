@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
-from .forms import LoginForm, HouseForm, SectionForm, FloorForm
-from .models import House, Section, Floor
+from .forms import *
+from .models import *
 
 
 # Логика входа в админку
@@ -142,7 +142,6 @@ def update_house(request, id):
     }
     return render(request, 'adminpanel/house/update.html', data)
 
-
 def info_house(request, id):
     house = House.objects.get(id=id)
     sections = Section.objects.filter(house=house)
@@ -155,4 +154,32 @@ def info_house(request, id):
         'floors': count_floor,
     }
     return render(request, "adminpanel/house/info.html", data)
+
+# Бизнес логика складки "Управление сайтом"
+def website_home(request):
+    slider = MainPageSlider.objects.filter(id=1).first()
+    # info = get_object_or_404(MainPageInfo)
+    # nearby_formset = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=6)
+
+    print(slider)
+    print('++++=================+++++++==========')
+    # print(info)
+
+    if request.method == "POST":
+        slider_form = MainPageSliderForm(request.POST, request.FILES)
+        if slider_form.is_valid():
+            slider_form.save()
+            return redirect('website_home')
+    else:
+        if slider is None:
+            slider_form = MainPageSliderForm()
+        else:
+            slider_form = MainPageSlider(instance=slider)
+
+    data = {
+        'slider_form': slider_form,
+        # 'info_from': info_form,
+        # 'formset': nearby_formset,
+    }
+    return render(request, 'adminpanel/website/home.html', data)
 
