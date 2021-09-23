@@ -174,7 +174,7 @@ def website_home(request):
         if slider is None:
             slider_form = MainPageSliderForm()
         else:
-            slider_form = MainPageSlider(instance=slider)
+            slider_form = MainPageSliderForm(instance=slider)
 
     data = {
         'slider_form': slider_form,
