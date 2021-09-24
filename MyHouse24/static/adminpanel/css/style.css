@@ -88,3 +88,9 @@ th.sorted[data-order="1"]::after {
     height: 300px;
     object-fit: cover;
 }
+
+.near-img img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}

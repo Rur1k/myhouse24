@@ -158,27 +158,39 @@ def info_house(request, id):
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()
-    # info = get_object_or_404(MainPageInfo)
-    # nearby_formset = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=6)
-
-
-    print(slider)
-    # print(info)
+    info = MainPageInfo.objects.all().first()
+    seo = SeoInfo.objects.filter(page='MainPage').first()
+    nearby = MainPageNearby.objects.all()
+    num_extra = 6 - nearby.count()
+    nearby_form = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=num_extra)
 
     if request.method == "POST":
-        print(request.POST)
-        print(request.FILES)
         slider_form = MainPageSliderForm(request.POST, request.FILES, instance=slider)
+        info_form = MainPageInfoForm(request.POST, request.FILES, instance=info)
+        seo_form = SectionForm(request.POST, request.FILES, instance=seo)
+        formset = nearby_form(request.POST, request.FILES, queryset=nearby)
         if slider_form.is_valid():
             slider_form.save()
+        if info_form.is_valid():
+            info_form.save()
+        if formset.is_valid():
+            formset.save()
+        if seo_form.is_valid():
+            obj = seo_form.save(commit=False)
+            obj.page = 'MainPage'
+            obj.save()
         return redirect('website_home')
     else:
         slider_form = MainPageSliderForm(instance=slider)
+        info_form = MainPageInfoForm(instance=info)
+        nearby_formset = nearby_form(queryset=nearby)
+        seo_form = SeoInfoForm(instance=seo)
 
     data = {
         'slider_form': slider_form,
-        # 'info_from': info_form,
-        # 'formset': nearby_formset,
+        'info_form': info_form,
+        'formset': nearby_formset,
+        'seo': seo_form,
     }
     return render(request, 'adminpanel/website/home.html', data)
 

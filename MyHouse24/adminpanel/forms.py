@@ -117,11 +117,11 @@ class MainPageInfoForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'description': forms.TextInput(attrs={
+            'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
             'is_apps': forms.CheckboxInput(attrs={
-                'class': 'form-control'
+                'class': ''
             }),
         }
 
@@ -140,7 +140,7 @@ class MainPageNearbyForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'description': forms.TextInput(attrs={
+            'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
             'image': forms.ClearableFileInput(attrs={}),
@@ -162,13 +162,10 @@ class SeoInfoForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'description': forms.TextInput(attrs={
+            'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
-            'keyword': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'page': forms.TextInput(attrs={
+            'keyword': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
         }

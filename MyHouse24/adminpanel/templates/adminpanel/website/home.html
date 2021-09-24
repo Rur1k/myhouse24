@@ -5,11 +5,12 @@
 {% block mini_page_name %}Редактирование страницы{% endblock %}
 {% block content %}
 <div class="box">
-    <form method="post" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="box-body row">
-            <div class="col-md-12"><h3>Редактирование страницы "Главная"</h3></div>
-            <div class="col-md-12 row site-main-slider">
+    <div class="box-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="col-xm-12"><h3>Редактирование страницы "Главная"</h3></div>
+            <div class="col-xm-12 row site-main-slider">
                 <h3 class="col-md-12 margin-bottom-30">Слайдер</h3>
                 <div class="col-md-4">
                     <h4>Слайд 1</h4>
@@ -30,19 +31,59 @@
                     {{ slider_form.slide_3 }}
                 </div>
             </div>
-            <div class="col-md-12 row">
+            <div class="col-xm-12 row">
                 <h3 class="col-md-12 margin-bottom-30">Краткая информация</h3>
-                <div class="col-md-12">Заголовок</div>
-                <div class="col-md-12">Краткий текст</div>
-                <div class="col-md-12">Показывать приложения</div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Заголовок</label>
+                    {{ info_form.title }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Краткий текст</label>
+                    {{ info_form.description }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    {{ info_form.is_apps }}
+                    <label>Показать ссылки на приложения</label>
+                </div>
 
             </div>
-            <div class="col-md-12 row">
+            <div class="col-xm-12 row">
                 <h3 class="col-md-12 margin-bottom-30">Рядом с нами</h3>
-                <div class="col-md-12">Блоки</div>
+                <div class="col-md-12 row near-img">
+                    {% for form in formset %}
+                    <div class="col-md-4 margin-bottom-15">
+                        <h4>Блок {{ form.id }}</h4>
+                        <div class="margin-bottom-15">
+                            <img src="{% static 'img/default.jpg' %}" class="margin-bottom-15">
+                            <label>Рекомендуемый размер: (1920х800)</label>
+                            {{ form.image }}
+                        </div>
+                        <div class="margin-bottom-15">
+                            <label>Заголовок блока</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="margin-bottom-15">
+                            <label>Описание</label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="col-md-12 row">
+            <div class="col-xm-12 row">
                 <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Title</label>
+                    {{ seo.title }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Description</label>
+                    {{ seo.description }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Keywords</label>
+                    {{ seo.keyword }}
+                </div>
             </div>
             <div class="col-md-12 text-center">
                 <div class="form-group">
@@ -50,7 +91,7 @@
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 {% endblock %}
