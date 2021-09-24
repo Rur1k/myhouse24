@@ -35,6 +35,7 @@
                 <h3 class="col-md-12 margin-bottom-30">Краткая информация</h3>
                 <div class="col-md-12 margin-bottom-20">
                     <label>Заголовок</label>
+                    {{ info_form.id  }}
                     {{ info_form.title }}
                 </div>
                 <div class="col-md-12 margin-bottom-20">
@@ -73,12 +74,13 @@
             <div class="col-xm-12 row">
                 <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
                 <div class="col-md-12 margin-bottom-15">
+                    {{ seo.id }}
                     <label>Title</label>
-                    {{ seo.title }}
+                    {{ seo.seo_title }}
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Description</label>
-                    {{ seo.description }}
+                    {{ seo.seo_description }}
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Keywords</label>

@@ -46,7 +46,7 @@ class MainPageNearby(models.Model):
 
 class SeoInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
-    title = models.CharField('Title', max_length=64, null=True, blank=True)
-    description = models.TextField('Description', null=True, blank=True)
+    seo_title = models.CharField('Title', max_length=64, null=True, blank=True)
+    seo_description = models.TextField('Description', null=True, blank=True)
     keyword = models.TextField('Keywords', null=True, blank=True)
     page = models.CharField('Page', max_length=64, null=True, blank=True)

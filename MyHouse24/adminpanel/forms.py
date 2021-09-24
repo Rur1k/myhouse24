@@ -152,17 +152,17 @@ class SeoInfoForm(forms.ModelForm):
         model = SeoInfo
         fields = [
             'id',
-            'title',
-            'description',
+            'seo_title',
+            'seo_description',
             'keyword',
             'page',
         ]
 
         widgets = {
-            'title': forms.TextInput(attrs={
+            'seo_title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'description': forms.Textarea(attrs={
+            'seo_description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
             'keyword': forms.Textarea(attrs={

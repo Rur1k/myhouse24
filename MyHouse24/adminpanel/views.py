@@ -165,9 +165,10 @@ def website_home(request):
     nearby_form = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=num_extra)
 
     if request.method == "POST":
+        print(request.POST)
         slider_form = MainPageSliderForm(request.POST, request.FILES, instance=slider)
         info_form = MainPageInfoForm(request.POST, request.FILES, instance=info)
-        seo_form = SectionForm(request.POST, request.FILES, instance=seo)
+        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
         formset = nearby_form(request.POST, request.FILES, queryset=nearby)
         if slider_form.is_valid():
             slider_form.save()
