@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
+from ckeditor.widgets import CKEditorWidget
 from .models import House, Section, Floor, MainPageSlider, MainPageInfo, MainPageNearby, SeoInfo
 
 # Формы авторизации
@@ -104,12 +105,13 @@ class MainPageSliderForm(forms.ModelForm):
 
 
 class MainPageInfoForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = MainPageInfo
         fields = [
             'id',
             'title',
-            'description',
+            # 'description',
             'is_apps',
         ]
 
@@ -117,9 +119,9 @@ class MainPageInfoForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-            }),
+            # 'description': forms.Textarea(attrs={
+            #     'class': 'form-control',
+            # }),
             'is_apps': forms.CheckboxInput(attrs={
                 'class': ''
             }),

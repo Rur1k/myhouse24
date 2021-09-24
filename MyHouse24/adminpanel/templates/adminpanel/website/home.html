@@ -40,7 +40,10 @@
                 </div>
                 <div class="col-md-12 margin-bottom-20">
                     <label>Краткий текст</label>
-                    {{ info_form.description }}
+                    <div class="col-md-12">
+                        {{ info_form.description | safe }}
+                        {{ info_form.media }}
+                    </div>
                 </div>
                 <div class="col-md-12 margin-bottom-20">
                     {{ info_form.is_apps }}

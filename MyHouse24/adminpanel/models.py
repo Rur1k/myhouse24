@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 class House(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
@@ -33,7 +34,7 @@ class MainPageSlider(models.Model):
 class MainPageInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
-    description = models.TextField('Краткий текст', null=True, blank=True)
+    description = RichTextField('Краткий текст', null=True, blank=True)
     is_apps = models.BooleanField(default=False)
 
 
