@@ -23,34 +23,17 @@ class Floor(models.Model):
     name = models.CharField('Название', max_length=64)
 
 
-class SingletonModel(models.Model):
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super(SingletonModel, self).save(*args, **kwargs)
-
-    def delete(self):
-        pass
-
-    @classmethod
-    def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
-        return obj
-
-
-class MainPageSlider(SingletonModel):
+class MainPageSlider(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     slide_1 = models.ImageField(upload_to='static/img/website/slider', null=True, blank=True)
     slide_2 = models.ImageField(upload_to='static/img/website/slider', null=True, blank=True)
     slide_3 = models.ImageField(upload_to='static/img/website/slider', null=True, blank=True)
 
 
-class MainPageInfo(SingletonModel):
+class MainPageInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
-    description = models.TextField('Кратский текст', null=True, blank=True)
+    description = models.TextField('Краткий текст', null=True, blank=True)
     is_apps = models.BooleanField(default=False)
 
 

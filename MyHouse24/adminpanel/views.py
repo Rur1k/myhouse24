@@ -157,24 +157,23 @@ def info_house(request, id):
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
-    slider = MainPageSlider.objects.filter(id=1).first()
+    slider = MainPageSlider.objects.all().first()
     # info = get_object_or_404(MainPageInfo)
     # nearby_formset = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=6)
 
+
     print(slider)
-    print('++++=================+++++++==========')
     # print(info)
 
     if request.method == "POST":
-        slider_form = MainPageSliderForm(request.POST, request.FILES)
+        print(request.POST)
+        print(request.FILES)
+        slider_form = MainPageSliderForm(request.POST, request.FILES, instance=slider)
         if slider_form.is_valid():
             slider_form.save()
-            return redirect('website_home')
+        return redirect('website_home')
     else:
-        if slider is None:
-            slider_form = MainPageSliderForm()
-        else:
-            slider_form = MainPageSliderForm(instance=slider)
+        slider_form = MainPageSliderForm(instance=slider)
 
     data = {
         'slider_form': slider_form,
