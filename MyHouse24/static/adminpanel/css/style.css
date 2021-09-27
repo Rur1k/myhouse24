@@ -94,3 +94,8 @@ th.sorted[data-order="1"]::after {
     height: 200px;
     object-fit: cover;
 }
+
+.site-about-gallery img {
+    height: 150px;
+    object-fit: cover;
+}

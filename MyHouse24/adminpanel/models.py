@@ -23,7 +23,7 @@ class Floor(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=64)
 
-
+# Модели для наполнения веб-сайта
 class MainPageSlider(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     slide_1 = models.ImageField(upload_to='static/img/website/slider', null=True, blank=True)
@@ -43,6 +43,36 @@ class MainPageNearby(models.Model):
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
     description = models.TextField('Описание', null=True, blank=True)
     image = models.ImageField(upload_to='static/img/website/nearby', null=True, blank=True)
+
+
+class AboutPageInfo(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
+    description = models.TextField('Краткий текст', null=True, blank=True)
+    image = models.ImageField(upload_to='static/img/website/about', null=True, blank=True)
+
+
+class AboutPageDopInfo(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    title_dop = models.CharField('Заголовок', max_length=64, null=True, blank=True)
+    description_dop = models.TextField('Краткий текст', null=True, blank=True)
+
+
+class PhotoGallery(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    photo = models.ImageField(upload_to='static/img/website/about', null=True, blank=True)
+
+
+class PhotoDopGallery(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    photo_dop = models.ImageField(upload_to='static/img/website/about', null=True, blank=True)
+
+
+class Document(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    document = models.FileField(upload_to='static/img/website/document', null=True, blank=True)
+    doc_name = models.CharField('Название документа', max_length=64, null=True, blank=True)
+
 
 
 class SeoInfo(models.Model):

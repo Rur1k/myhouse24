@@ -195,3 +195,55 @@ def website_home(request):
     }
     return render(request, 'adminpanel/website/home.html', data)
 
+def website_about(request):
+    main_info = AboutPageInfo.objects.all().first()
+    dop_info = AboutPageDopInfo.objects.all().first()
+    gallery = PhotoGallery.objects.all()
+    gallery_dop = PhotoDopGallery.objects.all()
+    seo = SeoInfo.objects.filter(page='AboutPage').first()
+    documents = Document.objects.all();
+    document_from = modelformset_factory(Document, form=DocumentForm, extra=0, can_delete=True)
+
+    if request.method == "POST":
+        print(request.POST)
+        main_info_form = AboutPageInfoForm(request.POST, request.FILES, instance=main_info)
+        dop_info_form = AboutPageDopInfoForm(request.POST, request.FILES, instance=dop_info)
+        gallery_from = PhotoGalleryForm(request.POST, request.FILES)
+        gallery_dop_form = PhotoDopGalleryForm(request.POST, request.FILES)
+        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
+        formset = document_from(request.POST, request.FILES, queryset=documents)
+        if main_info_form.is_valid(): main_info_form.save()
+        if gallery_from.is_valid(): gallery_from.save()
+        if gallery_dop_form.is_valid(): gallery_dop_form.save()
+        if dop_info_form.is_valid(): dop_info_form.save()
+        if formset.is_valid():
+            for subform in formset:
+                if not subform.cleaned_data['DELETE']:
+                    subform.save()
+                else:
+                    if subform.cleaned_data['id'] in documents:
+                        obj = subform.save(commit=False)
+                        Document.objects.filter(id=obj.id).delete()
+        if seo_form.is_valid():
+            obj = seo_form.save(commit=False)
+            obj.page = 'AboutPage'
+            obj.save()
+        return redirect('website_about')
+    else:
+        main_info_form = AboutPageInfoForm(instance=main_info)
+        dop_info_form = AboutPageDopInfoForm(instance=dop_info)
+        seo_form = SeoInfoForm(instance=seo)
+        formset = document_from(queryset=documents)
+
+    data = {
+        'main_form': main_info_form,
+        'dop_form': dop_info_form,
+        'gallery': gallery,
+        'gallery_dop': gallery_dop,
+        'gallery_form': PhotoGalleryForm(),
+        'gallery_dop_form': PhotoDopGalleryForm(),
+        'formset': formset,
+        'seo': seo_form,
+    }
+    return render(request, 'adminpanel/website/about.html', data)
+

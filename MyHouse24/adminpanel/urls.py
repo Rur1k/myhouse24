@@ -10,6 +10,7 @@ urlpatterns = [
     path('house/update/<int:id>', views.update_house, name='update_house'),
     #Управление сайтом
     path('website/home', views.website_home, name='website_home'),
+    path('website/about', views.website_about, name='website_about'),
 
     # Авторизация
     path('login/', views.login_admin, name='login_admin'),

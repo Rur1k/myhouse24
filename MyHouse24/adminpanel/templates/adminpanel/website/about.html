@@ -1,0 +1,107 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Редактирование страницы{% endblock %}
+{% block page_name %}Редактирование страницы{% endblock %}
+{% block mini_page_name %}Редактирование страницы{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-xm-12"><h3>Редактирование страницы "О нас"</h3></div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-30">Информация</h3>
+                <div class="col-md-8">
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Заголовок</label>
+                        {{ main_form.title }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Краткий текст</label>
+                        {{ main_form.description }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Фото директора</h4>
+                    <img src="{% static 'img/default.jpg' %}" class="margin-bottom-15" style="max-height: 310px; max-width: 250px">
+                    <div class="col-md-12">
+                        <label>Рекомендуемый размер: (250х310)</label>
+                        {{ main_form.image }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xm-12 row">
+                <h3 class="col-md-12 margin-bottom-30">Фотогалерея</h3>
+                <div class="col-md-12 site-about-gallery">
+                    {% for photo in gallery %}
+                    <div class="col-md-2 text-center margin-bottom-15">
+                        <img src="{{ photo.photo.url }}" class="margin-bottom-15 img-thumbnail"><br>
+                        <a href="">
+                            <i class="fa fa-trash text-red"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12">
+                    <label>Рекомендуемый размер: (1200x1200)</label>
+                    {{ gallery_form.photo }}
+                </div>
+            </div>
+            <div class="col-xm-12 row">
+                <h3 class="col-md-12 margin-bottom-30">Дополнительная информация</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Заголовок</label>
+                    {{ dop_form.title_dop }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Краткий текст</label>
+                    {{ dop_form.description_dop }}
+                </div>
+            </div>
+            <div class="col-xm-12 row">
+                <h3 class="col-md-12 margin-bottom-30">Дополнительная фотогалерея</h3>
+                <div class="col-md-12 site-about-gallery">
+                    {% for obj in gallery_dop %}
+                    <div class="col-md-2 text-center margin-bottom-15">
+                        <img src="{{ obj.photo_dop.url }}" class="margin-bottom-15 img-thumbnail"><br>
+                        <a href="">
+                            <i class="fa fa-trash text-red"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12">
+                    <label>Рекоменуемый размер: (1200x1200)</label>
+                    {{ gallery_dop_form.photo_dop }}
+                </div>
+            </div>
+            <div class="col-xm-12 row">
+                <h3 class="col-md-12 margin-bottom-30">Документы</h3>
+
+            </div>
+            <div class="col-xm-12 row">
+                <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    {{ seo.id }}
+                    <label>Title</label>
+                    {{ seo.seo_title }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Description</label>
+                    {{ seo.seo_description }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Keywords</label>
+                    {{ seo.keyword }}
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <a href="{% url 'house' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

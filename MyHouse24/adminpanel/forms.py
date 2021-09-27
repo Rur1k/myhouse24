@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django import forms
 from ckeditor.widgets import CKEditorWidget
-from .models import House, Section, Floor, MainPageSlider, MainPageInfo, MainPageNearby, SeoInfo
+from .models import *
 
 # Формы авторизации
 class LoginForm(forms.Form):
@@ -146,6 +146,85 @@ class MainPageNearbyForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'image': forms.ClearableFileInput(attrs={}),
+        }
+
+
+class AboutPageInfoForm(forms.ModelForm):
+    class Meta:
+        model = AboutPageInfo
+        fields = [
+            'id',
+            'title',
+            'description',
+            'image',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            'image': forms.ClearableFileInput(attrs={}),
+        }
+
+
+class AboutPageDopInfoForm(forms.ModelForm):
+    class Meta:
+        model = AboutPageDopInfo
+        fields = [
+            'id',
+            'title_dop',
+            'description_dop',
+        ]
+
+        widgets = {
+            'title_dop': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description_dop': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+        }
+
+
+class PhotoGalleryForm(forms.ModelForm):
+    class Meta:
+        model = PhotoGallery
+        fields = [
+            'id',
+            'photo',
+        ]
+        widgets = {
+            'photo': forms.ClearableFileInput(attrs={}),
+        }
+
+
+class PhotoDopGalleryForm(forms.ModelForm):
+    class Meta:
+        model = PhotoDopGallery
+        fields = [
+            'id',
+            'photo_dop',
+        ]
+        widgets = {
+            'photo_dop': forms.ClearableFileInput(attrs={}),
+        }
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = [
+            'id',
+            'document',
+            'doc_name',
+        ]
+        widgets = {
+            'doc_name': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'document': forms.ClearableFileInput(attrs={}),
         }
 
 # SEO форма
