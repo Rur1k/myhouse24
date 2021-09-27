@@ -211,10 +211,10 @@ def website_about(request):
         gallery_from = PhotoGalleryForm(request.POST, request.FILES)
         gallery_dop_form = PhotoDopGalleryForm(request.POST, request.FILES)
         seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
-        formset = document_from(request.POST, request.FILES, queryset=documents)
+        formset = document_from(request.POST, request.FILES, prefix='document', queryset=documents)
         if main_info_form.is_valid(): main_info_form.save()
-        if gallery_from.is_valid(): gallery_from.save()
-        if gallery_dop_form.is_valid(): gallery_dop_form.save()
+        if gallery_from.is_valid() and gallery_from.cleaned_data['photo']: gallery_from.save()
+        if gallery_dop_form.is_valid() and gallery_dop_form.cleaned_data['photo_dop']: gallery_dop_form.save()
         if dop_info_form.is_valid(): dop_info_form.save()
         if formset.is_valid():
             for subform in formset:
@@ -233,7 +233,7 @@ def website_about(request):
         main_info_form = AboutPageInfoForm(instance=main_info)
         dop_info_form = AboutPageDopInfoForm(instance=dop_info)
         seo_form = SeoInfoForm(instance=seo)
-        formset = document_from(queryset=documents)
+        formset = document_from(prefix='document', queryset=documents)
 
     data = {
         'main_form': main_info_form,

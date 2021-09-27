@@ -212,6 +212,7 @@ class PhotoDopGalleryForm(forms.ModelForm):
             'photo_dop': forms.ClearableFileInput(attrs={}),
         }
 
+
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document

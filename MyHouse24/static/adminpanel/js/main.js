@@ -82,12 +82,23 @@ $('#add_floor').click(function() {
         $('#form_set_floor').find('div#id_form_floor_').attr('id', 'id_form_floor_'+ parseInt(form_idx));
     });
 
+// Добавление новых документов
+$('#add_document').click(function() {
+        var form_idx = $('#id_document-TOTAL_FORMS').val();
+        $('#form_set_document').append($('#empty_form_document').html().replace(/prefix/g, form_idx));
+        $('#id_document-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_document').find('#id_document-__'+parseInt(form_idx)+'__-doc_name').attr('name', 'document-'+parseInt(form_idx)+'-doc_name');
+        $('#form_set_document').find('#id_document-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'document-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_document').find('#id_document-__'+parseInt(form_idx)+'__-document').attr('name', 'document-'+parseInt(form_idx)+'-document');
+        $('#form_set_document').find('div#id_form_document_').attr('id', 'id_form_document_'+ parseInt(form_idx));
+    });
+
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor').hide();
+        $(this).parents('.form-section, .form-floor ,.form-document').hide();
     }
 });
 
