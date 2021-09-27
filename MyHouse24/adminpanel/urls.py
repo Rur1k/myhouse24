@@ -11,6 +11,7 @@ urlpatterns = [
     #Управление сайтом
     path('website/home', views.website_home, name='website_home'),
     path('website/about', views.website_about, name='website_about'),
+    path('website/services', views.website_services, name='website_services'),
 
     # Авторизация
     path('login/', views.login_admin, name='login_admin'),

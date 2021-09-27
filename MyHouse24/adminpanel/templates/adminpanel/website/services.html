@@ -1,0 +1,100 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Редактирование страницы{% endblock %}
+{% block page_name %}Редактирование страницы{% endblock %}
+{% block mini_page_name %}Редактирование страницы{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="col-xm-12"><h3>Редактирование страницы "Услуги"</h3></div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-30">Услуги</h3>
+                <div  id="form_set_service" class="col-md-12 row near-img">
+                    {% for form in formset %}
+                    <div class="col-md-4 row form-service">
+                        <div class="col-md-12">
+                            <h4>
+                                Услуга
+                                {{ form.id }}
+                                <a href="" class="pull-right text-red delete-form">
+                                    <i class="fa fa-trash">
+                                        <div hidden="hidden">{{ form.DELETE }}</div>
+                                    </i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="col-md-12 margin-bottom-15">
+                            <img src="{% static 'img/default.jpg' %}">
+                            <label>Рекомендуемый размер: (650х300)</label>
+                            {{ form.image }}
+                        </div>
+                        <div class="col-md-12 margin-bottom-15">
+                            <label>Название услуги</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-12 margin-bottom-15">
+                            <label>Описание услуги</label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="empty_form_service" style="display:none">
+                        <div id="id_form_service_" class="col-md-4 row margin-bottom-20 form-service">
+                            <div class="col-md-12">
+                                <h4>
+                                    Услуга
+                                    <a href="" class="pull-right text-red delete-form">
+                                        <i class="fa fa-trash">
+                                            <div hidden="hidden">{{ formset.empty_form.DELETE }}</div>
+                                        </i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="col-md-12 margin-bottom-15">
+                                <img src="{% static 'img/default.jpg' %}">
+                                <label>Рекомендуемый размер: (650х300)</label>
+                                {{ formset.empty_form.image }}
+                            </div>
+                            <div class="col-md-12 margin-bottom-15">
+                                <label>Название услуги</label>
+                                {{ formset.empty_form.name }}
+                            </div>
+                            <div class="col-md-12 margin-bottom-15">
+                                <label>Описание услуги</label>
+                                {{ formset.empty_form.description }}
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    {{ seo.id }}
+                    <label>Title</label>
+                    {{ seo.seo_title }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Description</label>
+                    {{ seo.seo_description }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Keywords</label>
+                    {{ seo.keyword }}
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <a href="{% url 'website_services' %}" class="btn btn-default">Отменить</a>
+                    <input id="add_service" class="btn btn-success bg-green-active" type="button" value="Добавить услугу">
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

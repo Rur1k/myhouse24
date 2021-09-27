@@ -93,12 +93,24 @@ $('#add_document').click(function() {
         $('#form_set_document').find('div#id_form_document_').attr('id', 'id_form_document_'+ parseInt(form_idx));
     });
 
+// Добавление новых услуг
+$('#add_service').click(function() {
+        var form_idx = $('#id_service-TOTAL_FORMS').val();
+        $('#form_set_service').append($('#empty_form_service').html().replace(/prefix/g, form_idx));
+        $('#id_service-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_service').find('#id_service-__'+parseInt(form_idx)+'__-name').attr('name', 'service-'+parseInt(form_idx)+'-name');
+        $('#form_set_service').find('#id_service-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'service-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_service').find('#id_service-__'+parseInt(form_idx)+'__-description').attr('name', 'service-'+parseInt(form_idx)+'-description');
+        $('#form_set_service').find('#id_service-__'+parseInt(form_idx)+'__-image').attr('name', 'service-'+parseInt(form_idx)+'-image');
+        $('#form_set_service').find('div#id_form_service_').attr('id', 'id_form_service_'+ parseInt(form_idx));
+    });
+
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor ,.form-document').hide();
+        $(this).parents('.form-section, .form-floor, .form-document, .form-service').hide();
     }
 });
 

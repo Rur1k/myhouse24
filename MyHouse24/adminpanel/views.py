@@ -201,7 +201,7 @@ def website_about(request):
     gallery = PhotoGallery.objects.all()
     gallery_dop = PhotoDopGallery.objects.all()
     seo = SeoInfo.objects.filter(page='AboutPage').first()
-    documents = Document.objects.all();
+    documents = Document.objects.all()
     document_from = modelformset_factory(Document, form=DocumentForm, extra=0, can_delete=True)
 
     if request.method == "POST":
@@ -246,4 +246,36 @@ def website_about(request):
         'seo': seo_form,
     }
     return render(request, 'adminpanel/website/about.html', data)
+
+def website_services(request):
+    seo = SeoInfo.objects.filter(page='ServicesPage').first()
+    services = Service.objects.all()
+    services_forms = modelformset_factory(Service, form=ServiceForm, extra=0, can_delete=True)
+
+    if request.method == "POST":
+        print(request.POST)
+        formset = services_forms(request.POST, request.FILES, prefix='service', queryset=services)
+        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
+        if formset.is_valid():
+            for subform in formset:
+                if not subform.cleaned_data['DELETE']:
+                    subform.save()
+                else:
+                    if subform.cleaned_data['id'] in services:
+                        obj = subform.save(commit=False)
+                        Service.objects.filter(id=obj.id).delete()
+        if seo_form.is_valid():
+            obj = seo_form.save(commit=False)
+            obj.page = 'ServicesPage'
+            obj.save()
+        return redirect('website_services')
+    else:
+        formset = services_forms(prefix='service', queryset=services)
+        seo_form = SeoInfoForm(instance=seo)
+    data = {
+        'formset': formset,
+        'seo': seo_form,
+    }
+    return render(request, 'adminpanel/website/services.html', data)
+
 

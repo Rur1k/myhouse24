@@ -74,6 +74,12 @@ class Document(models.Model):
     doc_name = models.CharField('Название документа', max_length=64, null=True, blank=True)
 
 
+class Service(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField('Название услуги', max_length=128, null=True, blank=True)
+    description = models.TextField('Описание услуги', null=True, blank=True)
+    image = models.ImageField(upload_to='static/img/website/services', null=True, blank=True)
+
 
 class SeoInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)

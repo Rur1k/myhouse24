@@ -228,6 +228,26 @@ class DocumentForm(forms.ModelForm):
             'document': forms.ClearableFileInput(attrs={}),
         }
 
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = [
+            'id',
+            'name',
+            'description',
+            'image',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            'image': forms.ClearableFileInput(attrs={}),
+        }
+
 # SEO форма
 class SeoInfoForm(forms.ModelForm):
     class Meta:
