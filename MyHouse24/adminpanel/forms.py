@@ -248,6 +248,38 @@ class ServiceForm(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={}),
         }
 
+class TariffsPageInfoForm(forms.ModelForm):
+    class Meta:
+        model = TariffsPageInfo
+        fields = [
+            'id',
+            'title',
+            'description',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+        }
+
+class TariffsPageImagesForm(forms.ModelForm):
+    class Meta:
+        model = TariffsPageImages
+        fields = [
+            'id',
+            'file',
+            'signature',
+        ]
+        widgets = {
+            'file': forms.ClearableFileInput(attrs={}),
+            'signature': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }
+
 # SEO форма
 class SeoInfoForm(forms.ModelForm):
     class Meta:

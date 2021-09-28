@@ -87,3 +87,15 @@ class SeoInfo(models.Model):
     seo_description = models.TextField('Description', null=True, blank=True)
     keyword = models.TextField('Keywords', null=True, blank=True)
     page = models.CharField('Page', max_length=64, null=True, blank=True)
+
+
+class TariffsPageInfo(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    title = models.CharField('Title', max_length=64, null=True, blank=True)
+    description = models.TextField('Description', null=True, blank=True)
+
+
+class TariffsPageImages(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    file = models.FileField(upload_to='static/img/website/tariffs', null=True, blank=True)
+    signature = models.CharField('Подпись', max_length=128, null=True, blank=True)
