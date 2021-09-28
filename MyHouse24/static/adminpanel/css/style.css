@@ -82,7 +82,17 @@ th.sorted[data-order="1"]::after {
   content: "▲"
 }
 
+
 /* Стили к настройкам сайта */
+.hidden-edit-image a{
+    display: none;
+}
+
+
+.django-ckeditor-widget {
+    width:100%
+}
+
 .site-main-slider img {
     width: 100%;
     height: 300px;

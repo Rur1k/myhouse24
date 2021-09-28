@@ -13,6 +13,7 @@ urlpatterns = [
     path('website/about', views.website_about, name='website_about'),
     path('website/services', views.website_services, name='website_services'),
     path('website/tariffs', views.website_tariffs, name='website_tariffs'),
+    path('website/contact', views.website_contact, name='website_contact'),
 
     # Авторизация
     path('login/', views.login_admin, name='login_admin'),

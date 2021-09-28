@@ -91,7 +91,7 @@ class MainPageSliderForm(forms.ModelForm):
         widgets = {
             'slide_1': forms.ClearableFileInput(attrs={
                 'id': 'slide_1',
-                'class': 'margin-bottom-30'
+                'class': 'margin-bottom-30 form-image-upload'
             }),
             'slide_2': forms.ClearableFileInput(attrs={
                 'id': 'slide_2',
@@ -105,13 +105,12 @@ class MainPageSliderForm(forms.ModelForm):
 
 
 class MainPageInfoForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = MainPageInfo
         fields = [
             'id',
             'title',
-            # 'description',
+            'description',
             'is_apps',
         ]
 
@@ -119,9 +118,9 @@ class MainPageInfoForm(forms.ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            # 'description': forms.Textarea(attrs={
-            #     'class': 'form-control',
-            # }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-check-input',
+            }),
             'is_apps': forms.CheckboxInput(attrs={
                 'class': ''
             }),
@@ -279,6 +278,53 @@ class TariffsPageImagesForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+
+class ContactPageForm(forms.ModelForm):
+    class Meta:
+        model = ContactPage
+        fields = [
+            'id',
+            'title',
+            'description',
+            'site',
+            'fio',
+            'location',
+            'address',
+            'phone',
+            'email',
+            'code_map',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'site': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'fio': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'email': forms.TextInput(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+            'code_map': forms.Textarea(attrs={
+                'class': 'form-control margin-bottom-15',
+            }),
+        }
+
 
 # SEO форма
 class SeoInfoForm(forms.ModelForm):

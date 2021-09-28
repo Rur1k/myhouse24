@@ -41,21 +41,21 @@ class MainPageInfo(models.Model):
 class MainPageNearby(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
-    description = models.TextField('Описание', null=True, blank=True)
+    description = RichTextField('Описание', null=True, blank=True)
     image = models.ImageField(upload_to='static/img/website/nearby', null=True, blank=True)
 
 
 class AboutPageInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
-    description = models.TextField('Краткий текст', null=True, blank=True)
+    description = RichTextField('Краткий текст', null=True, blank=True)
     image = models.ImageField(upload_to='static/img/website/about', null=True, blank=True)
 
 
 class AboutPageDopInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title_dop = models.CharField('Заголовок', max_length=64, null=True, blank=True)
-    description_dop = models.TextField('Краткий текст', null=True, blank=True)
+    description_dop = RichTextField('Краткий текст', null=True, blank=True)
 
 
 class PhotoGallery(models.Model):
@@ -77,7 +77,7 @@ class Document(models.Model):
 class Service(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField('Название услуги', max_length=128, null=True, blank=True)
-    description = models.TextField('Описание услуги', null=True, blank=True)
+    description = RichTextField('Описание услуги', null=True, blank=True)
     image = models.ImageField(upload_to='static/img/website/services', null=True, blank=True)
 
 
@@ -92,10 +92,23 @@ class SeoInfo(models.Model):
 class TariffsPageInfo(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Title', max_length=64, null=True, blank=True)
-    description = models.TextField('Description', null=True, blank=True)
+    description = RichTextField('Description', null=True, blank=True)
 
 
 class TariffsPageImages(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     file = models.FileField(upload_to='static/img/website/tariffs', null=True, blank=True)
     signature = models.CharField('Подпись', max_length=128, null=True, blank=True)
+
+
+class ContactPage(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
+    description = RichTextField('Description', null=True, blank=True)
+    site = models.CharField('Коммерческий сайт', max_length=128, null=True, blank=True)
+    fio = models.CharField('ФИО', max_length=128, null=True, blank=True)
+    location = models.CharField('Локация', max_length=128, null=True, blank=True)
+    address = models.CharField('Адрес', max_length=128, null=True, blank=True)
+    phone = models.CharField('Телефон', max_length=128, null=True, blank=True)
+    email = models.CharField('e-mail', max_length=128, null=True, blank=True)
+    code_map = models.TextField('Код карты', null=True, blank=True)

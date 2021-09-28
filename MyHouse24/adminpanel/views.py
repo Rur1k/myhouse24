@@ -164,6 +164,8 @@ def website_home(request):
     num_extra = 6 - nearby.count()
     nearby_form = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=num_extra)
 
+    print(info.description)
+
     if request.method == "POST":
         print(request.POST)
         slider_form = MainPageSliderForm(request.POST, request.FILES, instance=slider)
@@ -173,6 +175,7 @@ def website_home(request):
         if slider_form.is_valid():
             slider_form.save()
         if info_form.is_valid():
+            print(info_form.cleaned_data)
             info_form.save()
         if formset.is_valid():
             formset.save()
@@ -183,11 +186,13 @@ def website_home(request):
         return redirect('website_home')
     else:
         slider_form = MainPageSliderForm(instance=slider)
+        print(slider_form)
         info_form = MainPageInfoForm(instance=info)
         nearby_formset = nearby_form(queryset=nearby)
         seo_form = SeoInfoForm(instance=seo)
 
     data = {
+        'slider': slider,
         'slider_form': slider_form,
         'info_form': info_form,
         'formset': nearby_formset,
@@ -278,7 +283,6 @@ def website_services(request):
     }
     return render(request, 'adminpanel/website/services.html', data)
 
-
 def website_tariffs(request):
     info = TariffsPageInfo.objects.all().first()
     images = TariffsPageImages.objects.all()
@@ -314,4 +318,26 @@ def website_tariffs(request):
     }
     return render(request, 'adminpanel/website/tariffs.html', data)
 
+def website_contact(request):
+    info = ContactPage.objects.all().first()
+    seo = SeoInfo.objects.filter(page='ContactPage').first()
+    if request.method == "POST":
+        print(request.POST)
+        form = ContactPageForm(request.POST, request.FILES, instance=info)
+        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
+        if form.is_valid():
+            form.save()
+        if seo_form.is_valid():
+            obj = seo_form.save(commit=False)
+            obj.page = 'ContactPage'
+            obj.save()
+        return redirect('website_contact')
+    else:
+        form = ContactPageForm(instance=info)
+        seo_form = SeoInfoForm(instance=seo)
+    data = {
+        'form': form,
+        'seo': seo_form,
+    }
+    return render(request, 'adminpanel/website/contact.html', data)
 

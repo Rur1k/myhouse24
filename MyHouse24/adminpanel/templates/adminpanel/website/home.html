@@ -11,28 +11,40 @@
             {{ formset.management_form }}
             <div class="col-xm-12"><h3>Редактирование страницы "Главная"</h3></div>
             <div class="col-xm-12 row site-main-slider">
-                <h3 class="col-md-12 margin-bottom-30">Слайдер</h3>
-                <div class="col-md-4">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Слайдер</h3>
+                <div class="col-md-4 hidden-edit-image">
                     <h4>Слайд 1</h4>
-                    <img id='img_slide_1' src="{% static 'img/default.jpg'%}" class="margin-bottom-15">
-                    <label>Рекомендуемый размер: (1920х800)</label>
+                    {% if slider_form.instance.slide_1 %}
+                    <img src="{{ slider_form.instance.slide_1.url }}" class="margin-bottom-15">
+                    {% else %}
+                    <img src="{% static 'img/default.jpg'%}" class="margin-bottom-15">
+                    {% endif %}
+                    <label>Рекомендуемый размер: (1920х800)</label><br>
                     {{ slider_form.slide_1 }}
                 </div>
                 <div class="col-md-4">
                     <h4>Слайд 2</h4>
-                    <img id='img_slide_2' src="{% static 'img/default.jpg' %}" class="margin-bottom-15">
-                    <label>Рекомендуемый размер: (1920х800)</label>
+                    {% if slider_form.instance.slide_2 %}
+                    <img src="{{ slider_form.instance.slide_2.url }}" class="margin-bottom-15">
+                    {% else %}
+                    <img src="{% static 'img/default.jpg'%}" class="margin-bottom-15">
+                    {% endif %}
+                    <label>Рекомендуемый размер: (1920х800)</label><br>
                     {{ slider_form.slide_2 }}
                 </div>
                 <div class="col-md-4">
                     <h4>Слайд 3</h4>
-                    <img id='img_slide_3' src="{% static 'img/default.jpg' %}" class="margin-bottom-15">
+                    {% if slider_form.instance.slide_3 %}
+                    <img src="{{ slider_form.instance.slide_3.url }}" class="margin-bottom-15">
+                    {% else %}
+                    <img src="{% static 'img/default.jpg'%}" class="margin-bottom-15">
+                    {% endif %}
                     <label>Рекомендуемый размер: (1920х800)</label>
                     {{ slider_form.slide_3 }}
                 </div>
             </div>
             <div class="col-xm-12 row">
-                <h3 class="col-md-12 margin-bottom-30">Краткая информация</h3>
+                <h3 class="col-md-12 margin-bottom-20 page-header">Краткая информация</h3>
                 <div class="col-md-12 margin-bottom-20">
                     <label>Заголовок</label>
                     {{ info_form.id  }}
@@ -40,10 +52,8 @@
                 </div>
                 <div class="col-md-12 margin-bottom-20">
                     <label>Краткий текст</label>
-                    <div class="col-md-12">
-                        {{ info_form.description | safe }}
-                        {{ info_form.media }}
-                    </div>
+                    {{ info_form.media }}
+                    {{ info_form.description }}
                 </div>
                 <div class="col-md-12 margin-bottom-20">
                     {{ info_form.is_apps }}
@@ -52,13 +62,17 @@
 
             </div>
             <div class="col-xm-12 row">
-                <h3 class="col-md-12 margin-bottom-30">Рядом с нами</h3>
+                <h3 class="col-md-12 margin-bottom-20 page-header">Рядом с нами</h3>
                 <div class="col-md-12 row near-img">
                     {% for form in formset %}
                     <div class="col-md-4 margin-bottom-15">
                         <h4>Блок {{ form.id }}</h4>
                         <div class="margin-bottom-15">
+                            {% if form.instance.image %}
+                            <img src="{{ form.instance.image.url }}" class="margin-bottom-15">
+                            {% else %}
                             <img src="{% static 'img/default.jpg' %}" class="margin-bottom-15">
+                            {% endif %}
                             <label>Рекомендуемый размер: (1920х800)</label>
                             {{ form.image }}
                         </div>
@@ -68,6 +82,7 @@
                         </div>
                         <div class="margin-bottom-15">
                             <label>Описание</label>
+                            {{ form.media }}
                             {{ form.description }}
                         </div>
                     </div>
@@ -75,7 +90,7 @@
                 </div>
             </div>
             <div class="col-xm-12 row">
-                <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
+                <h3 class="col-md-12 margin-bottom-20 page-header">Настройки SEO</h3>
                 <div class="col-md-12 margin-bottom-15">
                     {{ seo.id }}
                     <label>Title</label>
