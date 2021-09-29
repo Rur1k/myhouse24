@@ -97,7 +97,6 @@ def update_house(request, id):
     SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=0, can_delete=True)
     FloorFormSet = modelformset_factory(Floor, form=FloorForm, extra=0, can_delete=True)
 
-    print(sections)
     if request.method == "POST":
         print(request.POST)
         house_form = HouseForm(request.POST, request.FILES, instance=house_data)
@@ -141,6 +140,12 @@ def update_house(request, id):
         'floors': floors_form,
     }
     return render(request, 'adminpanel/house/update.html', data)
+
+def delete_house(request, id):
+    obj = House.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    return redirect('house')
 
 def info_house(request, id):
     house = House.objects.get(id=id)
@@ -247,6 +252,18 @@ def website_about(request):
         'seo': seo_form,
     }
     return render(request, 'adminpanel/website/about.html', data)
+
+def website_about_delete_photo(request, id):
+    obj = PhotoGallery.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    return redirect('website_about')
+
+def website_about_delete_dopphoto(request, id):
+    obj = PhotoDopGallery.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    return redirect('website_about')
 
 def website_services(request):
     seo = SeoInfo.objects.filter(page='ServicesPage').first()

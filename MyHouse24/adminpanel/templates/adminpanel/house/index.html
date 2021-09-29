@@ -42,7 +42,7 @@
                                 <a class="btn btn-default btn-sm" href="{% url 'update_house' house.id %}" title="Редактировать" data-toggle="tooltip">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                                <a class="btn btn-default btn-sm" href="#" title="Удалить" data-toggle="tooltip">
+                                <a class="btn btn-default btn-sm" href="{% url 'delete_house' house.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

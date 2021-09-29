@@ -126,5 +126,12 @@ $(document).on('click', '.delete-form', function(e){
     }
 });
 
+function confirmDelete(){
+    if(confirm("Вы уверены, что хотите удалить этот элемент?")){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 

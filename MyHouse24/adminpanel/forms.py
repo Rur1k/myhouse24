@@ -344,8 +344,10 @@ class SeoInfoForm(forms.ModelForm):
             }),
             'seo_description': forms.Textarea(attrs={
                 'class': 'form-control',
+                'style': 'resize: none',
             }),
             'keyword': forms.Textarea(attrs={
                 'class': 'form-control',
+                'style': 'resize: none',
             }),
         }

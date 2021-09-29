@@ -11,7 +11,7 @@
             {{ formset.management_form }}
             <div class="col-xm-12"><h3>Редактирование страницы "Услуги"</h3></div>
             <div class="col-xm-12 row margin-bottom-30">
-                <h3 class="col-md-12 margin-bottom-30">Услуги</h3>
+                <h3 class="col-md-12 margin-bottom-20 page-header">Услуги</h3>
                 <div  id="form_set_service" class="col-md-12 row near-img">
                     {% for form in formset %}
                     <div class="col-md-4 row form-service">
@@ -27,7 +27,11 @@
                             </h4>
                         </div>
                         <div class="col-md-12 margin-bottom-15">
+                            {% if form.instance.image %}
+                            <img src="{{ form.instance.image.url }}">
+                            {% else %}
                             <img src="{% static 'img/default.jpg' %}">
+                            {% endif %}
                             <label>Рекомендуемый размер: (650х300)</label>
                             {{ form.image }}
                         </div>
@@ -74,7 +78,7 @@
             </div>
 
             <div class="col-xm-12 row margin-bottom-30">
-                <h3 class="col-md-12 margin-bottom-30">Настройки SEO</h3>
+                <h3 class="col-md-12 margin-bottom-20 page-header">Настройки SEO</h3>
                 <div class="col-md-12 margin-bottom-15">
                     {{ seo.id }}
                     <label>Title</label>
