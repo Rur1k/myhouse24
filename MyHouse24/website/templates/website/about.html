@@ -1,0 +1,35 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}О нас{% endblock %}
+{% block content %}
+
+<div class="col-md-12 row indentation-block">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">Главная</a></li>
+            <li class="active">
+                О нас
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="col-md-12 row indentation-block about">
+    <div class="col-md-12">
+        <div class="box clearfix">
+            <div class="page-header">
+                <h1>{{ info.title }}</h1>
+            </div>
+            <img src="{{ info.image.url }}" class="img-responsive imgFloatRight">
+            {{ info.description | safe }}
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 row indentation-block">
+    <div class="page-header col-md-12">
+            <h1>Дополнительные услуги</h1>
+    </div>
+</div>
+
+{% endblock %}

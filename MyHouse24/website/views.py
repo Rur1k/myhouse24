@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from adminpanel.models import MainPageSlider, MainPageInfo, MainPageNearby, ContactPage
+from adminpanel.models import MainPageSlider, MainPageInfo, MainPageNearby, ContactPage, AboutPageInfo
 
 def main(request):
     data = {
@@ -9,3 +9,9 @@ def main(request):
         'contact': ContactPage.objects.all().first()
     }
     return render(request, 'website/index.html', data)
+
+def about(request):
+    data = {
+        'info': AboutPageInfo.objects.all().first()
+    }
+    return render(request, 'website/about.html', data)
