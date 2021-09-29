@@ -164,8 +164,6 @@ def website_home(request):
     num_extra = 6 - nearby.count()
     nearby_form = modelformset_factory(MainPageNearby, form=MainPageNearbyForm, extra=num_extra)
 
-    print(info.description)
-
     if request.method == "POST":
         print(request.POST)
         slider_form = MainPageSliderForm(request.POST, request.FILES, instance=slider)
@@ -186,13 +184,11 @@ def website_home(request):
         return redirect('website_home')
     else:
         slider_form = MainPageSliderForm(instance=slider)
-        print(slider_form)
         info_form = MainPageInfoForm(instance=info)
         nearby_formset = nearby_form(queryset=nearby)
         seo_form = SeoInfoForm(instance=seo)
 
     data = {
-        'slider': slider,
         'slider_form': slider_form,
         'info_form': info_form,
         'formset': nearby_formset,

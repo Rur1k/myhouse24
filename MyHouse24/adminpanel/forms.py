@@ -37,19 +37,19 @@ class HouseForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Адрес'
             }),
-            'image_1': forms.ClearableFileInput(attrs={
+            'image_1': forms.FileInput(attrs={
                 'id': 'image_1',
             }),
-            'image_2': forms.ClearableFileInput(attrs={
+            'image_2': forms.FileInput(attrs={
                 'class id': 'image_2',
             }),
-            'image_3': forms.ClearableFileInput(attrs={
+            'image_3': forms.FileInput(attrs={
                 'class id': 'image_3',
             }),
-            'image_4': forms.ClearableFileInput(attrs={
+            'image_4': forms.FileInput(attrs={
                 'class id': 'image_4',
             }),
-            'image_5': forms.ClearableFileInput(attrs={
+            'image_5': forms.FileInput(attrs={
                 'class id': 'image_5',
             }),
         }
@@ -89,15 +89,15 @@ class MainPageSliderForm(forms.ModelForm):
         ]
 
         widgets = {
-            'slide_1': forms.ClearableFileInput(attrs={
+            'slide_1': forms.FileInput(attrs={
                 'id': 'slide_1',
                 'class': 'margin-bottom-30 form-image-upload'
             }),
-            'slide_2': forms.ClearableFileInput(attrs={
+            'slide_2': forms.FileInput(attrs={
                 'id': 'slide_2',
                 'class': 'margin-bottom-30'
             }),
-            'slide_3': forms.ClearableFileInput(attrs={
+            'slide_3': forms.FileInput(attrs={
                 'id': 'slide_3',
                 'class': 'margin-bottom-30'
             }),
@@ -144,7 +144,7 @@ class MainPageNearbyForm(forms.ModelForm):
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
-            'image': forms.ClearableFileInput(attrs={}),
+            'image': forms.FileInput(attrs={}),
         }
 
 
@@ -165,7 +165,7 @@ class AboutPageInfoForm(forms.ModelForm):
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
-            'image': forms.ClearableFileInput(attrs={}),
+            'image': forms.FileInput(attrs={}),
         }
 
 
@@ -196,7 +196,7 @@ class PhotoGalleryForm(forms.ModelForm):
             'photo',
         ]
         widgets = {
-            'photo': forms.ClearableFileInput(attrs={}),
+            'photo': forms.FileInput(attrs={}),
         }
 
 
@@ -208,7 +208,7 @@ class PhotoDopGalleryForm(forms.ModelForm):
             'photo_dop',
         ]
         widgets = {
-            'photo_dop': forms.ClearableFileInput(attrs={}),
+            'photo_dop': forms.FileInput(attrs={}),
         }
 
 
@@ -224,7 +224,7 @@ class DocumentForm(forms.ModelForm):
             'doc_name': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'document': forms.ClearableFileInput(attrs={}),
+            'document': forms.FileInput(attrs={}),
         }
 
 
@@ -244,7 +244,7 @@ class ServiceForm(forms.ModelForm):
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
-            'image': forms.ClearableFileInput(attrs={}),
+            'image': forms.FileInput(attrs={}),
         }
 
 class TariffsPageInfoForm(forms.ModelForm):
@@ -273,7 +273,7 @@ class TariffsPageImagesForm(forms.ModelForm):
             'signature',
         ]
         widgets = {
-            'file': forms.ClearableFileInput(attrs={}),
+            'file': forms.FileInput(attrs={}),
             'signature': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
