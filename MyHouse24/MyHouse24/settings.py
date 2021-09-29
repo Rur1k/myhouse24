@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import ckeditor
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,12 +123,11 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'Custom',
         'height': 250,
         'width': '100%',
-        'resizeble': CKEDITOR.DIALOG_RESIZE_NONE,
+        'resize_maxHeight': 250,
         'toolbar_Custom': [
             ['Format'],
             ['Bold', 'Italic', 'Underline'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
-
         ]
     }
 }
