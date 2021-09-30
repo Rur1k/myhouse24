@@ -3,8 +3,8 @@
 {% block title %}О нас{% endblock %}
 {% block content %}
 
-<div class="col-md-12 row indentation-block">
-    <div class="col-md-12">
+<div class="col-md-12 row">
+    <div class="container">
         <ol class="breadcrumb">
             <li><a href="/">Главная</a></li>
             <li class="active">
@@ -14,9 +14,9 @@
     </div>
 </div>
 
-<div class="col-md-12 row indentation-block about">
+<div class="col-md-12 row about">
     <div class="col-md-12">
-        <div class="box clearfix">
+        <div class="container">
             <div class="page-header">
                 <h1>{{ info.title }}</h1>
             </div>
@@ -25,10 +25,25 @@
         </div>
     </div>
 </div>
+<div class="gallery g1">
+    <div class="container">
+        <div class="row">
+            {% for photo in gallery %}
+            <div class="col-md-3 item">
+                <a class="thumbnail fancybox" rel="ligthbox" href="{{ photo.photo.url }}">
+                    <img src="{{ photo.photo.url }}" class="img-responsive img-thumbnail">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
-<div class="col-md-12 row indentation-block">
-    <div class="page-header col-md-12">
+<div class="col-md-12 row">
+    <div class="container">
+        <div class="page-header col-md-12">
             <h1>Дополнительные услуги</h1>
+        </div>
     </div>
 </div>
 

@@ -296,40 +296,6 @@ def website_services(request):
     }
     return render(request, 'adminpanel/website/services.html', data)
 
-def website_tariffs(request):
-    info = TariffsPageInfo.objects.all().first()
-    images = TariffsPageImages.objects.all()
-    images_forms = modelformset_factory(TariffsPageImages, form=TariffsPageImagesForm, extra=0, can_delete=True)
-    seo = SeoInfo.objects.filter(page='TariffsPage').first()
-    if request.method == "POST":
-        print(request.POST)
-        info_form = TariffsPageInfoForm(request.POST, request.FILES, instance=info)
-        formset = images_forms(request.POST, request.FILES, prefix='image', queryset=images)
-        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
-        if info_form.is_valid(): info_form.save()
-        if formset.is_valid():
-            for subform in formset:
-                if not subform.cleaned_data['DELETE']:
-                    subform.save()
-                else:
-                    if subform.cleaned_data['id'] in images:
-                        obj = subform.save(commit=False)
-                        TariffsPageImages.objects.filter(id=obj.id).delete()
-        if seo_form.is_valid():
-            obj = seo_form.save(commit=False)
-            obj.page = 'TariffsPage'
-            obj.save()
-        return redirect('website_tariffs')
-    else:
-        info_form = TariffsPageInfoForm(instance=info)
-        formset = images_forms(prefix='image', queryset=images)
-        seo_form = SeoInfoForm(instance=seo)
-    data = {
-        'info_form': info_form,
-        'formset': formset,
-        'seo': seo_form,
-    }
-    return render(request, 'adminpanel/website/tariffs.html', data)
 
 def website_contact(request):
     info = ContactPage.objects.all().first()

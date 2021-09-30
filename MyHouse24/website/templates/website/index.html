@@ -37,68 +37,72 @@
     </a>
 </div>
 
-<div class="col-md-12 row indentation-block">
-    <div class="col-md-8">
-        <div class="page-header">
-            <h1>{{ info.title }}</h1>
-        </div>
-        <div class="box">
-            {{ info.description | safe }}
-            <div class="row" style="padding-top: 15px">
-                <div class="col-xs-4"><a href="{% url 'web_site_about' %}" class="btn btn-primary">Подробнее</a></div>
-                <div class="col-xs-8 text-right">
-                    {% if info.is_apps %}
-                    <a href="#"><img src="{% static 'website/img/app-store.png' %}"></a>
-                    <a href="#"><img src="{% static 'website/img/google-play.png' %}"></a>
-                    {% endif %}
+<div class="col-md-12 row ">
+    <div class="container">
+        <div class="col-md-8">
+            <div class="page-header">
+                <h1>{{ info.title }}</h1>
+            </div>
+            <div class="box">
+                {{ info.description | safe }}
+                <div class="row" style="padding-top: 15px">
+                    <div class="col-xs-4"><a href="{% url 'web_site_about' %}" class="btn btn-primary">Подробнее</a></div>
+                    <div class="col-xs-8 text-right">
+                        {% if info.is_apps %}
+                        <a href="#"><img src="{% static 'website/img/app-store.png' %}"></a>
+                        <a href="#"><img src="{% static 'website/img/google-play.png' %}"></a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="page-header">
-            <h1>Контакты</h1>
-        </div>
-        <div class="box">
-            <p>
-                <i class="fa fa-user-circle"></i>
-                {{ contact.fio }}
-            </p>
-            <p>
-                <i class="fa fa-compass"></i>
-                {{ contact.address }}
-            </p>
-            <p>
-                <i class="fa fa-map-marker"></i>
-                {{ contact.location }}
-            </p>
-            <p>
-                <i class="fa fa-phone"></i>
-                {{ contact.phone }}
-            </p>
-            <p>
-                <i class="fa fa-envelope"></i>
-                {{ contact.email }}
-            </p>
+        <div class="col-md-4">
+            <div class="page-header">
+                <h1>Контакты</h1>
+            </div>
+            <div class="box">
+                <p>
+                    <i class="fa fa-user-circle"></i>
+                    {{ contact.fio }}
+                </p>
+                <p>
+                    <i class="fa fa-compass"></i>
+                    {{ contact.address }}
+                </p>
+                <p>
+                    <i class="fa fa-map-marker"></i>
+                    {{ contact.location }}
+                </p>
+                <p>
+                    <i class="fa fa-phone"></i>
+                    {{ contact.phone }}
+                </p>
+                <p>
+                    <i class="fa fa-envelope"></i>
+                    {{ contact.email }}
+                </p>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="col-md-12 row indentation-block">
-    <div class="page-header col-md-12">
-            <h1>Рядом с нами</h1>
-    </div>
-    {% for obj in nearby %}
-    <div class="col-md-4 advantage-item">
-        <div class="thumbnail">
-            <img src="{{ obj.image }}">
-            <div class="caption">
-                <h3>{{ obj.title }}</h3>
-                {{ obj.description | safe }}
+<div class="col-md-12 row">
+    <div class="container">
+        <div class="page-header col-md-12">
+                <h1>Рядом с нами</h1>
+        </div>
+        {% for obj in nearby %}
+        <div class="col-md-4 advantage-item">
+            <div class="thumbnail">
+                <img src="{{ obj.image }}">
+                <div class="caption">
+                    <h3>{{ obj.title }}</h3>
+                    {{ obj.description | safe }}
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 {% endblock %}
