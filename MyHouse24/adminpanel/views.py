@@ -222,7 +222,9 @@ def website_about(request):
         if gallery_from.is_valid() and gallery_from.cleaned_data['photo']: gallery_from.save()
         if gallery_dop_form.is_valid() and gallery_dop_form.cleaned_data['photo_dop']: gallery_dop_form.save()
         if dop_info_form.is_valid(): dop_info_form.save()
+
         if formset.is_valid():
+            print(formset.cleaned_data)
             for subform in formset:
                 if not subform.cleaned_data['DELETE']:
                     subform.save()
@@ -230,6 +232,9 @@ def website_about(request):
                     if subform.cleaned_data['id'] in documents:
                         obj = subform.save(commit=False)
                         Document.objects.filter(id=obj.id).delete()
+        else:
+            print('Формсет не валидный')
+
         if seo_form.is_valid():
             obj = seo_form.save(commit=False)
             obj.page = 'AboutPage'
