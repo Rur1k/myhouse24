@@ -93,7 +93,7 @@ class ContactPage(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     title = models.CharField('Заголовок', max_length=64, null=True, blank=True)
     description = RichTextField('Description', null=True, blank=True)
-    site = models.CharField('Коммерческий сайт', max_length=128, null=True, blank=True)
+    site = models.URLField('Коммерческий сайт', max_length=200, null=True, blank=True)
     fio = models.CharField('ФИО', max_length=128, null=True, blank=True)
     location = models.CharField('Локация', max_length=128, null=True, blank=True)
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)

@@ -26,3 +26,9 @@ def services(request):
         'services': Service.objects.all()
     }
     return render(request, 'website/services.html', data)
+
+def contact(request):
+    data = {
+        'contact': ContactPage.objects.all().first()
+    }
+    return render(request, 'website/contact.html', data)

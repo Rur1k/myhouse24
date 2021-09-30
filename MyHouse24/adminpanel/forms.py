@@ -291,6 +291,7 @@ class ContactPageForm(forms.ModelForm):
             }),
             'code_map': forms.Textarea(attrs={
                 'class': 'form-control margin-bottom-15',
+                'style': 'resize: none',
             }),
         }
 
