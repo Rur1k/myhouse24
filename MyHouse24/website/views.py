@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from adminpanel.models import MainPageSlider, MainPageInfo, MainPageNearby, ContactPage, AboutPageInfo, PhotoGallery, \
-    PhotoDopGallery, Document
+    PhotoDopGallery, Document, AboutPageDopInfo, Service
 
 def main(request):
     data = {
@@ -14,7 +14,15 @@ def main(request):
 def about(request):
     data = {
         'info': AboutPageInfo.objects.all().first(),
+        'dop_info': AboutPageDopInfo.objects.all().first(),
         'gallery': PhotoGallery.objects.all(),
-        'dop_gallery': PhotoDopGallery.objects.all()
+        'dop_gallery': PhotoDopGallery.objects.all(),
+        'document': Document.objects.all()
     }
     return render(request, 'website/about.html', data)
+
+def services(request):
+    data = {
+        'services': Service.objects.all()
+    }
+    return render(request, 'website/services.html', data)

@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div class="col-md-12 row about">
+<div class="col-md-12 row about margin-bottom-30">
     <div class="col-md-12">
         <div class="container">
             <div class="page-header">
@@ -41,13 +41,55 @@
     </div>
 </div>
 
-<div class="col-md-12 row">
+<div class="col-md-12 row about margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>{{ dop_info.title_dop }}</h1>
+            </div>
+            {{ dop_info.description_dop | safe }}
+        </div>
+    </div>
+</div>
+<div class="gallery g2">
     <div class="container">
-        <div class="page-header col-md-12">
-            <h1>Дополнительные услуги</h1>
+        <div class="tz-gallery">
+            <div class="row">
+                {% for photo in dop_gallery %}
+                <div class="col-md-3 item">
+                    <a class="lightbox" href="{{ photo.photo_dop.url }}">
+                        <img src="{{ photo.photo_dop.url }}" class="img-responsive img-thumbnail">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
 
+<div class="col-md-12 row document margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>Документы</h1>
+            </div>
+            {% for doc in document %}
+            <div class="media">
+                <div class="media-left">
+                    <div class="media-object">
+                        <i class="fa fa-file fa-3x"></i>
+                    </div>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">{{ doc.doc_name }}</h4>
+                    <a href="{{ doc.document.url }}" download>
+                        <i class="fa fa-download" aria-hidden="true">Скачать</i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
 {% endblock %}
