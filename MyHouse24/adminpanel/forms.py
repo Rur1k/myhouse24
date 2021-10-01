@@ -95,7 +95,7 @@ class SettingServiceForm(forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
-            'unit': forms.Select(choices='Выберите...', attrs={
+            'unit': forms.Select(attrs={
                 'class': 'form-control'
             }),
             'is_counter': forms.CheckboxInput(attrs={

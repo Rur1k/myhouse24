@@ -126,15 +126,29 @@ $('#add_serviceunit').click(function() {
         $('#form_set_serviceunit').find('div#id_form_serviceunit_').attr('id', 'id_form_serviceunit_'+ parseInt(form_idx));
     });
 
+// Добавление новых услуг
+$('#add_setting_service').click(function() {
+        var form_idx = $('#id_setting_service-TOTAL_FORMS').val();
+        $('#form_set_setting_service').append($('#empty_form_setting_service').html().replace(/prefix/g, form_idx));
+        $('#id_setting_service-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-unit').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-unit');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-name').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-name');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-is_counter').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-is_counter');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'setting_service-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_setting_service').find('div#id_form_setting_service_').attr('id', 'id_form_setting_service_'+ parseInt(form_idx));
+    });
+
 
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit').hide();
+        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service').hide();
     }
 });
+
+
 
 function confirmDelete(){
     if(confirm("Вы уверены, что хотите удалить этот элемент?")){

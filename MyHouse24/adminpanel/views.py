@@ -182,7 +182,7 @@ def info_house(request, id):
 def setting_service(request):
     units = ServiceUnit.objects.all()
     services = SettingService.objects.all()
-    services_form = modelformset_factory(SettingService, form=SettingServiceForm, extra=1, can_delete=True)
+    services_form = modelformset_factory(SettingService, form=SettingServiceForm, extra=0, can_delete=True)
     units_form = modelformset_factory(ServiceUnit, form=ServiceUnitForm, extra=0, can_delete=True)
 
     if request.method == "POST":
@@ -197,8 +197,6 @@ def setting_service(request):
                         if subform.cleaned_data['id'] in services:
                             obj = subform.save(commit=False)
                             SettingService.objects.filter(id=obj.id).delete()
-                else:
-                    subform.save()
         if units_formset.is_valid():
             for subform in units_formset:
                 if 'DELETE' in subform.cleaned_data:
