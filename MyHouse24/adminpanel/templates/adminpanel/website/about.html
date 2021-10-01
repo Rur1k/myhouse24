@@ -7,6 +7,7 @@
 <div class="box">
     <div class="box-body">
         <form method="post" action="" enctype="multipart/form-data">
+            <div class="container col-md-12">
             {% csrf_token %}
             {{ formset.management_form }}
             <div class="col-xm-12"><h3>Редактирование страницы "О нас"</h3></div>
@@ -94,7 +95,11 @@
                                         <div hidden="hidden">{{ form.DELETE }}</div>
                                     </i>
                                 </a>
-                                <i class="fa fa-file-o fa-3x pull-left" style="width: 32px"></i>
+                                {% if ".pdf" in form.instance.document.url %}
+                                <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px"></i>
+                                {% else  %}
+                                <img src="{{ form.instance.document.url }}" class="pull-left" width="15%" height="15%" style="margin:1%">
+                                {% endif %}
                                 <label>PDF, JPG (макс. размер 20 Mb)</label>
                                 {{ form.id }}
                                 {{ form.document }}
@@ -150,6 +155,7 @@
                     <a href="{% url 'house' %}" class="btn btn-default">Отменить</a>
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </div>
+            </div>
             </div>
         </form>
     </div>

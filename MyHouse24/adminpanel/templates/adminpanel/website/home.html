@@ -7,6 +7,7 @@
 <div class="box">
     <div class="box-body">
         <form method="post" action="" enctype="multipart/form-data">
+            <div class="container col-md-12">
             {% csrf_token %}
             {{ formset.management_form }}
             <div class="col-xm-12"><h3>Редактирование страницы "Главная"</h3></div>
@@ -110,6 +111,7 @@
                     <a href="{% url 'house' %}" class="btn btn-default">Отменить</a>
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </div>
+            </div>
             </div>
         </form>
     </div>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
 
 # import magic
@@ -60,6 +61,13 @@ from ckeditor.fields import RichTextField
 # validate_document = FileValidator(max_size=1024*20, content_type=('jpg',))
 
 # Модели
+
+def file_size(value):
+    limit = 20 * 1024 * 1024
+    if value.size > limit:
+        raise ValidationError('Файл привышает допустимый размер!')
+
+
 class House(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField('Название', max_length=64, null=True, blank=True)
@@ -130,7 +138,7 @@ class PhotoDopGallery(models.Model):
 class Document(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     document = models.FileField(upload_to='static/img/website/document', null=True, blank=True,
-                                validators=[FileExtensionValidator(allowed_extensions=['jpg','pdf'])])
+                                validators=[file_size, FileExtensionValidator(allowed_extensions=['jpg','pdf'])])
     doc_name = models.CharField(default='', max_length=64, null=True, blank=True)
 
 

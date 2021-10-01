@@ -4,9 +4,21 @@
 {% block page_name %}Редактирование страницы{% endblock %}
 {% block mini_page_name %}Редактирование страницы{% endblock %}
 {% block content %}
+{% if message %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    <!--<script>-->
+    <!--    alert('{{ message }}')-->
+    <!--</script>-->
+{% endif %}
 <div class="box">
     <div class="box-body">
         <form method="post" action="" enctype="multipart/form-data">
+            <div class="container col-md-12">
             {% csrf_token %}
             {{ formset.management_form }}
             <div class="col-xm-12"><h3>Редактирование страницы "Услуги"</h3></div>
@@ -99,6 +111,7 @@
                     <input id="add_service" class="btn btn-success bg-green-active" type="button" value="Добавить услугу">
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </div>
+            </div>
             </div>
         </form>
     </div>

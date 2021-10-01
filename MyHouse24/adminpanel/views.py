@@ -271,35 +271,54 @@ def website_about_delete_dopphoto(request, id):
     return redirect('website_about')
 
 def website_services(request):
-    seo = SeoInfo.objects.filter(page='ServicesPage').first()
-    services = Service.objects.all()
-    services_forms = modelformset_factory(Service, form=ServiceForm, extra=0, can_delete=True)
+    try:
+        seo = SeoInfo.objects.filter(page='ServicesPage').first()
+        services = Service.objects.all()
+        services_forms = modelformset_factory(Service, form=ServiceForm, extra=0, can_delete=True)
 
-    if request.method == "POST":
-        print(request.POST)
-        formset = services_forms(request.POST, request.FILES, prefix='service', queryset=services)
-        seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
-        if formset.is_valid():
-            for subform in formset:
-                if not subform.cleaned_data['DELETE']:
-                    subform.save()
-                else:
-                    if subform.cleaned_data['id'] in services:
-                        obj = subform.save(commit=False)
-                        Service.objects.filter(id=obj.id).delete()
-        if seo_form.is_valid():
-            obj = seo_form.save(commit=False)
-            obj.page = 'ServicesPage'
-            obj.save()
-        return redirect('website_services')
-    else:
+        if request.method == "POST":
+            print(request.POST)
+            formset = services_forms(request.POST, request.FILES, prefix='service', queryset=services)
+            seo_form = SeoInfoForm(request.POST, request.FILES, instance=seo)
+            if formset.is_valid():
+                for subform in formset:
+                    if not subform.cleaned_data['DELETE']:
+                        subform.save()
+                    else:
+                        if subform.cleaned_data['id'] in services:
+                            obj = subform.save(commit=False)
+                            Service.objects.filter(id=obj.id).delete()
+            if seo_form.is_valid():
+                obj = seo_form.save(commit=False)
+                obj.page = 'ServicesPage'
+                obj.save()
+            return redirect('website_services')
+        else:
+            formset = services_forms(prefix='service', queryset=services)
+            seo_form = SeoInfoForm(instance=seo)
+        data = {
+            'formset': formset,
+            'seo': seo_form,
+        }
+        return render(request, 'adminpanel/website/services.html', data)
+    except Exception:
+        seo = SeoInfo.objects.filter(page='ServicesPage').first()
+        services = Service.objects.all()
+        services_forms = modelformset_factory(Service, form=ServiceForm, extra=0, can_delete=True)
+
         formset = services_forms(prefix='service', queryset=services)
         seo_form = SeoInfoForm(instance=seo)
-    data = {
-        'formset': formset,
-        'seo': seo_form,
-    }
-    return render(request, 'adminpanel/website/services.html', data)
+
+        message = 'Вы попытались сохранить пустую форму с услугой. Форма не сохранена!'
+
+        data = {
+            'formset': formset,
+            'seo': seo_form,
+            'message': message,
+        }
+        print('Ошибка валиддации однйо из форм, данные не сохранены')
+
+        return render(request, 'adminpanel/website/services.html', data)
 
 
 def website_contact(request):

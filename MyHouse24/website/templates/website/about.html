@@ -77,7 +77,11 @@
             <div class="media">
                 <div class="media-left">
                     <div class="media-object">
-                        <i class="fa fa-file fa-3x"></i>
+                        {% if ".pdf" in doc.document.url %}
+                        <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px"></i>
+                        {% else  %}
+                        <i class="fa fa-file-image-o fa-3x pull-left" style="width: 32px"></i>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="media-body">
