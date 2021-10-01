@@ -3,71 +3,13 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
 
-# import magic
-#
-# from django.utils.deconstruct import deconstructible
-# from django.template.defaultfilters import filesizeformat
-#
-# # Валидатор для файлов
-# @deconstructible
-# class FileValidator(object):
-#     error_messages = {
-#      'max_size': ("Ensure this file size is not greater than %(max_size)s."
-#                   " Your file size is %(size)s."),
-#      'min_size': ("Ensure this file size is not less than %(min_size)s. "
-#                   "Your file size is %(size)s."),
-#      'content_type': "Files of type %(content_type)s are not supported.",
-#     }
-#
-#     def init(self, max_size=None, min_size=None, content_types=()):
-#         self.max_size = max_size
-#         self.min_size = min_size
-#         self.content_types = content_types
-#
-#     def call(self, data):
-#         if self.max_size is not None and data.size > self.max_size:
-#             params = {
-#                 'max_size': filesizeformat(self.max_size),
-#                 'size': filesizeformat(data.size),
-#             }
-#             raise ValidationError(self.error_messages['max_size'],
-#                                    'max_size', params)
-#
-#         if self.min_size is not None and data.size < self.min_size:
-#             params = {
-#                 'min_size': filesizeformat(self.min_size),
-#                 'size': filesizeformat(data.size)
-#             }
-#             raise ValidationError(self.error_messages['min_size'],
-#                                    'min_size', params)
-#
-#         if self.content_types:
-#             content_type = magic.from_buffer(data.read(), mime=True)
-#             data.seek(0)
-#
-#             if content_type not in self.content_types:
-#                 params = { 'content_type': content_type }
-#                 raise ValidationError(self.error_messages['content_type'],
-#                                    'content_type', params)
-#
-#     def eq(self, other):
-#         return (
-#             isinstance(other, FileValidator) and
-#             self.max_size == other.max_size and
-#             self.min_size == other.min_size and
-#             self.content_types == other.content_types
-#         )
-#
-# validate_document = FileValidator(max_size=1024*20, content_type=('jpg',))
-
-# Модели
-
-def file_size(value):
+# Дополнительные функции для работы с моделями
+def file_size(value): # Функция которая расчитывает максимальный размер файла для модели "Document"
     limit = 20 * 1024 * 1024
     if value.size > limit:
         raise ValidationError('Файл привышает допустимый размер!')
 
-
+# Модели для домов
 class House(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField('Название', max_length=64, null=True, blank=True)
@@ -89,6 +31,24 @@ class Floor(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=64)
+
+
+# Модели для настроек системы
+class ServiceUnit(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    unit = models.CharField(max_length=128, null=True, blank=True)
+
+    def __str__(self):
+        return self.unit
+
+class SettingService(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+    unit = models.ForeignKey(ServiceUnit, on_delete=models.CASCADE, null=True, blank=True)
+    is_counter = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 # Модели для наполнения веб-сайта
 class MainPageSlider(models.Model):

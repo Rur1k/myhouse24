@@ -63,8 +63,12 @@ def create_house(request):
             # Сохранение секций дома
             if form_section.is_valid():
                 for subform in form_section:
-                    if not subform.cleaned_data['DELETE']:
-                        print(subform.cleaned_data)
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = form.save(commit=False)
+                            obj.save()
+                    else:
                         obj = subform.save(commit=False)
                         obj.house = form.save(commit=False)
                         obj.save()
@@ -73,7 +77,12 @@ def create_house(request):
             # Сохранение этажей
             if form_floor.is_valid():
                 for subform in form_floor:
-                    if not subform.cleaned_data['DELETE']:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = form.save(commit=False)
+                            obj.save()
+                    else:
                         obj = subform.save(commit=False)
                         obj.house = form.save(commit=False)
                         obj.save()
@@ -108,26 +117,35 @@ def update_house(request, id):
             # Редактирование/Добавление/Удаление секций
             if section_formset.is_valid():
                 for subform in section_formset:
-                    if not subform.cleaned_data['DELETE']:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = house_form.save(commit=False)
+                            obj.save()
+                        else:
+                            if subform.cleaned_data['id'] in sections:
+                                obj = subform.save(commit=False)
+                                Section.objects.filter(id=obj.id).delete()
+                    else:
                         obj = subform.save(commit=False)
                         obj.house = house_form.save(commit=False)
                         obj.save()
-                    else:
-                        if subform.cleaned_data['id'] in sections:
-                            obj = subform.save(commit=False)
-                            Section.objects.filter(id=obj.id).delete()
             # Редактирование/Добавление/Удаление этажей
             if floor_formset.is_valid():
                 for subform in floor_formset:
-                    if not subform.cleaned_data['DELETE']:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = house_form.save(commit=False)
+                            obj.save()
+                        else:
+                            if subform.cleaned_data['id'] in floors:
+                                obj = subform.save(commit=False)
+                                Floor.objects.filter(id=obj.id).delete()
+                    else:
                         obj = subform.save(commit=False)
                         obj.house = house_form.save(commit=False)
                         obj.save()
-                    else:
-
-                        if subform.cleaned_data['id'] in floors:
-                            obj = subform.save(commit=False)
-                            Floor.objects.filter(id=obj.id).delete()
         return redirect('info_house', id=id)
     else:
         house_form = HouseForm(instance=house_data)
@@ -159,6 +177,50 @@ def info_house(request, id):
         'floors': count_floor,
     }
     return render(request, "adminpanel/house/info.html", data)
+
+# Настройки системы
+def setting_service(request):
+    units = ServiceUnit.objects.all()
+    services = SettingService.objects.all()
+    services_form = modelformset_factory(SettingService, form=SettingServiceForm, extra=1, can_delete=True)
+    units_form = modelformset_factory(ServiceUnit, form=ServiceUnitForm, extra=0, can_delete=True)
+
+    if request.method == "POST":
+        units_formset = units_form(request.POST, request.FILES, prefix='serviceunit', queryset=units)
+        services_formset = services_form(request.POST, request.FILES, prefix='setting_service', queryset=services)
+        if services_formset.is_valid():
+            for subform in services_formset:
+                if 'DELETE' in subform.cleaned_data:
+                    if not subform.cleaned_data['DELETE']:
+                        subform.save()
+                    else:
+                        if subform.cleaned_data['id'] in services:
+                            obj = subform.save(commit=False)
+                            SettingService.objects.filter(id=obj.id).delete()
+                else:
+                    subform.save()
+        if units_formset.is_valid():
+            for subform in units_formset:
+                if 'DELETE' in subform.cleaned_data:
+                    if not subform.cleaned_data['DELETE']:
+                        subform.save()
+                    else:
+                        if subform.cleaned_data['id'] in units:
+                            obj = subform.save(commit=False)
+                            ServiceUnit.objects.filter(id=obj.id).delete()
+                else:
+                    subform.save()
+        return redirect('setting_service')
+    else:
+        services_formset = services_form(prefix='setting_service', queryset=services)
+        units_formset = units_form(prefix='serviceunit', queryset=units)
+
+    data = {
+        'services_formset': services_formset,
+        'units_formset': units_formset
+    }
+    return render(request, 'adminpanel/settings/service.html', data)
+
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
@@ -319,7 +381,6 @@ def website_services(request):
         print('Ошибка валиддации однйо из форм, данные не сохранены')
 
         return render(request, 'adminpanel/website/services.html', data)
-
 
 def website_contact(request):
     info = ContactPage.objects.all().first()

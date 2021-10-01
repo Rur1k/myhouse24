@@ -9,13 +9,15 @@ urlpatterns = [
     path('house/<int:id>', views.info_house, name='info_house'),
     path('house/update/<int:id>', views.update_house, name='update_house'),
     path('house/delete/<int:id>', views.delete_house, name='delete_house'),
-    #Управление сайтом
+    # Управление сайтом
     path('website/home', views.website_home, name='website_home'),
     path('website/about', views.website_about, name='website_about'),
     path('website/about/deletephoto/<int:id>', views.website_about_delete_photo, name='about_delete_photo'),
     path('website/about/deletedopphoto/<int:id>', views.website_about_delete_dopphoto, name='about_delete_dopphoto'),
     path('website/services', views.website_services, name='website_services'),
     path('website/contact', views.website_contact, name='website_contact'),
+    # Настройки системы
+    path('setting/service', views.setting_service, name='setting_service'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

@@ -76,6 +76,31 @@ class FloorForm(forms.ModelForm):
             }),
         }
 
+# Формы для настройки системы
+class ServiceUnitForm(forms.ModelForm):
+    class Meta:
+        model = ServiceUnit
+        fields = ['unit', 'id']
+        widgets = {
+            'unit': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+class SettingServiceForm(forms.ModelForm):
+    class Meta:
+        model = SettingService
+        fields = ['unit', 'id', 'name', 'is_counter']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'unit': forms.Select(choices='Выберите...', attrs={
+                'class': 'form-control'
+            }),
+            'is_counter': forms.CheckboxInput(attrs={
+            })
+        }
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

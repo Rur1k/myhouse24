@@ -1,0 +1,114 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Редактирование услуг{% endblock %}
+{% block page_name %}Редактирование услуг{% endblock %}
+{% block mini_page_name %}Редактирование услуг{% endblock %}
+{% block content %}
+<div class="box">
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ units_formset.management_form }}
+        {{ services_formset.management_form }}
+        <div class="box-body">
+            <div class="col-md-9">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="tablinks active">
+                            <a href="#tab-service" data-toggle="tab" aria-expanded="true">Услуги</a>
+                        </li>
+                        <li class="tablinks">
+                            <a href="#tab-serviceunit"  data-toggle="tab">Единицы измерения</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-panel clearfix active" id="tab-service">
+                            <div id="form_set_setting_service" class="row">
+                                {% for service in services_formset %}
+                                 <div class="col-md-12 margin-bottom-20 form-serviceunit">
+                                     <div class="col-md-8">
+                                         <label>Услуга</label>
+                                         {{ service.id }}
+                                         {{ service.name }}
+                                     </div>
+                                     <div class="col-md-4">
+                                         <label>Ед. изм.</label>
+                                         <div class="input-group">
+                                             {{ service.unit }}
+                                             <span class="input-group-btn">
+                                                <a href="" class="btn btn-default delete-form">
+                                                    <i class="fa fa-trash">
+                                                        <div hidden="hidden">
+                                                            {{ service.DELETE }}
+                                                        </div>
+                                                    </i>
+                                                </a>
+                                            </span>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-12">
+                                         {{ service.is_counter }}
+                                     </div>
+                                 </div>
+                                 {% endfor %}
+                            </div>
+                            <div id="empty_form_service" style="display:none">
+                                    <div id="id_form_setting_service_" class="col-md-12 margin-bottom-20 form-setting-service">
+
+                                    </div>
+                            </div>
+                            <input id="add_setting_service" class="btn btn-default pull-left" type="button" value="Добавить">
+                        </div>
+                        <div class="tab-panel clearfix" id="tab-serviceunit">
+                             <div id="form_set_serviceunit" class="row">
+                                 {% for unit in units_formset %}
+                                 <div class="col-md-7 margin-bottom-20 form-serviceunit">
+                                     <label>Ед. изм.</label>
+                                     <div class="input-group">
+                                         {{ unit.id }}
+                                         {{ unit.unit }}
+                                         <span class="input-group-btn">
+                                            <a href="" class="btn btn-default delete-form">
+                                                <i class="fa fa-trash">
+                                                    <div hidden="hidden">
+                                                        {{ unit.DELETE }}
+                                                    </div>
+                                                </i>
+                                            </a>
+                                        </span>
+                                     </div>
+                                 </div>
+                                 {% endfor %}
+
+                                <div id="empty_form_serviceunit" style="display:none">
+                                    <div id='id_form_serviceunit_' class="col-md-7 margin-bottom-20 form-serviceunit">
+                                        <label>Ед. изм.</label>
+                                        <div class="input-group">
+                                            {{ units_formset.empty_form.unit }}
+                                            <span class="input-group-btn">
+                                            <a href="" class="btn btn-default delete-form">
+                                                <i class="fa fa-trash">
+                                                    <div hidden="hidden">
+                                                        {{ units_formset.empty_form.DELETE }}
+                                                    </div>
+                                                </i>
+                                            </a>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="add_serviceunit" class="btn btn-default pull-left" type="button" value="Добавить">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <a href="{% url 'setting_service' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

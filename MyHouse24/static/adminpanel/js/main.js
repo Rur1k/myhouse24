@@ -116,13 +116,23 @@ $('#add_tariff').click(function() {
         $('#form_set_image').find('div#id_form_image_').attr('id', 'id_form_image_'+ parseInt(form_idx));
     });
 
+// Добавление новых единиц измерения
+$('#add_serviceunit').click(function() {
+        var form_idx = $('#id_serviceunit-TOTAL_FORMS').val();
+        $('#form_set_serviceunit').append($('#empty_form_serviceunit').html().replace(/prefix/g, form_idx));
+        $('#id_serviceunit-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_serviceunit').find('#id_serviceunit-__'+parseInt(form_idx)+'__-unit').attr('name', 'serviceunit-'+parseInt(form_idx)+'-unit');
+        $('#form_set_serviceunit').find('#id_serviceunit-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'serviceunit-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_serviceunit').find('div#id_form_serviceunit_').attr('id', 'id_form_serviceunit_'+ parseInt(form_idx));
+    });
+
 
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image').hide();
+        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit').hide();
     }
 });
 
