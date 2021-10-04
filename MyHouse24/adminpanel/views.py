@@ -186,6 +186,7 @@ def setting_service(request):
     units_form = modelformset_factory(ServiceUnit, form=ServiceUnitForm, extra=0, can_delete=True)
 
     if request.method == "POST":
+        print(request.POST)
         units_formset = units_form(request.POST, request.FILES, prefix='serviceunit', queryset=units)
         services_formset = services_form(request.POST, request.FILES, prefix='setting_service', queryset=services)
         if services_formset.is_valid():
@@ -193,9 +194,18 @@ def setting_service(request):
                 if 'DELETE' in subform.cleaned_data:
                     if not subform.cleaned_data['DELETE']:
                         subform.save()
+                        obj = subform.save(commit=False)
+                        if obj.unit:
+                            unit_count = ServiceUnit.objects.get(unit=obj.unit)
+                            count = unit_count.count + 1
+                            ServiceUnit.objects.filter(unit=obj.unit).update(count=count)
                     else:
                         if subform.cleaned_data['id'] in services:
                             obj = subform.save(commit=False)
+                            if obj.unit:
+                                unit_count = ServiceUnit.objects.get(unit=obj.unit)
+                                count = unit_count.count - 1
+                                ServiceUnit.objects.filter(unit=obj.unit).update(count=count)
                             SettingService.objects.filter(id=obj.id).delete()
         if units_formset.is_valid():
             for subform in units_formset:
@@ -218,6 +228,43 @@ def setting_service(request):
         'units_formset': units_formset
     }
     return render(request, 'adminpanel/settings/service.html', data)
+
+def setting_tariffs(request):
+    data = {
+        'tariffs': SettingTariff.objects.all()
+    }
+    return render(request, 'adminpanel/settings/tariffs.html', data)
+
+def setting_tariffs_create(request):
+    service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=1, can_delete=True)
+
+    if request.method == "POST":
+        form = SettingTariffForm(request.POST, request.FILES)
+        formset = service_form(request.POST, prefix='setting_tariff_service')
+        if form.is_valid():
+            form.save()
+        if formset.is_valid():
+            for subform in form_section:
+                if 'DELETE' in subform.cleaned_data:
+                    if not subform.cleaned_data['DELETE']:
+                        obj = subform.save(commit=False)
+                        obj.tariff = form.save(commit=False)
+                        obj.save()
+                else:
+                    obj = subform.save(commit=False)
+                    obj.tariff = form.save(commit=False)
+                    obj.save()
+
+        return redirect('setting_tariffs')
+    else:
+        form = SettingTariffForm()
+        formset = service_form(prefix='setting_tariff_service')
+
+    data = {
+        'tariff': form,
+        'services': formset,
+    }
+    return render(request, 'adminpanel/settings/create_tariff.html', data)
 
 
 # Бизнес логика складки "Управление сайтом"

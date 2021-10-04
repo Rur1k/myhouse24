@@ -131,9 +131,9 @@ $('#add_setting_service').click(function() {
         var form_idx = $('#id_setting_service-TOTAL_FORMS').val();
         $('#form_set_setting_service').append($('#empty_form_setting_service').html().replace(/prefix/g, form_idx));
         $('#id_setting_service-TOTAL_FORMS').val(parseInt(form_idx) + 1);
-        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-unit').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-unit');
-        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-name').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-name');
-        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-is_counter').attr('name', 'ssetting_service-'+parseInt(form_idx)+'-is_counter');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-unit').attr('name', 'setting_service-'+parseInt(form_idx)+'-unit');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-name').attr('name', 'setting_service-'+parseInt(form_idx)+'-name');
+        $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-is_counter').attr('name', 'setting_service-'+parseInt(form_idx)+'-is_counter');
         $('#form_set_setting_service').find('#id_setting_service-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'setting_service-'+parseInt(form_idx)+'-DELETE');
         $('#form_set_setting_service').find('div#id_form_setting_service_').attr('id', 'id_form_setting_service_'+ parseInt(form_idx));
     });

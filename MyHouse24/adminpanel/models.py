@@ -37,6 +37,7 @@ class Floor(models.Model):
 class ServiceUnit(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     unit = models.CharField(max_length=128, null=True, blank=True)
+    count = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.unit
@@ -49,6 +50,20 @@ class SettingService(models.Model):
 
     def __str__(self):
         return self.name
+
+class SettingTariff(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    date_update = models.DateTimeField(auto_now_add=True)
+
+class SettingServiceIsTariff(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
+    service = models.ForeignKey(SettingService, on_delete=models.CASCADE, null=True, blank=True)
+    price = models.CharField(max_length=128, null=True, blank=True)
+    currency = models.CharField(max_length=128, null=True, blank=True)
+
 
 # Модели для наполнения веб-сайта
 class MainPageSlider(models.Model):

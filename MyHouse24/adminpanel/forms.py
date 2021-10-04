@@ -80,7 +80,7 @@ class FloorForm(forms.ModelForm):
 class ServiceUnitForm(forms.ModelForm):
     class Meta:
         model = ServiceUnit
-        fields = ['unit', 'id']
+        fields = ['unit', 'id', 'count']
         widgets = {
             'unit': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -99,6 +99,35 @@ class SettingServiceForm(forms.ModelForm):
                 'class': 'form-control'
             }),
             'is_counter': forms.CheckboxInput(attrs={
+            })
+        }
+
+class SettingTariffForm(forms.ModelForm):
+    class Meta:
+        model = SettingTariff
+        fields = [ 'id', 'name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control'
+            })
+        }
+
+class SettingServiceIsTariffForm(forms.ModelForm):
+    class Meta:
+        model = SettingServiceIsTariff
+        fields = [ 'id', 'service', 'price', 'currency']
+        widgets = {
+            'service': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'price': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'currency': forms.TextInput(attrs={
+                'class': 'form-control'
             })
         }
 

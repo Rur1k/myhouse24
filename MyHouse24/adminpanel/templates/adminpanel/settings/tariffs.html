@@ -1,0 +1,51 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Тарифы{% endblock %}
+{% block page_name %}Тарифы{% endblock %}
+{% block mini_page_name %}Тарифы{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="pull-right margin-bottom">
+            <a class="btn btn-success" href="{% url 'setting_tariffs_create' %}">Добавить тариф</a>
+        </div>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="grid-view">
+            <table id="TariffsTable" class="table table-striped table-bordered table-hover table_sort">
+                <thead>
+                <tr>
+                    <th class="col" style="min-width:200px">Название тарифа</th>
+                    <th class="col" style="min-width: 300px">Описание тарифа</th>
+                    <th class="col" style="min-width: 200px">Дата редактирования</th>
+                    <th class="col" style="width: 150px; min-width:150px"></th>
+                </tr>
+                </thead>
+                <tbody id="TariffsList">
+                    {% for tariff in tariffs %}
+                    <tr onclick="location.href=''">
+                        <td class="tariff-name">{{ tariff.name }}</td>
+                        <td class="tariff-description">{{ tariff.description }}</td>
+                        <td class="tariff-datetime">{{ tariff.date_update }}</td>
+                        <td class="text-center">
+                            <div class="btn-group pull-center">
+                                <a class="btn btn-default btn-sm" href="" title="Копировать" data-toggle="tooltip">
+                                    <i class="fa fa-clone"></i>
+                                </a>
+                                <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+
+{% endblock %}

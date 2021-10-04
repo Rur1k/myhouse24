@@ -18,6 +18,8 @@ urlpatterns = [
     path('website/contact', views.website_contact, name='website_contact'),
     # Настройки системы
     path('setting/service', views.setting_service, name='setting_service'),
+    path('setting/tariffs', views.setting_tariffs, name='setting_tariffs'),
+    path('setting/tariffs/create', views.setting_tariffs_create, name='setting_tariffs_create'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

@@ -35,14 +35,14 @@
                                          <div class="input-group">
                                              {{ service.unit }}
                                              <span class="input-group-btn">
-                                                <a href="" class="btn btn-default delete-form">
-                                                    <i class="fa fa-trash">
-                                                        <div hidden="hidden">
-                                                            {{ service.DELETE }}
-                                                        </div>
-                                                    </i>
-                                                </a>
-                                            </span>
+                                                 <a href="" class="btn btn-default delete-form">
+                                                     <i class="fa fa-trash">
+                                                         <div hidden="hidden">
+                                                             {{ service.DELETE }}
+                                                         </div>
+                                                     </i>
+                                                 </a>
+                                             </span>
                                          </div>
                                      </div>
                                      <div class="col-md-12">
@@ -63,14 +63,14 @@
                                             <div class="input-group">
                                                 {{ services_formset.empty_form.unit }}
                                                 <span class="input-group-btn">
-                                                <a href="" class="btn btn-default delete-form">
-                                                    <i class="fa fa-trash">
-                                                        <div hidden="hidden">
-                                                            {{ services_formset.empty_form.DELETE }}
-                                                        </div>
-                                                    </i>
-                                                </a>
-                                            </span>
+                                                    <a href="" class="btn btn-default delete-form">
+                                                        <i class="fa fa-trash">
+                                                            <div hidden="hidden">
+                                                                {{ services_formset.empty_form.DELETE }}
+                                                            </div>
+                                                        </i>
+                                                    </a>
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -90,13 +90,20 @@
                                          {{ unit.id }}
                                          {{ unit.unit }}
                                          <span class="input-group-btn">
-                                            <a href="" class="btn btn-default delete-form">
-                                                <i class="fa fa-trash">
-                                                    <div hidden="hidden">
-                                                        {{ unit.DELETE }}
-                                                    </div>
-                                                </i>
-                                            </a>
+                                             {% if unit.instance.count == 0 %}
+                                             <a href="" class="btn btn-default delete-form">
+                                                 <i class="fa fa-trash">
+                                                     <div hidden="hidden">
+                                                         {{ unit.DELETE }}
+                                                     </div>
+                                                 </i>
+                                             </a>
+                                             {% else %}
+                                             <button type="button" class="btn btn-default disabled">
+                                                 <i class="fa fa-trash">
+                                                 </i>
+                                             </button>
+                                             {% endif %}
                                         </span>
                                      </div>
                                  </div>
