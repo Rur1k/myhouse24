@@ -239,21 +239,25 @@ def setting_tariffs_create(request):
     service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=1, can_delete=True)
 
     if request.method == "POST":
+        print(request.POST)
         form = SettingTariffForm(request.POST, request.FILES)
         formset = service_form(request.POST, prefix='setting_tariff_service')
         if form.is_valid():
             form.save()
-        if formset.is_valid():
-            for subform in form_section:
-                if 'DELETE' in subform.cleaned_data:
-                    if not subform.cleaned_data['DELETE']:
+            if formset.is_valid():
+                for subform in formset:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.tariff = form.save(commit=False)
+                            obj.save()
+                    else:
                         obj = subform.save(commit=False)
                         obj.tariff = form.save(commit=False)
                         obj.save()
-                else:
-                    obj = subform.save(commit=False)
-                    obj.tariff = form.save(commit=False)
-                    obj.save()
+            else:
+                print('Форм сет не валидный')
+                print(formset)
 
         return redirect('setting_tariffs')
     else:
@@ -265,6 +269,13 @@ def setting_tariffs_create(request):
         'services': formset,
     }
     return render(request, 'adminpanel/settings/create_tariff.html', data)
+
+def select_service_unit(request):
+    service_id = request.GET.get('service')
+    unit_id = SettingService.objects.get(id=service_id).unit.id
+    unit = ServiceUnit.objects.get(id=unit_id)
+    return render(request, 'adminpanel/settings/ajax/select_service_unit.html', {'unit':unit})
+
 
 
 # Бизнес логика складки "Управление сайтом"

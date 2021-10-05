@@ -6,37 +6,39 @@
 {% block content %}
 <div class="box">
     <div class="box-body">
-        <form method="post" action="" enctype="multipart/form-data">
+        <form method="post" action="" enctype="multipart/form-data" id="TariffCreateForm" data-unit-url="{% url 'select_service_unit' %}">
             <div class="container col-md-8">
-            {% csrf_token %}
-            <div class="col-xm-8 row margin-bottom-30">
-                <div class="col-md-12 margin-bottom-15">
-                    <label>Название тарифа</label>
-                    {{ tariff.name }}
-                </div>
-                <div class="col-md-12 margin-bottom">
-                    <label>Описание тарифа</label>
-                    {{ tariff.description }}
-                </div>
-                <div id="form_set_setting_service" class="row">
-                    {% for service in services %}
-                    <div class="col-md-12 margin-bottom-20 form-setting-service">
-                        <div class="col-md-4">
-                            <label>Услуга</label>
-                            {{ service.service }}
-                        </div>
-                        <div class="col-md-3">
-                            <label>Цена</label>
-                            {{ service.price }}
-                        </div>
-                        <div class="col-md-2">
-                            <label>Валюта</label>
-                            {{ service.currency }}
-                        </div>
-                        <div class="col-md-3">
-                            <label>Ед. изм.</label>
-                            <div class="input-group">
-                                <span class="input-group-btn">
+                {% csrf_token %}
+                {{ services.management_form }}
+                <div class="col-xm-8 row margin-bottom-30">
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Название тарифа</label>
+                        {{ tariff.name }}
+                    </div>
+                    <div class="col-md-12 margin-bottom">
+                        <label>Описание тарифа</label>
+                        {{ tariff.description }}
+                    </div>
+                    <div id="form_set_setting_service" class="row">
+                        {% for service in services %}
+                        <div class="col-md-12 margin-bottom-20 form-setting-service">
+                            <div class="col-md-4 select-service">
+                                <label>Услуга</label>
+                                {{ service.service }}
+                            </div>
+                            <div class="col-md-3">
+                                <label>Цена</label>
+                                {{ service.price }}
+                            </div>
+                            <div class="col-md-2">
+                                <label>Валюта</label>
+                                {{ service.currency }}
+                            </div>
+                            <div class="col-md-3 select-service-unit">
+                                <label>Ед. изм.</label>
+                                <div class="input-group">
+                                    {{ service.unit_service }}
+                                    <span class="input-group-btn">
                                     <a href="" class="btn btn-default delete-form">
                                         <i class="fa fa-trash">
                                             <div hidden="hidden">
@@ -45,26 +47,26 @@
                                         </i>
                                     </a>
                                 </span>
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-                <div id="empty_form_setting_service" style="display:none">
-                    <div id="id_form_setting_service_" class="col-md-12 margin-bottom-20 form-setting-service">
+                    <div id="empty_form_setting_service" style="display:none">
+                        <div id="id_form_setting_service_" class="col-md-12 margin-bottom-20 form-setting-service">
 
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="" class="btn btn-default pull-left" type="button" value="Добавить услугу">
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <input id="" class="btn btn-default pull-left" type="button" value="Добавить услугу">
+                <div class="col-md-12 text-center">
+                    <div class="form-group">
+                        <a href="" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12 text-center">
-                <div class="form-group">
-                    <a href="" class="btn btn-default">Отменить</a>
-                    <button type="submit" class="btn btn-success">Сохранить</button>
-                </div>
-            </div>
             </div>
         </form>
     </div>

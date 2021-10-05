@@ -118,10 +118,15 @@ class SettingTariffForm(forms.ModelForm):
 class SettingServiceIsTariffForm(forms.ModelForm):
     class Meta:
         model = SettingServiceIsTariff
-        fields = [ 'id', 'service', 'price', 'currency']
+        fields = [ 'id', 'service', 'price', 'currency', 'unit_service']
         widgets = {
             'service': forms.Select(attrs={
-                'class': 'form-control'
+                'class': 'form-control',
+                'onchange': 'SelectServiceUnit()'
+            }),
+            'unit_service': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': 'disabled'
             }),
             'price': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -130,6 +135,16 @@ class SettingServiceIsTariffForm(forms.ModelForm):
                 'class': 'form-control'
             })
         }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['unit_service'].queryset = ServiceUnit.objects.none()
+    #
+    #     if 'setting_tariff_service-0-unit_service' in self.data:
+    #         service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
+    #         unit_id = SettingService.objects.get(id=service_id).unit.id
+    #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
+
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

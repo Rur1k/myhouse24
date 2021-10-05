@@ -20,6 +20,7 @@ urlpatterns = [
     path('setting/service', views.setting_service, name='setting_service'),
     path('setting/tariffs', views.setting_tariffs, name='setting_tariffs'),
     path('setting/tariffs/create', views.setting_tariffs_create, name='setting_tariffs_create'),
+    path('setting/tariffs/create/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
