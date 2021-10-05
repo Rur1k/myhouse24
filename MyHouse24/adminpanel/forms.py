@@ -122,11 +122,10 @@ class SettingServiceIsTariffForm(forms.ModelForm):
         widgets = {
             'service': forms.Select(attrs={
                 'class': 'form-control',
-                'onchange': 'SelectServiceUnit()'
+                'onchange': 'SelectServiceUnit(this)'
             }),
             'unit_service': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': 'disabled'
             }),
             'price': forms.TextInput(attrs={
                 'class': 'form-control'

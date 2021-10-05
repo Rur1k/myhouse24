@@ -13,9 +13,9 @@
 //      });
 //    });
 
-function SelectServiceUnit(){
+function SelectServiceUnit(select){
     var url = $("#TariffCreateForm").attr("data-unit-url");  // get the url of the load_cities view
-      var serviceId = $(this).val();  // get the selected country ID from the HTML input
+      var serviceId = $(select).val();  // get the selected country ID from the HTML input
 
       $.ajax({                       // initialize an AJAX request
         url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
@@ -23,8 +23,7 @@ function SelectServiceUnit(){
           'service': serviceId       // add the country id to the GET parameters
         },
         success: function (data) {   // data is the return of the load_cities view function
-
-          $(this).closest("select").html(data);  // replace the contents of the city input with the data that came from the server
+          $(select).closest(".form-setting-service").children(".select-service-unit").find("select").html(data);  // replace the contents of the city input with the data that came from the server
         }
       });
 }
