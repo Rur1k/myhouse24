@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
+from django.contrib.auth.models import User, UserManager
 
 # Дополнительные функции для работы с моделями
 def file_size(value): # Функция которая расчитывает максимальный размер файла для модели "Document"
@@ -65,6 +66,28 @@ class SettingServiceIsTariff(models.Model):
     price = models.FloatField(null=True, blank=True)
     currency = models.CharField(max_length=128, null=True, blank=True)
 
+class UserRole(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+    access_lvl = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class UserStatus(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class UserAdmin(User):
+    objects = UserManager()
+
+    telephone = models.CharField(max_length=13, null=True, blank=True)
+    role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.ForeignKey(UserStatus, on_delete=models.CASCADE, null=True, blank=True)
+    password2 = models.CharField(max_length=64, null=True, blank=True)
 
 # Модели для наполнения веб-сайта
 class MainPageSlider(models.Model):

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.forms import modelformset_factory
-from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from .forms import *
 from .models import *
@@ -362,9 +362,29 @@ def select_service_unit(request):
 
 def setting_user_admin(request):
     data = {
-
+        'users': UserAdmin.objects.all(),
+        'role': UserRole.objects.all(),
+        'status': UserStatus.objects.all()
     }
     return render(request, 'adminpanel/settings/users.html', data )
+
+def setting_user_admin_create(request):
+    if request.method == "POST":
+        user_form = UserAdminForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.username = new_user.email
+            new_user.is_staff = 1
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return redirect('setting_user_admin')
+    else:
+        user_form = UserAdminForm()
+
+    data = {
+        'user': user_form
+    }
+    return render(request, 'adminpanel/settings/user_create.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

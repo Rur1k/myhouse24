@@ -26,6 +26,7 @@ urlpatterns = [
     path('setting/tariffs/copy/<int:id>', views.setting_tariffs_copy, name='setting_tariffs_copy'),
     path('setting/tariffs/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
     path('setting/user-admin/users', views.setting_user_admin, name='setting_user_admin'),
+    path('setting/user-admin/create', views.setting_user_admin_create, name='setting_user_create'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

@@ -145,6 +145,80 @@ class SettingServiceIsTariffForm(forms.ModelForm):
     #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
 
 
+class UserAdminForm(forms.ModelForm):
+    # password = forms.CharField(widget=forms.PasswordInput(attrs={
+    #     'class': 'form-control',
+    #     'placeholder': 'Пароль',
+    # }))
+    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={
+    #     'class': 'form-control',
+    #     'placeholder': 'Повторите пароль',
+    # }))
+
+    class Meta:
+        model = UserAdmin
+        fields = [
+            'email',
+            'password',
+            'password2',
+            'first_name',
+            'last_name',
+            'telephone',
+            'role',
+            'status'
+        ]
+
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'email(логин)',
+                'name': 'email',
+            }),
+            'password': forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Пароль',
+                'name': 'password',
+                'id': 'password'
+            }),
+            'password2': forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Пароль',
+                'name': 'password2',
+                'id': 'password2'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Имя',
+                'name': 'first_name',
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Фамилия',
+                'name': 'last_name',
+            }),
+            'telephone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'телефон',
+                'name': 'telephone',
+            }),
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Роль',
+                'name': 'role',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Статус',
+                'name': 'role',
+            }),
+        }
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            raise forms.ValidationError('Пароли не совпадают.')
+        return cd['password2']
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

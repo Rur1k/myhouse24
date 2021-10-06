@@ -171,4 +171,26 @@ function confirmDelete(){
     }
 }
 
+//Генерация пароля
+function gen_password(){
+    var new_password = Math.random().toString(36).slice(3)
+    var password = document.getElementById("password")
+    var password2 = document.getElementById("password2")
+
+    password.value = new_password
+    password2.value = new_password
+}
+
+$('#showPass').click(function() {
+    var password = document.getElementById("password")
+    var password2 = document.getElementById("password2")
+
+    if(password.type == "password"){
+        password.type = "text"
+        password2.type = "text"
+    } else {
+        password.type = "password"
+        password2.type = "password"
+    }
+});
 
