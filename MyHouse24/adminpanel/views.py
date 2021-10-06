@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.forms import modelformset_factory
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 from django.views.generic import UpdateView, DeleteView
 from .forms import *
 from .models import *
@@ -352,7 +352,7 @@ def setting_tariffs_info(request, id):
         'tariff': SettingTariff.objects.get(id=id),
         'services': SettingServiceIsTariff.objects.filter(tariff=id)
     }
-    return render(request, 'adminpanle/setting/tariff_info.html', data)
+    return render(request, 'adminpanel/settings/tariff_info.html', data)
 
 def select_service_unit(request):
     service_id = request.GET.get('service')
@@ -360,7 +360,11 @@ def select_service_unit(request):
     unit = ServiceUnit.objects.get(id=unit_id)
     return render(request, 'adminpanel/settings/ajax/select_service_unit.html', {'unit':unit})
 
+def setting_user_admin(request):
+    data = {
 
+    }
+    return render(request, 'adminpanel/settings/users.html', data )
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
