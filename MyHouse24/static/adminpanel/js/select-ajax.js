@@ -23,7 +23,7 @@ function SelectServiceUnit(select){
           'service': serviceId       // add the country id to the GET parameters
         },
         success: function (data) {   // data is the return of the load_cities view function
-          $(select).closest(".form-setting-service").children(".select-service-unit").find("select").html(data);  // replace the contents of the city input with the data that came from the server
+          $(select).closest(".form-setting_tariff_service").children(".select-service-unit").find("select").html(data);  // replace the contents of the city input with the data that came from the server
         }
       });
 }

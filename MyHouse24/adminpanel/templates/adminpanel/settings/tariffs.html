@@ -24,19 +24,19 @@
                 </thead>
                 <tbody id="TariffsList">
                     {% for tariff in tariffs %}
-                    <tr onclick="location.href=''">
+                    <tr onclick="location.href='{% url 'setting_tariffs_info' tariff.id %}'">
                         <td class="tariff-name">{{ tariff.name }}</td>
                         <td class="tariff-description">{{ tariff.description }}</td>
                         <td class="tariff-datetime">{{ tariff.date_update }}</td>
                         <td class="text-center">
                             <div class="btn-group pull-center">
-                                <a class="btn btn-default btn-sm" href="" title="Копировать" data-toggle="tooltip">
+                                <a class="btn btn-default btn-sm" href="{% url 'setting_tariffs_copy' tariff.id %}" title="Копировать" data-toggle="tooltip">
                                     <i class="fa fa-clone"></i>
                                 </a>
-                                <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                                <a class="btn btn-default btn-sm" href="{% url 'setting_tariffs_update' tariff.id %}" title="Редактировать" data-toggle="tooltip">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                                <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                                <a class="btn btn-default btn-sm" href="{% url 'setting_tariffs_delete' tariff.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

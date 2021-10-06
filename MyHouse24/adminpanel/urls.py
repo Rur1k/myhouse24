@@ -19,8 +19,12 @@ urlpatterns = [
     # Настройки системы
     path('setting/service', views.setting_service, name='setting_service'),
     path('setting/tariffs', views.setting_tariffs, name='setting_tariffs'),
+    path('setting/tariffs/<int:id>', views.setting_tariffs_info, name='setting_tariffs_info'),
     path('setting/tariffs/create', views.setting_tariffs_create, name='setting_tariffs_create'),
-    path('setting/tariffs/create/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
+    path('setting/tariffs/update/<int:id>', views.setting_tariffs_update, name='setting_tariffs_update'),
+    path('setting/tariffs/delete/<int:id>', views.setting_tariffs_delete, name='setting_tariffs_delete'),
+    path('setting/tariffs/copy/<int:id>', views.setting_tariffs_copy, name='setting_tariffs_copy'),
+    path('setting/tariffs/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
