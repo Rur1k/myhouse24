@@ -23,10 +23,11 @@ urlpatterns = [
     path('setting/tariffs/create', views.setting_tariffs_create, name='setting_tariffs_create'),
     path('setting/tariffs/update/<int:id>', views.setting_tariffs_update, name='setting_tariffs_update'),
     path('setting/tariffs/delete/<int:id>', views.setting_tariffs_delete, name='setting_tariffs_delete'),
-    path('setting/tariffs/copy/<int:id>', views.setting_tariffs_copy, name='setting_tariffs_copy'),
+    path('setting/tariffs/create&copy=<int:id>', views.setting_tariffs_create, name='setting_tariffs_copy'),
     path('setting/tariffs/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
     path('setting/user-admin/users', views.setting_user_admin, name='setting_user_admin'),
     path('setting/user-admin/create', views.setting_user_admin_create, name='setting_user_create'),
+    path('setting/user-admin/update/<int:id>', views.setting_user_admin_update, name='setting_user_update'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

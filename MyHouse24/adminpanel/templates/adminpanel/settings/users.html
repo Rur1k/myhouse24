@@ -73,7 +73,7 @@
                         <a class="btn btn-default btn-sm" href="" title="Отправить приглашение" data-toggle="tooltip">
                             <i class="fa fa-repeat"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'setting_user_update' user.id %}" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
                         {% if user.role_id == 1 %}

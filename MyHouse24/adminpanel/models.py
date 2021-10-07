@@ -46,7 +46,7 @@ class ServiceUnit(models.Model):
 class SettingService(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField(max_length=128, null=True, blank=True)
-    unit = models.ForeignKey(ServiceUnit, on_delete=models.CASCADE, null=True, blank=True)
+    unit = models.ForeignKey(ServiceUnit, on_delete=models.PROTECT, null=True, blank=True)
     is_counter = models.BooleanField(default=False)
 
     def __str__(self):

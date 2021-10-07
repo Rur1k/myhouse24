@@ -186,46 +186,44 @@ def setting_service(request):
     units_form = modelformset_factory(ServiceUnit, form=ServiceUnitForm, extra=0, can_delete=True)
 
     if request.method == "POST":
-        print(request.POST)
-        units_formset = units_form(request.POST, request.FILES, prefix='serviceunit', queryset=units)
-        services_formset = services_form(request.POST, request.FILES, prefix='setting_service', queryset=services)
-        if services_formset.is_valid():
-            for subform in services_formset:
-                if 'DELETE' in subform.cleaned_data:
-                    if not subform.cleaned_data['DELETE']:
-                        subform.save()
-                        obj = subform.save(commit=False)
-                        if obj.unit:
-                            unit_count = ServiceUnit.objects.get(unit=obj.unit)
-                            count = unit_count.count + 1
-                            ServiceUnit.objects.filter(unit=obj.unit).update(count=count)
+        try:
+            units_formset = units_form(request.POST, request.FILES, prefix='serviceunit', queryset=units)
+            services_formset = services_form(request.POST, request.FILES, prefix='setting_service', queryset=services)
+            if services_formset.is_valid():
+                for subform in services_formset:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            subform.save()
+                        else:
+                            if subform.cleaned_data['id'] in services:
+                                obj = subform.save(commit=False)
+                                SettingService.objects.filter(id=obj.id).delete()
+            if units_formset.is_valid():
+                for subform in units_formset:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            subform.save()
+                        else:
+                            if subform.cleaned_data['id'] in units:
+                                obj = subform.save(commit=False)
+                                ServiceUnit.objects.filter(id=obj.id).delete()
                     else:
-                        if subform.cleaned_data['id'] in services:
-                            obj = subform.save(commit=False)
-                            if obj.unit:
-                                unit_count = ServiceUnit.objects.get(unit=obj.unit)
-                                count = unit_count.count - 1
-                                ServiceUnit.objects.filter(unit=obj.unit).update(count=count)
-                            SettingService.objects.filter(id=obj.id).delete()
-        if units_formset.is_valid():
-            for subform in units_formset:
-                if 'DELETE' in subform.cleaned_data:
-                    if not subform.cleaned_data['DELETE']:
                         subform.save()
-                    else:
-                        if subform.cleaned_data['id'] in units:
-                            obj = subform.save(commit=False)
-                            ServiceUnit.objects.filter(id=obj.id).delete()
-                else:
-                    subform.save()
-        return redirect('setting_service')
+            return redirect('setting_service')
+        except Exception:
+            message = 'Нельзя удалять еденицы измирения которые используються в услугах!'
+            services_formset = services_form(prefix='setting_service', queryset=services)
+            units_formset = units_form(prefix='serviceunit', queryset=units)
+
     else:
         services_formset = services_form(prefix='setting_service', queryset=services)
         units_formset = units_form(prefix='serviceunit', queryset=units)
+        message = None
 
     data = {
         'services_formset': services_formset,
-        'units_formset': units_formset
+        'units_formset': units_formset,
+        'message': message
     }
     return render(request, 'adminpanel/settings/service.html', data)
 
@@ -235,21 +233,28 @@ def setting_tariffs(request):
     }
     return render(request, 'adminpanel/settings/tariffs.html', data)
 
-def setting_tariffs_create(request):
-    service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0, can_delete=True)
+def setting_tariffs_create(request, id=None):
+    if id is not None:
+        tariff_info = SettingTariff.objects.filter(id=id).first()
+        services_is_tariff = SettingServiceIsTariff.objects.filter(tariff=id)
+        service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0,
+                                            can_delete=True)
+    else:
+        service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0,
+                                            can_delete=True)
 
     if request.method == "POST":
         print(request.POST)
         form = SettingTariffForm(request.POST, request.FILES)
         formset = service_form(request.POST, prefix='setting_tariff_service')
         if form.is_valid():
-            print(formset.cleaned_data)
             form.save()
             if formset.is_valid():
                 for subform in formset:
                     if 'DELETE' in subform.cleaned_data:
                         if not subform.cleaned_data['DELETE']:
                             obj = subform.save(commit=False)
+                            if id is not None: obj.id = None
                             obj.tariff = form.save(commit=False)
                             obj.save()
             else:
@@ -258,8 +263,12 @@ def setting_tariffs_create(request):
 
         return redirect('setting_tariffs')
     else:
-        form = SettingTariffForm()
-        formset = service_form(prefix='setting_tariff_service', queryset=SettingServiceIsTariff.objects.none())
+        if id is not None:
+            form = SettingTariffForm(instance=tariff_info)
+            formset = service_form(prefix='setting_tariff_service', queryset=services_is_tariff)
+        else:
+            form = SettingTariffForm()
+            formset = service_form(prefix='setting_tariff_service', queryset=SettingServiceIsTariff.objects.none())
 
     data = {
         'tariff': form,
@@ -311,42 +320,6 @@ def setting_tariffs_delete(request, id):
         obj.delete()
     return redirect('setting_tariffs')
 
-def setting_tariffs_copy(request, id):
-    tariff_info = SettingTariff.objects.filter(id=id).first()
-    services_is_tariff = SettingServiceIsTariff.objects.filter(tariff=id)
-    service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0, can_delete=True)
-
-    if request.method == "POST":
-        print(request.POST)
-        form = SettingTariffForm(request.POST, request.FILES)
-        formset = service_form(request.POST, prefix='setting_tariff_service')
-        if form.is_valid():
-            print(formset.cleaned_data)
-            print(formset.cleaned_data)
-            form.save()
-            if formset.is_valid():
-                for subform in formset:
-                    if 'DELETE' in subform.cleaned_data:
-                        if not subform.cleaned_data['DELETE']:
-                            obj = subform.save(commit=False)
-                            obj.id = None
-                            obj.tariff = form.save(commit=False)
-                            obj.save()
-            else:
-                print('Форм сет не валидный')
-                print(formset)
-
-        return redirect('setting_tariffs')
-    else:
-        form = SettingTariffForm(instance=tariff_info)
-        formset = service_form(prefix='setting_tariff_service', queryset=services_is_tariff)
-
-    data = {
-        'tariff': form,
-        'services': formset,
-    }
-    return render(request, 'adminpanel/settings/create_tariff.html', data)
-
 def setting_tariffs_info(request, id):
     data = {
         'tariff': SettingTariff.objects.get(id=id),
@@ -369,22 +342,57 @@ def setting_user_admin(request):
     return render(request, 'adminpanel/settings/users.html', data )
 
 def setting_user_admin_create(request):
-    if request.method == "POST":
+    try:
+        if request.method == "POST":
+            user_form = UserAdminForm(request.POST)
+            if user_form.is_valid():
+                new_user = user_form.save(commit=False)
+                new_user.username = new_user.email
+                new_user.is_staff = 1
+                new_user.set_password(user_form.cleaned_data['password'])
+                new_user.save()
+                return redirect('setting_user_admin')
+        else:
+            user_form = UserAdminForm()
+
+        data = {
+            'user': user_form
+        }
+    except ValidationError:
+        message = "Пароли не совпадают."
         user_form = UserAdminForm(request.POST)
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    except Exception:
+        message = "Пароль не ведден."
+        user_form = UserAdminForm(request.POST)
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    return render(request, 'adminpanel/settings/user_create.html', data)
+
+
+def setting_user_admin_update(request, id):
+    user = UserAdmin.objects.get(id=id)
+
+    if request.method == "POST":
+        user_form = UserAdminForm(request.POST, instance=user)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
             new_user.username = new_user.email
-            new_user.is_staff = 1
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             return redirect('setting_user_admin')
     else:
-        user_form = UserAdminForm()
+        user_form = UserAdminForm(instance=user)
 
     data = {
         'user': user_form
     }
-    return render(request, 'adminpanel/settings/user_create.html', data)
+    return render(request, 'adminpanel/settings/user_update.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
