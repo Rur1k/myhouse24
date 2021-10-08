@@ -146,18 +146,26 @@ class SettingServiceIsTariffForm(forms.ModelForm):
 
 
 class UserAdminForm(forms.ModelForm):
-    # password = forms.CharField(widget=forms.PasswordInput(attrs={
-    #     'class': 'form-control',
-    #     'placeholder': 'Пароль',
-    # }))
+    password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Пароль',
+        'id': 'password'
+    }))
     # password2 = forms.CharField(widget=forms.PasswordInput(attrs={
     #     'class': 'form-control',
     #     'placeholder': 'Повторите пароль',
     # }))
 
+    # email = forms.EmailField(required=True ,widget=forms.EmailInput(attrs={
+    #     'class': 'form-control',
+    #     'placeholder': 'email(логин)',
+    #     'name': 'email',
+    # }))
+
     class Meta:
         model = UserAdmin
         fields = [
+            'id',
             'email',
             'password',
             'password2',
@@ -174,12 +182,12 @@ class UserAdminForm(forms.ModelForm):
                 'placeholder': 'email(логин)',
                 'name': 'email',
             }),
-            'password': forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Пароль',
-                'name': 'password',
-                'id': 'password'
-            }),
+            # 'password': forms.PasswordInput(attrs={
+            #     'class': 'form-control',
+            #     'placeholder': 'Пароль',
+            #     'name': 'password',
+            #     'id': 'password'
+            # }),
             'password2': forms.PasswordInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Пароль',
@@ -213,11 +221,37 @@ class UserAdminForm(forms.ModelForm):
             }),
         }
 
-    def clean_password2(self):
+    def clean(self):
         cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают.')
-        return cd['password2']
+
+        if self.instance.id is not None:
+            if 'email' in cd:
+                if cd['email'] is None or cd['email'] == '':
+                    raise forms.ValidationError('E-mail(Логин) - объязательное поле!')
+            else:
+                raise forms.ValidationError('E-mail(Логин) - не корректный формат. Пример: example@gmail.com')
+            if 'password' is cd:
+                if cd['password'] != '':
+                    if cd['password'] is None or cd['password2'] is None :
+                        raise forms.ValidationError('Одно из полей с паролем не заполнено!')
+                    if cd['password'] != cd['password2']:
+                        raise forms.ValidationError('Пароли не совпадают!')
+        else:
+            if 'email' in cd:
+                if cd['email'] is None or cd['email'] == '':
+                    raise forms.ValidationError('E-mail(Логин) - объязательное поле!')
+                if User.objects.filter(email=cd['email']).first() is not None:
+                    raise forms.ValidationError(cd['email'] + ' - занят!')
+            else:
+                raise forms.ValidationError('E-mail(Логин) - не корректный формат. Пример: example@gmail.com')
+            if 'password' in cd:
+                if cd['password'] is None or cd['password2'] is None :
+                    raise forms.ValidationError('Одно из полей с паролем не заполнено!')
+                if cd['password'] != cd['password2']:
+                    raise forms.ValidationError('Пароли не совпадают!')
+            else:
+                raise forms.ValidationError('Поле "Пароль" не может быть пустым')
+        return self.cleaned_data
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

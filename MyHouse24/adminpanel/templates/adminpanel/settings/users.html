@@ -82,7 +82,7 @@
                             </i>
                         </button>
                         {% else %}
-                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'setting_user_delete' user.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                         {% endif %}

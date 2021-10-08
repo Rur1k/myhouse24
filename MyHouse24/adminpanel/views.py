@@ -343,6 +343,7 @@ def setting_user_admin(request):
 
 def setting_user_admin_create(request):
     try:
+        message = None
         if request.method == "POST":
             user_form = UserAdminForm(request.POST)
             if user_form.is_valid():
@@ -352,21 +353,19 @@ def setting_user_admin_create(request):
                 new_user.set_password(user_form.cleaned_data['password'])
                 new_user.save()
                 return redirect('setting_user_admin')
+            else:
+                for error in user_form.non_field_errors():
+                    message = error
         else:
             user_form = UserAdminForm()
 
         data = {
-            'user': user_form
-        }
-    except ValidationError:
-        message = "Пароли не совпадают."
-        user_form = UserAdminForm(request.POST)
-        data = {
             'user': user_form,
             'message_error': message
         }
+
     except Exception:
-        message = "Пароль не ведден."
+        message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
         user_form = UserAdminForm(request.POST)
         data = {
             'user': user_form,
@@ -374,25 +373,49 @@ def setting_user_admin_create(request):
         }
     return render(request, 'adminpanel/settings/user_create.html', data)
 
-
 def setting_user_admin_update(request, id):
-    user = UserAdmin.objects.get(id=id)
+    try:
+        user = UserAdmin.objects.get(id=id)
+        message = None
+        if request.method == "POST":
+            user_form = UserAdminForm(request.POST, instance=user)
+            print(request.POST)
+            if user_form.is_valid():
+                edit_user = user_form.save(commit=False)
 
-    if request.method == "POST":
+                if 'password' in user_form.cleaned_data and user_form.cleaned_data['password'] is not None:
+                    edit_user.set_password(user_form.cleaned_data['password'])
+                    edit_user.password2 = user_form.cleaned_data['password']
+                else:
+                    edit_user.password2 = user.password2
+                    
+                if user_form.cleaned_data['status'] != 0:
+                    edit_user.is_active = 1
+                edit_user.save()
+                return redirect('setting_user_admin')
+            else:
+                for error in user_form.non_field_errors():
+                    message = error
+        else:
+            user_form = UserAdminForm(instance=user)
+
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    except Exception:
+        message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
+        user = UserAdmin.objects.get(id=id)
         user_form = UserAdminForm(request.POST, instance=user)
-        if user_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.username = new_user.email
-            new_user.set_password(user_form.cleaned_data['password'])
-            new_user.save()
-            return redirect('setting_user_admin')
-    else:
-        user_form = UserAdminForm(instance=user)
-
-    data = {
-        'user': user_form
-    }
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
     return render(request, 'adminpanel/settings/user_update.html', data)
+
+def setting_user_admin_delete(request, id):
+    UserAdmin.objects.filter(id=id).update(is_active=0, status_id = 0)
+    return redirect('setting_user_admin')
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

@@ -28,6 +28,7 @@ urlpatterns = [
     path('setting/user-admin/users', views.setting_user_admin, name='setting_user_admin'),
     path('setting/user-admin/create', views.setting_user_admin_create, name='setting_user_create'),
     path('setting/user-admin/update/<int:id>', views.setting_user_admin_update, name='setting_user_update'),
+    path('setting/user-admin/delete/<int:id>', views.setting_user_admin_delete, name='setting_user_delete'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
