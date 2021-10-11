@@ -66,6 +66,24 @@ class SettingServiceIsTariff(models.Model):
     price = models.FloatField(null=True, blank=True)
     currency = models.CharField(max_length=128, null=True, blank=True)
 
+class SettingPayCompany(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+
+class SettingPaymentItem(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class SettingTransactionPurpose(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+    item = models.ForeignKey(SettingPaymentItem, on_delete=models.CASCADE, null=True, blank=True)
+
 class UserRole(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField(max_length=64, null=True, blank=True)

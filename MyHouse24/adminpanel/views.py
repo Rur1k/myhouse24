@@ -376,6 +376,8 @@ def setting_user_admin_create(request):
 def setting_user_admin_update(request, id):
     try:
         user = UserAdmin.objects.get(id=id)
+        print(user)
+
         message = None
         if request.method == "POST":
             user_form = UserAdminForm(request.POST, instance=user)
@@ -383,14 +385,18 @@ def setting_user_admin_update(request, id):
             if user_form.is_valid():
                 edit_user = user_form.save(commit=False)
 
-                if 'password' in user_form.cleaned_data and user_form.cleaned_data['password'] is not None:
+                if user_form.cleaned_data['password'] != '':
+                    print('ПРойдена проверка на ввод пароля')
                     edit_user.set_password(user_form.cleaned_data['password'])
                     edit_user.password2 = user_form.cleaned_data['password']
                 else:
-                    edit_user.password2 = user.password2
-                    
+                    print('НЕ ----------------- ПРойдена проверка на ввод пароля')
+                    # print('ПАРОЛЬ: '+user.password2)
+
+
                 if user_form.cleaned_data['status'] != 0:
                     edit_user.is_active = 1
+
                 edit_user.save()
                 return redirect('setting_user_admin')
             else:
@@ -416,6 +422,62 @@ def setting_user_admin_update(request, id):
 def setting_user_admin_delete(request, id):
     UserAdmin.objects.filter(id=id).update(is_active=0, status_id = 0)
     return redirect('setting_user_admin')
+
+def setting_pay_company(request):
+    info = SettingPayCompany.objects.all().first()
+
+    if request.method == "POST":
+        form = SettingPayCompanyForm(request.POST, instance=info)
+        if form.is_valid():
+            form.save()
+    else:
+        form = SettingPayCompanyForm(instance=info)
+
+    data = {
+        'pay_company': form,
+    }
+    return render(request, 'adminpanel/settings/pay-company.html', data )
+
+def setting_transaction_purpose(request):
+    data = {
+        'transaction': SettingTransactionPurpose.objects.all(),
+    }
+    return render(request, 'adminpanel/settings/transaction-purpose.html', data)
+
+def setting_transaction_create(request):
+    if request.method == "POST":
+        form = SettingTransactionPurposeForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('setting_transaction_purpose')
+    else:
+        form = SettingTransactionPurposeForm()
+
+    data = {
+        'form': form,
+    }
+    return render(request, 'adminpanel/settings/transaction_create.html', data)
+
+def setting_transaction_update(request, id):
+    info = SettingTransactionPurpose.objects.get(id=id)
+
+    if request.method == "POST":
+        form = SettingTransactionPurposeForm(request.POST, instance=info)
+        if form.is_valid():
+            form.save()
+        return redirect('setting_transaction_purpose')
+    else:
+        form = SettingTransactionPurposeForm(instance=info)
+    data = {
+        'form': form,
+    }
+    return render(request, 'adminpanel/settings/transaction_create.html', data)
+
+def setting_transaction_delete(request, id):
+    obj = SettingTransactionPurpose.objects.get(id=id)
+    if obj:
+        obj.delete()
+    return redirect('setting_transaction_purpose')
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

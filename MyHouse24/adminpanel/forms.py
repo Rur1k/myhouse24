@@ -253,6 +253,33 @@ class UserAdminForm(forms.ModelForm):
                 raise forms.ValidationError('Поле "Пароль" не может быть пустым')
         return self.cleaned_data
 
+
+class SettingPayCompanyForm(forms.ModelForm):
+    class Meta:
+        model = SettingPayCompany
+        fields = [ 'id', 'name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'style': 'resize: none'
+            })
+        }
+
+class SettingTransactionPurposeForm(forms.ModelForm):
+    class Meta:
+        model = SettingTransactionPurpose
+        fields = [ 'id', 'name', 'item']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'item': forms.Select(attrs={
+                'class': 'form-control',
+            })
+        }
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:
