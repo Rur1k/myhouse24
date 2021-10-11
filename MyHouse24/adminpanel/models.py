@@ -185,3 +185,14 @@ class ContactPage(models.Model):
     phone = models.CharField('Телефон', max_length=128, null=True, blank=True)
     email = models.CharField('e-mail', max_length=128, null=True, blank=True)
     code_map = models.TextField('Код карты', null=True, blank=True)
+
+# Модели для владельцев квартир
+
+class ApartmentOwner(User):
+    objects = UserManager()
+
+    telephone = models.CharField(max_length=15, null=True, blank=True)
+    house = models.ManyToManyField(House, null=True, blank=True)
+    status = models.ForeignKey(UserStatus, on_delete=models.CASCADE, null=True, blank=True)
+    is_debt = models.BooleanField(null=True, blank=True)
+    password2 = models.CharField(max_length=64, null=True, blank=True)

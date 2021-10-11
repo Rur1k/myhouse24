@@ -34,6 +34,8 @@ urlpatterns = [
     path('setting/transaction/create', views.setting_transaction_create, name='setting_transaction_create'),
     path('setting/transaction/update/<int:id>', views.setting_transaction_update, name='setting_transaction_update'),
     path('setting/transaction/delete/<int:id>', views.setting_transaction_delete, name='setting_transaction_delete'),
+    # Владельцы квартир
+    path('users', views.apartment_owner, name='apartment_owner'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

@@ -479,6 +479,15 @@ def setting_transaction_delete(request, id):
         obj.delete()
     return redirect('setting_transaction_purpose')
 
+# Бизнес логика "Владельцы квартир"
+def apartment_owner(request):
+    data = {
+        'users': ApartmentOwner.objects.all(),
+        'status': UserStatus.objects.all(),
+        'houses': House.objects.all()
+    }
+    return render(request, 'adminpanel/user/index.html', data)
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

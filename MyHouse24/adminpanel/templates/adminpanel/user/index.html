@@ -1,7 +1,113 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}{% endblock %}
-{% block page_name %}{% endblock %}
-{% block mini_page_name %}{% endblock %}
+{% block title %}Владельцы квартир{% endblock %}
+{% block page_name %}Владельцы квартир{% endblock %}
+{% block mini_page_name %}Владельцы квартир{% endblock %}
 {% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group pull-right margin-bottom">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Выберите действие
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="">Добавить владельца квартиры</a></li>
+                <li><a href="">Отправить сообщение должникам</a></li>
+                <li><a href="">Отправить приглашение</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="UserTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:30px">ID</th>
+                <th class="col" style="min-width:200px">ФИО</th>
+                <th class="col" style="min-width: 100px">Телефон</th>
+                <th class="col" style="min-width:100px">Email</th>
+                <th class="col" style="min-width:100px">Дом</th>
+                <th class="col" style="min-width:100px">Квартира</th>
+                <th class="col" style="min-width:100px">Добавлен</th>
+                <th class="col" style="min-width:100px">Статус</th>
+                <th class="col" style="min-width:100px">Есть долг</th>
+                <th class="col" style="width: 120px; min-width:120px"></th>
+            </tr>
+            <tr>
+                <td><input id="IdSearch" type="text" class="form-control" onkeyup="searchTable('IdSearch','UserList','user-id')"></td>
+                <td><input id="UserSearch" type="text" class="form-control" onkeyup="searchTable('UserSearch','UserList','user-name')"></td>
+                <td><input id="PhoneSearch" type="text" class="form-control" onkeyup="searchTable('PhoneSearch','UserList','user-phone')"></td>
+                <td><input id="EmailSearch" type="text" class="form-control" onkeyup="searchTable('EmailSearch','UserList','user-email')"></td>
+                <td>
+                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','UserList','user-house')">
+                        <option></option>
+                        {% for house in houses %}
+                        <option>{{ house.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','UserList','user-flat')"></td>
+                <td><input id="CreateSearch" type="text" class="form-control" onkeyup="searchTable('CreateSearch','UserList','user-date-create')"></td>
+                <td>
+                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','UserList','user-status')">
+                        <option></option>
+                        {% for obj in status %}
+                        <option>{{ obj.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="IsDebtSearch" class="form-control" onchange="searchTable('IsDebtSearch','UserList','user-is-debt')">
+                        <option></option>
+                        <option>Да</option>
+                    </select>
+                </td>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="UserList">
+            {% for user in users %}
+            <tr onclick="location.href=''">
+                <td class="user-id">{{ user.id }}</td>
+                <td class="user-name">{{ user.first_name }} {{ user.last_name }}</td>
+                <td class="user-phone">{{ user.telephone }}</td>
+                <td class="user-email">{{ user.email }}</td>
+                <td class="user-house">{{ user.house }}</td>
+                <td class="user-flat"></td>
+                <td class="user-date-create">{{ user.date_joined }}</td>
+                <td class="user-status">
+                    {% if user.status_id == 1 %}
+                    <label class="label label-success">{{ user.status }}</label>
+                    {% elif user.status_id == 2 %}
+                    <label class="label label-warning">{{ user.status }}</label>
+                    {% else %}
+                    <label class="label label-danger">{{ user.status }}</label>
+                    {% endif %}
+                </td>
+                <td class="user-is-debt">{{ user.is_debt }}</td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="" title="Отправить пильмо" data-toggle="tooltip">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
