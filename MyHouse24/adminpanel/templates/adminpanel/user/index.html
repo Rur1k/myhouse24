@@ -12,7 +12,7 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="">Добавить владельца квартиры</a></li>
+                <li><a href="{% url 'apartment_owner_create' %}">Добавить владельца квартиры</a></li>
                 <li><a href="">Отправить сообщение должникам</a></li>
                 <li><a href="">Отправить приглашение</a></li>
             </ul>
@@ -27,13 +27,13 @@
         <table id="UserTable" class="table table-striped table-bordered table-hover table_sort">
             <thead>
             <tr>
-                <th class="col" style="min-width:30px">ID</th>
-                <th class="col" style="min-width:200px">ФИО</th>
-                <th class="col" style="min-width: 100px">Телефон</th>
-                <th class="col" style="min-width:100px">Email</th>
-                <th class="col" style="min-width:100px">Дом</th>
-                <th class="col" style="min-width:100px">Квартира</th>
-                <th class="col" style="min-width:100px">Добавлен</th>
+                <th class="col" style="min-width:100px">ID</th>
+                <th class="col" style="min-width:100px">ФИО</th>
+                <th class="col" style="min-width: 110px">Телефон</th>
+                <th class="col" style="min-width:200px">Email</th>
+                <th class="col" style="min-width:200px">Дом</th>
+                <th class="col" style="min-width:200px">Квартира</th>
+                <th class="col" style="min-width:180px">Добавлен</th>
                 <th class="col" style="min-width:100px">Статус</th>
                 <th class="col" style="min-width:100px">Есть долг</th>
                 <th class="col" style="width: 120px; min-width:120px"></th>
@@ -72,9 +72,9 @@
             </thead>
             <tbody id="UserList">
             {% for user in users %}
-            <tr onclick="location.href=''">
-                <td class="user-id">{{ user.id }}</td>
-                <td class="user-name">{{ user.first_name }} {{ user.last_name }}</td>
+            <tr onclick="location.href='{% url 'apartment_owner_info' user.id %}'">
+                <td class="user-id">{{ user.id }} - {{ user.personal_id }}</td>
+                <td class="user-name">{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</td>
                 <td class="user-phone">{{ user.telephone }}</td>
                 <td class="user-email">{{ user.email }}</td>
                 <td class="user-house">{{ user.house }}</td>
@@ -107,6 +107,12 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+        <div class="box-footer clearfix">
+        <div>
+            Количество владельцев:
+            <span class="text-bolt">{{ count }}</span>
+        </div>
     </div>
 </div>
 

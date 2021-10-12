@@ -268,6 +268,7 @@ class SettingPayCompanyForm(forms.ModelForm):
             })
         }
 
+
 class SettingTransactionPurposeForm(forms.ModelForm):
     class Meta:
         model = SettingTransactionPurpose
@@ -280,6 +281,131 @@ class SettingTransactionPurposeForm(forms.ModelForm):
                 'class': 'form-control',
             })
         }
+
+# Формы для владельцев квартир
+class ApartmentOwnerForm(forms.ModelForm):
+    password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Пароль',
+        'id': 'password'
+    }))
+
+    class Meta:
+        model = ApartmentOwner
+        fields = [
+            'id',
+            'email',
+            'password',
+            'password2',
+            'first_name',
+            'last_name',
+            'telephone',
+            'house',
+            'status',
+            'patronymic',
+            'avatar',
+            'birthday',
+            'viber',
+            'telegram',
+            'personal_id',
+            'about_owner'
+        ]
+
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'email(логин)',
+                'name': 'email',
+            }),
+            'password2': forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Пароль',
+                'name': 'password2',
+                'id': 'password2'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Имя',
+                'name': 'first_name',
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Фамилия',
+                'name': 'last_name',
+            }),
+            'patronymic': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Отчество',
+                'name': 'patronymic',
+            }),
+            'telephone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'телефон',
+                'name': 'telephone',
+            }),
+            'viber': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'viber',
+                'name': 'viber',
+            }),
+            'telegram': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'telegram',
+                'name': 'telegram',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Статус',
+                'name': 'role',
+            }),
+            'avatar': forms.FileInput(attrs={
+                'id': 'avatar',
+            }),
+            'birthday': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+            'personal_id': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'about_owner': forms.Textarea(attrs={
+                'class': 'form-control',
+                'style': 'resize: none'
+            }),
+        }
+
+    def clean(self):
+        cd = self.cleaned_data
+
+        if self.instance.id is not None:
+            if 'email' in cd:
+                if cd['email'] is None or cd['email'] == '':
+                    raise forms.ValidationError('E-mail(Логин) - объязательное поле!')
+            else:
+                raise forms.ValidationError('E-mail(Логин) - не корректный формат. Пример: example@gmail.com')
+            if 'password' is cd:
+                if cd['password'] != '':
+                    if cd['password'] is None or cd['password2'] is None :
+                        raise forms.ValidationError('Одно из полей с паролем не заполнено!')
+                    if cd['password'] != cd['password2']:
+                        raise forms.ValidationError('Пароли не совпадают!')
+        else:
+            if 'email' in cd:
+                if cd['email'] is None or cd['email'] == '':
+                    raise forms.ValidationError('E-mail(Логин) - объязательное поле!')
+                if User.objects.filter(email=cd['email']).first() is not None:
+                    raise forms.ValidationError(cd['email'] + ' - занят!')
+            else:
+                raise forms.ValidationError('E-mail(Логин) - не корректный формат. Пример: example@gmail.com')
+            if 'password' in cd:
+                if cd['password'] is None or cd['password2'] is None :
+                    raise forms.ValidationError('Одно из полей с паролем не заполнено!')
+                if cd['password'] != cd['password2']:
+                    raise forms.ValidationError('Пароли не совпадают!')
+            else:
+                raise forms.ValidationError('Поле "Пароль" не может быть пустым')
+        return self.cleaned_data
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

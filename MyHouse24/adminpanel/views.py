@@ -484,9 +484,47 @@ def apartment_owner(request):
     data = {
         'users': ApartmentOwner.objects.all(),
         'status': UserStatus.objects.all(),
-        'houses': House.objects.all()
+        'houses': House.objects.all(),
+        'count': ApartmentOwner.objects.all().count(),
     }
     return render(request, 'adminpanel/user/index.html', data)
+
+def apartment_owner_info(request, id):
+    data = {
+        'user': ApartmentOwner.objects.get(id=id),
+    }
+    return render(request, 'adminpanel/user/info.html', data)
+
+def apartment_owner_create(request):
+    try:
+        message = None
+        if request.method == "POST":
+            user_form = ApartmentOwnerForm(request.POST)
+            if user_form.is_valid():
+                new_user = user_form.save(commit=False)
+                new_user.username = new_user.email
+                new_user.set_password(user_form.cleaned_data['password'])
+                new_user.save()
+                return redirect('apartment_owner')
+            else:
+                for error in user_form.non_field_errors():
+                    message = error
+        else:
+            user_form = ApartmentOwnerForm()
+
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+
+    except Exception:
+        message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
+        user_form = ApartmentOwnerForm(request.POST)
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    return render(request, 'adminpanel/user/create.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

@@ -109,3 +109,7 @@ th.sorted[data-order="1"]::after {
     height: 150px;
     object-fit: cover;
 }
+
+.userAvatar img {
+    margin: 0 15px 15px 0;
+}

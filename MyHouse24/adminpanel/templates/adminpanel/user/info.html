@@ -1,0 +1,99 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Профиль владельца{% endblock %}
+{% block page_name %}Профиль владельца{% endblock %}
+{% block mini_page_name %}Профиль владельца{% endblock %}
+{% block content %}
+<div class="box col-md-12">
+    <div class="box-header with-border text-right">
+        <a href="" class="btn btn-primary">Редактировать профиль</a>
+    </div>
+    <div class="box-body row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-md-6">Статус</th>
+                    <td>
+                        {% if user.status_id == 1 %}
+                        <label class="label label-success">{{ user.status }}</label>
+                        {% elif user.status_id == 2 %}
+                        <label class="label label-warning">{{ user.status }}</label>
+                        {% else %}
+                        <label class="label label-danger">{{ user.status }}</label>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">ID</th>
+                    <td>{{ user.personal_id }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Фамилия</th>
+                    <td>{{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Имя</th>
+                    <td>{{ user.first_name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Отчество</th>
+                    <td>{{ user.patronymic }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Дата рождения</th>
+                    <td>{{ user.birthday }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">О владельцу (заметки)</th>
+                    <td>{{ user.about_owner }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Телефон</th>
+                    <td>{{ user.telephone }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Viber</th>
+                    <td>{{ user.viber }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Telegram</th>
+                    <td>{{ user.telegram }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 page-header">
+            <h2>Квартиры</h2>
+        </div>
+        <div class="col-md-12" style="overflow-x: auto">
+            <table class="table table-responsive table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th class="col" style="min-width:20px">#</th>
+                    <th class="col" style="min-width:100px">Дом</th>
+                    <th class="col" style="min-width:100px">Секция</th>
+                    <th class="col" style="min-width:100px">Квартира</th>
+                    <th class="col" style="min-width:50px">Лицевой счет</th>
+                </tr>
+                </thead>
+                <tbody>
+<!--                {%  for service in services %}-->
+<!--                <tr>-->
+<!--                    <td></td>-->
+<!--                    <td>{{ service.service.name }}</td>-->
+<!--                    <td>{{ service.unit_service.unit }}</td>-->
+<!--                    <td>{{ service.price }}</td>-->
+<!--                    <td>{{ service.currency }}</td>-->
+<!--                </tr>-->
+<!--                {% endfor %}-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
