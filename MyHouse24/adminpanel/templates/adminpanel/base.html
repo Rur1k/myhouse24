@@ -35,7 +35,7 @@
     </head>
 
     <body class="hold-transition skin-black-light sidebar-mini fixed">
-        {% if request.user.is_superuser %}
+        {% if request.user.is_superuser or request.user.is_staff %}
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
@@ -93,13 +93,13 @@
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-user-circle text-purple"></i>
-                                    <span class="hidden-xs">{{ request.fist_name }} {{ request.last_name }}</span>
+                                    <span class="hidden-xs">{{ request.user.fist_name }} {{ request.user.last_name }}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
                                         <span><i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i></span>
-                                        <p>{{ request.fist_name }} {{ request.last_name }} (Роль)</p>
+                                        <p>{{ request.user.fist_name }} {{ request.user.last_name }} (Роль)</p>
                                     </li>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">

@@ -19,7 +19,7 @@ def login_admin(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    if user.is_superuser:
+                    if user.is_superuser or user.is_staff:
                         return redirect('admin')
                     else:
                         return redirect('')
