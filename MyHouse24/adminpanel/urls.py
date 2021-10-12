@@ -26,6 +26,7 @@ urlpatterns = [
     path('setting/tariffs/create&copy=<int:id>', views.setting_tariffs_create, name='setting_tariffs_copy'),
     path('setting/tariffs/ajax/select_unit', views.select_service_unit, name='select_service_unit'),
     path('setting/user-admin/users', views.setting_user_admin, name='setting_user_admin'),
+    path('setting/user-admin/<int:id>', views.setting_user_admin_info, name='setting_user_admin_info'),
     path('setting/user-admin/create', views.setting_user_admin_create, name='setting_user_create'),
     path('setting/user-admin/update/<int:id>', views.setting_user_admin_update, name='setting_user_update'),
     path('setting/user-admin/delete/<int:id>', views.setting_user_admin_delete, name='setting_user_delete'),

@@ -2,7 +2,11 @@
 {% load static %}
 {% block title %}Тариф: {{ tariff.instance.name }}{% endblock %}
 {% block page_name %}Тариф: {{ tariff.instance.name }}{% endblock %}
-{% block mini_page_name %}Тариф: {{ tariff.instance.name }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_tariffs' %}">Тарифы</a></li>
+    <li><a href="{% url 'setting_tariffs_info' tariff.instance.id %}">Тариф: {{ tariff.instance.name }}</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
 {% block content %}
 <div class="box">
     <div class="box-body">

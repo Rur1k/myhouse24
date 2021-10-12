@@ -2,7 +2,10 @@
 {% load static %}
 {% block title %}Редактирование{% endblock %}
 {% block page_name %}Редактирование{% endblock %}
-{% block mini_page_name %}Редактирование{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_transaction_purpose' %}">Статьи приходов/расходов</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
 {% block content %}
 <div class="box">
     <form method="post" action="" enctype="multipart/form-data">

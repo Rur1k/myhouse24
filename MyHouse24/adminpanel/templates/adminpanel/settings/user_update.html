@@ -2,7 +2,11 @@
 {% load static %}
 {% block title %}Пользователь{% endblock %}
 {% block page_name %}Пользователь{% endblock %}
-{% block mini_page_name %}Пользователь{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_user_admin' %}">Пользователи</a></li>
+    <li><a href="{% url 'setting_user_admin_info' user.instance.id %}">Пользователь</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
 {% block content %}
 {% if message_error %}
     <div class="alert alert-danger alert-dismissible" role="alert">

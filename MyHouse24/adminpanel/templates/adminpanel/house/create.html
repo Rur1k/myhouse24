@@ -2,7 +2,10 @@
 {% load static %}
 {% block title %}Новый дом{% endblock %}
 {% block page_name %}Новый дом{% endblock %}
-{% block mini_page_name %}Новый дом{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'house' %}">Дома</a></li>
+    <li class="active">Новый дом</li>
+{% endblock %}
 {% block content %}
 <div class="box">
     <form method="post" action="" enctype="multipart/form-data">

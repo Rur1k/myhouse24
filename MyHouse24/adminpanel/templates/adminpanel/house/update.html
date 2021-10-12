@@ -2,7 +2,11 @@
 {% load static %}
 {% block title %}Редактирование{% endblock %}
 {% block page_name %}Редактирование{% endblock %}
-{% block mini_page_name %}Редактирование{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'house' %}">Дома</a></li>
+    <li><a href="{% url 'info_house' house.instance.id %}">{{ house.instance.name }}</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
 {% block content %}
 <div class="box">
     <form method="post" action="" enctype="multipart/form-data">

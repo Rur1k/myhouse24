@@ -112,4 +112,6 @@ th.sorted[data-order="1"]::after {
 
 .userAvatar img {
     margin: 0 15px 15px 0;
+    width: 160px;
+    height: 160px;
 }

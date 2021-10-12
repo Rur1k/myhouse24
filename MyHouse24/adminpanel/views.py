@@ -341,6 +341,12 @@ def setting_user_admin(request):
     }
     return render(request, 'adminpanel/settings/users.html', data )
 
+def setting_user_admin_info(request, id):
+    data = {
+        'user': UserAdmin.objects.get(id=id),
+    }
+    return render(request, 'adminpanel/settings/user_info.html', data )
+
 def setting_user_admin_create(request):
     try:
         message = None
@@ -471,7 +477,7 @@ def setting_transaction_update(request, id):
     data = {
         'form': form,
     }
-    return render(request, 'adminpanel/settings/transaction_create.html', data)
+    return render(request, 'adminpanel/settings/transaction_update.html', data)
 
 def setting_transaction_delete(request, id):
     obj = SettingTransactionPurpose.objects.get(id=id)
@@ -499,8 +505,10 @@ def apartment_owner_create(request):
     try:
         message = None
         if request.method == "POST":
-            user_form = ApartmentOwnerForm(request.POST)
+            user_form = ApartmentOwnerForm(request.POST, request.FILES)
             if user_form.is_valid():
+                print(request.POST)
+                print(request.FILES)
                 new_user = user_form.save(commit=False)
                 new_user.username = new_user.email
                 new_user.set_password(user_form.cleaned_data['password'])

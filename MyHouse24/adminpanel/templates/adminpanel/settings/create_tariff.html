@@ -2,7 +2,10 @@
 {% load static %}
 {% block title %}Новый тариф{% endblock %}
 {% block page_name %}Новый тариф{% endblock %}
-{% block mini_page_name %}Новый тариф{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_tariffs' %}">Тарифы</a></li>
+    <li class="active">Новый тариф</li>
+{% endblock %}
 {% block content %}
 <div class="box">
     <div class="box-body">

@@ -2,7 +2,9 @@
 {% load static %}
 {% block title %}Пользователи{% endblock %}
 {% block page_name %}Пользователи{% endblock %}
-{% block mini_page_name %}Пользователи{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Пользователи</li>
+{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-xs-12">
@@ -53,7 +55,7 @@
             </thead>
             <tbody id="UserAdminList">
             {% for user in users %}
-            <tr onclick="location.href=''">
+            <tr onclick="location.href='{% url 'setting_user_admin_info' user.id %}'">
                 <td>{{ user.id }}</td>
                 <td class="user-admin-name">{{ user.first_name }} {{ user.last_name }}</td>
                 <td class="user-admin-role">{{ user.role }}</td>

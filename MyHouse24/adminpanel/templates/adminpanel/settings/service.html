@@ -2,7 +2,9 @@
 {% load static %}
 {% block title %}Редактирование услуг{% endblock %}
 {% block page_name %}Редактирование услуг{% endblock %}
-{% block mini_page_name %}Редактирование услуг{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Редактирование услуг</li>
+{% endblock %}
 {% block content %}
 {% if message is not None %}
     <div class="alert alert-danger alert-dismissible" role="alert">

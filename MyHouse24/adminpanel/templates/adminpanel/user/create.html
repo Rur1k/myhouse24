@@ -2,7 +2,10 @@
 {% load static %}
 {% block title %}Новый владелец{% endblock %}
 {% block page_name %}Новый владелец{% endblock %}
-{% block mini_page_name %}Новый владелец{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'apartment_owner' %}">Владельцы квартир</a></li>
+    <li class="active">Новый владелец</li>
+{% endblock %}
 {% block content %}
 {% if message_error %}
     <div class="alert alert-danger alert-dismissible" role="alert">
@@ -18,8 +21,8 @@
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6">
-                    <div class="margin-bottom-20 userAvatar">
-                        <div class="col-md-5">
+                    <div class="col-md-12 margin-bottom-20">
+                        <div class="userAvatar">
                             <img class="img-circle pull-left img-responsive" src="{% static 'img/default.jpg'%}">
                         </div>
                         <label>Сменить изображение</label>

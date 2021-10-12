@@ -2,7 +2,10 @@
 {% load static %}
 {% block title %}{{ house.name }}{% endblock %}
 {% block page_name %}{{ house.name }}{% endblock %}
-{% block mini_page_name %}{{ house.name }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'house' %}">Дома</a></li>
+    <li class="active">{{ house.name }}</li>
+{% endblock %}
 {% block content %}
 <div class="box col-md-12">
     <div class="box-header with-border text-right">
