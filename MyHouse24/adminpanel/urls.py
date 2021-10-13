@@ -39,6 +39,10 @@ urlpatterns = [
     path('users', views.apartment_owner, name='apartment_owner'),
     path('user/create', views.apartment_owner_create, name='apartment_owner_create'),
     path('user/<int:id>', views.apartment_owner_info, name='apartment_owner_info'),
+    # Квартиры
+    path('flat', views.flat, name='flat'),
+    path('flat/create', views.flat_create, name='flat_create'),
+    path('flat/ajax/select_section_floor', views.select_section_floor, name='select_section_floor'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

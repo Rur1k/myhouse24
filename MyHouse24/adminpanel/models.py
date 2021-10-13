@@ -21,17 +21,26 @@ class House(models.Model):
     image_4 = models.ImageField(upload_to='static/img/house', null=True, blank=True)
     image_5 = models.ImageField(upload_to='static/img/house', null=True, blank=True)
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Section(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=64)
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Floor(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=64)
+
+    def __str__(self):
+        return str(self.name)
 
 
 # Модели для настроек системы
@@ -57,6 +66,9 @@ class SettingTariff(models.Model):
     name = models.CharField(max_length=128, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     date_update = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.name)
 
 class SettingServiceIsTariff(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
@@ -203,3 +215,19 @@ class ApartmentOwner(User):
     telegram = models.CharField(max_length=64, null=True, blank=True)
     personal_id = models.CharField(max_length=64, null=True, blank=True)
     about_owner = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        full_name = str(self.last_name) + ' ' + str(self.first_name) + ' ' + str(self.patronymic)
+        return full_name
+
+# Модели для квартир
+class Flat(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    number_flat = models.CharField(max_length=64, null=True, blank=True)
+    square = models.CharField(max_length=64, null=True, blank=True)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
+    tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
+    personal_account = models.CharField(max_length=128, null=True, blank=True)

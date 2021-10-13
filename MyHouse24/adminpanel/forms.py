@@ -406,6 +406,57 @@ class ApartmentOwnerForm(forms.ModelForm):
                 raise forms.ValidationError('Поле "Пароль" не может быть пустым')
         return self.cleaned_data
 
+# Формы для квартир
+class FlatForm(forms.ModelForm):
+    class Meta:
+        model = Flat
+        fields = [ 'id', 'number_flat', 'square', 'house', 'section', 'floor', 'owner', 'tariff', 'personal_account']
+        widgets = {
+            'number_flat': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'square': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'house': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-house'
+            }),
+            'section': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-section'
+            }),
+            'floor': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-floor'
+            }),
+            'owner': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'tariff': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'personal_account': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['section'].queryset = Section.objects.none()
+        self.fields['floor'].queryset = Floor.objects.none()
+    #     print("=====================DATA+++++++++++++++++++++==")
+    #     print(self.data)
+
+        # house_id = int(self.data.get('house'))
+        # self.fields['section'].queryset = Section.objects.filter(house=house_id)
+        # self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+
+            # if 'setting_tariff_service-0-unit_service' in self.data:
+            #     service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
+            #     unit_id = SettingService.objects.get(id=service_id).unit.id
+            #     self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

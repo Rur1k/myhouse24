@@ -534,6 +534,32 @@ def apartment_owner_create(request):
         }
     return render(request, 'adminpanel/user/create.html', data)
 
+# Бизнес логика "Квартиры"
+def flat(request):
+    data = {
+        'houses': House.objects.all(),
+        'owners': ApartmentOwner.objects.all(),
+        'count': Flat.objects.all().count(),
+    }
+    return render(request, 'adminpanel/flat/index.html', data)
+
+def flat_create(request):
+    if request.method == "POST":
+        print(request.POST)
+    else:
+        form = FlatForm()
+    data = {
+        'flat': form,
+    }
+    return  render(request, 'adminpanel/flat/create.html', data)
+
+def select_section_floor(request):
+    house_id = request.GET.get('house')
+    print("++++++++++++++++++")
+    print(house_id)
+    section = Section.objects.filter(house=house_id)
+    return render(request, 'adminpanel/flat/ajax/select_section_floor.html', { 'section':section })
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()
