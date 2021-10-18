@@ -39,6 +39,8 @@ urlpatterns = [
     path('users', views.apartment_owner, name='apartment_owner'),
     path('user/create', views.apartment_owner_create, name='apartment_owner_create'),
     path('user/<int:id>', views.apartment_owner_info, name='apartment_owner_info'),
+    path('user/update/<int:id>', views.apartment_owner_update, name='apartment_owner_update'),
+    path('user/delete/<int:id>', views.apartment_owner_delete, name='apartment_owner_delete'),
     # Квартиры
     path('flat', views.flat, name='flat'),
     path('flat/create', views.flat_create, name='flat_create'),

@@ -516,6 +516,7 @@ def apartment_owner_create(request):
                 new_user.username = new_user.email
                 new_user.set_password(user_form.cleaned_data['password'])
                 new_user.save()
+                messages.success(request, 'Новый владелец успешно создан.', extra_tags='alert')
                 return redirect('apartment_owner')
             else:
                 for error in user_form.non_field_errors():
@@ -583,6 +584,11 @@ def apartment_owner_update(request, id):
             'message_error': message
         }
     return render(request, 'adminpanel/user/update.html', data)
+
+def apartment_owner_delete(request, id):
+    ApartmentOwner.objects.filter(id=id).update(is_active=0, status_id = 0)
+    return redirect('apartment_owner')
+
 # Бизнес логика "Квартиры"
 def flat(request):
     data = {

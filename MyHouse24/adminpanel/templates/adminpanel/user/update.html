@@ -1,10 +1,11 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}Новый владелец{% endblock %}
-{% block page_name %}Новый владелец{% endblock %}
+{% block title %}Профиль владельца{% endblock %}
+{% block page_name %}Профиль владельца{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'apartment_owner' %}">Владельцы квартир</a></li>
-    <li class="active">Новый владелец</li>
+    <li><a href="{% url 'apartment_owner_info' user.instance.id %}">Владелец квартиры</a></li>
+    <li class="active">Редактирование</li>
 {% endblock %}
 {% block content %}
 {% if message_error %}
@@ -23,7 +24,11 @@
                 <div class="col-md-6">
                     <div class="col-md-12 margin-bottom-20">
                         <div class="userAvatar">
+                            {% if user.instance.avatar %}
+                            <img class="img-circle pull-left img-responsive" src="{{ user.instance.avatar.url }}">
+                            {% else %}
                             <img class="img-circle pull-left img-responsive" src="{% static 'img/default.jpg'%}">
+                            {% endif %}
                         </div>
                         <label>Сменить изображение</label>
                         {{ user.avatar }}
@@ -55,7 +60,7 @@
                         {{ user.patronymic }}
                     </div>
                     <div class="col-md-12 margin-bottom-20">
-                        <label>Дата рождения:</label>
+                        <label>Дата рождения ({{ user.instance.birthday }})</label>
                         {{ user.birthday }}
                     </div>
                 </div>

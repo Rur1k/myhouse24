@@ -6,6 +6,16 @@
     <li class="active">Владельцы квартир</li>
 {% endblock %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group pull-right margin-bottom">
@@ -97,10 +107,10 @@
                         <a class="btn btn-default btn-sm" href="" title="Отправить пильмо" data-toggle="tooltip">
                             <i class="fa fa-envelope"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'apartment_owner_update' user.id %}" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'apartment_owner_delete' user.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
