@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
@@ -358,6 +359,7 @@ def setting_user_admin_create(request):
                 new_user.is_staff = 1
                 new_user.set_password(user_form.cleaned_data['password'])
                 new_user.save()
+                messages.success(request, 'Новый пользователь успешно создан.', extra_tags='alert')
                 return redirect('setting_user_admin')
             else:
                 for error in user_form.non_field_errors():
@@ -382,7 +384,7 @@ def setting_user_admin_create(request):
 def setting_user_admin_update(request, id):
     try:
         user = UserAdmin.objects.get(id=id)
-        print(user)
+        old_password = user.password2
 
         message = None
         if request.method == "POST":
@@ -391,19 +393,20 @@ def setting_user_admin_update(request, id):
             if user_form.is_valid():
                 edit_user = user_form.save(commit=False)
 
-                if user_form.cleaned_data['password'] != '':
-                    print('ПРойдена проверка на ввод пароля')
+                if user_form.cleaned_data['password'] is None or user_form.cleaned_data['password'] == '':
+                    edit_user.set_password(old_password)
+                    edit_user.password2 = old_password
+                else:
                     edit_user.set_password(user_form.cleaned_data['password'])
                     edit_user.password2 = user_form.cleaned_data['password']
-                else:
-                    print('НЕ ----------------- ПРойдена проверка на ввод пароля')
-                    # print('ПАРОЛЬ: '+user.password2)
 
-
-                if user_form.cleaned_data['status'] != 0:
+                if user_form.cleaned_data['status'].id != 0:
                     edit_user.is_active = 1
+                else:
+                    edit_user.is_active = 0
 
                 edit_user.save()
+
                 return redirect('setting_user_admin')
             else:
                 for error in user_form.non_field_errors():
@@ -534,6 +537,52 @@ def apartment_owner_create(request):
         }
     return render(request, 'adminpanel/user/create.html', data)
 
+def apartment_owner_update(request, id):
+    try:
+        user = ApartmentOwner.objects.get(id=id)
+        old_password = user.password2
+
+        message = None
+        if request.method == "POST":
+            user_form = ApartmentOwnerForm(request.POST, instance=user)
+            print(request.POST)
+            if user_form.is_valid():
+                edit_user = user_form.save(commit=False)
+
+                if user_form.cleaned_data['password'] is None or user_form.cleaned_data['password'] == '':
+                    edit_user.set_password(old_password)
+                    edit_user.password2 = old_password
+                else:
+                    edit_user.set_password(user_form.cleaned_data['password'])
+                    edit_user.password2 = user_form.cleaned_data['password']
+
+                if user_form.cleaned_data['status'].id != 0:
+                    edit_user.is_active = 1
+                else:
+                    edit_user.is_active = 0
+
+                edit_user.save()
+
+                return redirect('apartment_owner')
+            else:
+                for error in user_form.non_field_errors():
+                    message = error
+        else:
+            user_form = ApartmentOwnerForm(instance=user)
+
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    except Exception:
+        message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
+        user = ApartmentOwner.objects.get(id=id)
+        user_form = ApartmentOwnerForm(request.POST, instance=user)
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    return render(request, 'adminpanel/user/update.html', data)
 # Бизнес логика "Квартиры"
 def flat(request):
     data = {
