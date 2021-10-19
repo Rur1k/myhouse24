@@ -300,7 +300,6 @@ class ApartmentOwnerForm(forms.ModelForm):
             'first_name',
             'last_name',
             'telephone',
-            'house',
             'status',
             'patronymic',
             'avatar',
@@ -420,15 +419,15 @@ class FlatForm(forms.ModelForm):
             }),
             'house': forms.Select(attrs={
                 'class': 'form-control',
-                'id': 'id-house'
+                'id': 'id-house-flat'
             }),
             'section': forms.Select(attrs={
                 'class': 'form-control',
-                'id': 'id-section'
+                'id': 'id-section-flat'
             }),
             'floor': forms.Select(attrs={
                 'class': 'form-control',
-                'id': 'id-floor'
+                'id': 'id-floor-flat'
             }),
             'owner': forms.Select(attrs={
                 'class': 'form-control',
@@ -443,19 +442,21 @@ class FlatForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['section'].queryset = Section.objects.none()
-        self.fields['floor'].queryset = Floor.objects.none()
-    #     print("=====================DATA+++++++++++++++++++++==")
-    #     print(self.data)
 
-        # house_id = int(self.data.get('house'))
-        # self.fields['section'].queryset = Section.objects.filter(house=house_id)
-        # self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+        if self.instance.id is not None:
+            self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
+            self.fields['floor'].queryset = Floor.objects.filter(house=self.instance.house.id)
 
-            # if 'setting_tariff_service-0-unit_service' in self.data:
-            #     service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
-            #     unit_id = SettingService.objects.get(id=service_id).unit.id
-            #     self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
+            house_id = self.data.get('house')
+            if house_id is not None:
+                self.fields['section'].queryset = Section.objects.filter(house=house_id)
+                self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+
+        else:
+            house_id = self.data.get('house')
+            self.fields['section'].queryset = Section.objects.filter(house=house_id)
+            self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

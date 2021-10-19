@@ -1,10 +1,11 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}Новая квартира{% endblock %}
-{% block page_name %}Новая квартира{% endblock %}
+{% block title %}Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}<{% endblock %}
+{% block page_name %}Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'flat' %}">Квартиры</a></li>
-    <li class="active">Новая квартира</li>
+    <li><a href="{% url 'flat' %}">Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}</a></li>
+    <li class="active">Редактирование</li>
 {% endblock %}
 {% block content %}
 {% if messages %}

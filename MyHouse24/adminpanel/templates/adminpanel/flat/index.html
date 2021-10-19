@@ -6,6 +6,16 @@
     <li class="active">Квартиры</li>
 {% endblock %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group pull-right margin-bottom">
@@ -18,10 +28,12 @@
         <a class="btn btn-default" href="">Очистить</a>
     </div>
     <div class="grid-view">
-        <table id="FlatTable" class="table table-striped table-bordered table-hover table_sort">
+        <table id="FlatTable" class="table table-striped table-bordered table-hover table_sort"
+               data-section-url="{% url 'select_section_flat' %}"
+               data-floor-url="{% url 'select_floor_flat' %}">
             <thead>
             <tr>
-                <th class="col" style="min-width:50px">№ Квартиры</th>
+                <th class="col" style="width:120px">№ Квартиры</th>
                 <th class="col" style="min-width:100px">Дом</th>
                 <th class="col" style="min-width: 100px">Секция</th>
                 <th class="col" style="min-width:100px">Этаж</th>
@@ -33,25 +45,19 @@
                 <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
                 <td>
                     <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','FlatList','flat-house')">
-                        <option></option>
+                        <option value="0"></option>
                         {% for house in houses %}
-                        <option>{{ house.name }}</option>
+                        <option value="{{ house.id }}">{{ house.name }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
                     <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','FlatList','flat-section')">
-                        <option></option>
-
-                        <option></option>
 
                     </select>
                 </td>
                 <td>
                     <select id="FloorSearch" class="form-control" onchange="searchTable('FloorSearch','FlatList','flat-floor')">
-                        <option></option>
-
-                        <option></option>
 
                     </select>
                 </td>
@@ -59,7 +65,7 @@
                     <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','FlatList','flat-owner')">
                         <option></option>
                         {% for owner in owners %}
-                        <option>{{ owner.first_name }} {{ owner.last_name }} {{ owner.patronymic }}</option>
+                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }} {{ owner.patronymic }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -77,17 +83,17 @@
             {% for flat in flats %}
             <tr onclick="location.href=''">
                 <td class="flat-number">{{ flat.number_flat }}</td>
-                <td class="flat-house">{{ flat.house }}</td>
-                <td class="flat-section">{{ flat.section }}</td>
-                <td class="flat-floor">{{ flat.floor }}</td>
-                <td class="flat-owner">{{ flat.owner }}</td>
+                <td class="flat-house"><div hidden="hidden">{{ flat.house.id }}</div>{{ flat.house }}</td>
+                <td class="flat-section"><div hidden="hidden">{{ flat.section.id }}</div>{{ flat.section }}</td>
+                <td class="flat-floor"><div hidden="hidden">{{ flat.floor.id }}</div>{{ flat.floor }}</td>
+                <td class="flat-owner"><div hidden="hidden">{{ flat.owner.id }}</div>{{ flat.owner }}</td>
                 <td class="flat-remainder"></td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'flat_update' flat.id %}" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'flat_delete' flat.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

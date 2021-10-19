@@ -591,16 +591,27 @@ def apartment_owner_delete(request, id):
 
 # Бизнес логика "Квартиры"
 def flat(request):
+    flats = Flat.objects.all()
     data = {
+        'flats': flats,
         'houses': House.objects.all(),
         'owners': ApartmentOwner.objects.all(),
-        'count': Flat.objects.all().count(),
+        'count': flats.count(),
     }
     return render(request, 'adminpanel/flat/index.html', data)
 
 def flat_create(request):
     if request.method == "POST":
         print(request.POST)
+        form = FlatForm(request.POST)
+        print(form)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Квартира успешно создана")
+            return redirect('flat')
+        else:
+            messages.error(request, "Ошибка валидации")
+            print(form.errors)
     else:
         form = FlatForm()
     data = {
@@ -608,12 +619,41 @@ def flat_create(request):
     }
     return  render(request, 'adminpanel/flat/create.html', data)
 
-def select_section_floor(request):
+def flat_update(request, id):
+    flat_info= Flat.objects.get(id=id)
+    if request.method == "POST":
+        form = FlatForm(request.POST, instance=flat_info)
+        print(form)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Квартира №{flat_info.number_flat}, {flat_info.house} успешно отредактирована")
+            return redirect('flat')
+        else:
+            messages.error(request, "Ошибка валидации")
+            print(form.errors)
+    else:
+        form = FlatForm(instance=flat_info)
+    data = {
+        'flat': form,
+    }
+    return  render(request, 'adminpanel/flat/update.html', data)
+
+def flat_delete(request, id):
+    obj = Flat.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Квартира успешно удалена")
+    return redirect('flat')
+
+def select_section_flat(request):
     house_id = request.GET.get('house')
-    print("++++++++++++++++++")
-    print(house_id)
     section = Section.objects.filter(house=house_id)
-    return render(request, 'adminpanel/flat/ajax/select_section_floor.html', { 'section':section })
+    return render(request, 'adminpanel/flat/ajax/select_section_flat.html', { 'section':section })
+
+def select_floor_flat(request):
+    house_id = request.GET.get('house')
+    floors = Floor.objects.filter(house=house_id)
+    return render(request, 'adminpanel/flat/ajax/select_floor_flat.html', { 'floors':floors })
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

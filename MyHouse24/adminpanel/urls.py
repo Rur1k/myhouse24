@@ -44,7 +44,10 @@ urlpatterns = [
     # Квартиры
     path('flat', views.flat, name='flat'),
     path('flat/create', views.flat_create, name='flat_create'),
-    path('flat/ajax/select_section_floor', views.select_section_floor, name='select_section_floor'),
+    path('flat/update/<int:id>', views.flat_update, name='flat_update'),
+    path('flat/delete/<int:id>', views.flat_delete, name='flat_delete'),
+    path('flat/ajax/select_section_flat', views.select_section_flat, name='select_section_flat'),
+    path('flat/ajax/select_floor_flat', views.select_floor_flat, name='select_floor_flat'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
