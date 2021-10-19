@@ -1,0 +1,79 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Квартира №{{flat.number_flat}}, {{flat.house}}{% endblock %}
+{% block page_name %}Квартира №{{flat.number_flat}}, {{flat.house}}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'flat' %}">Квартиры</a></li>
+    <li class="active">Квартира №{{flat.number_flat}}, {{flat.house}}</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="box col-md-12">
+    <div class="box-header with-border text-right">
+        <h3 class="pull-left">Просмотр квартиры</h3>
+        <a href="" class="btn btn-default">
+            <i class="fa fa-dollar"></i>
+            Принять платеж
+        </a>
+        <a href="" class="btn btn-default">
+            <i class="fa fa-files-o"></i>
+            Оформить квитанцию
+        </a>
+        <a href="{% url 'flat_update' flat.id %}" class="btn btn-primary">Редактировать квартиру</a>
+    </div>
+    <div class="box-body row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-md-6">Лицевой счет</th>
+                    <td>{{ flat.personal_account }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Номер квартиры</th>
+                    <td> {{ flat.number_flat }} </td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Площадь</th>
+                    <td>{{ flat.square }} м²</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Дом</th>
+                    <td><a href="{% url 'info_house' flat.house.id %}">{{ flat.house }}</a></td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Секция</th>
+                    <td>{{ flat.section }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Этаж</th>
+                    <td>{{ flat.floor }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Владелец</th>
+                    <td><a href="{% url 'apartment_owner_info' flat.owner.id %}">{{ flat.owner }}</a></td>
+                </tr>
+                <tr>
+                    <th class="col-md-6">Тариф</th>
+                    <td><a href="{% url 'setting_tariffs_info' flat.tariff.id %}">{{ flat.tariff }}</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <a href="">Посмотреть показания счетчиков</a><br>
+            <a href="">Посмотреть приходы</a><br>
+            <a href="">Посмотреть квитанции</a><br>
+        </div>
+    </div>
+</div>
+{% endblock %}

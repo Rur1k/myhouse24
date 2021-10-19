@@ -1,7 +1,159 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}{% endblock %}
-{% block page_name %}{% endblock %}
-{% block mini_page_name %}{% endblock %}
+{% block title %}Лицевые счета{% endblock %}
+{% block page_name %}Лицевые счета{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Лицевые счета</li>
+{% endblock %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3> грн</h3>
+                            <p>Состояние кассы</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            <h3> грн</h3>
+                            <p>Баланс по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3> грн</h3>
+                            <p>Задолженность по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите действие
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="">Добавить лицевой счет</a></li>
+                    <li><a href="">Выгрузить в Excel</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="AccountTable" class="table table-striped table-bordered table-hover table_sort"
+               data-section-url="{% url 'select_section_flat' %}">
+            <thead>
+            <tr>
+                <th class="col" style="width:120px">№</th>
+                <th class="col" style="width:100px">Статус</th>
+                <th class="col" style="width: 100px">Квартира</th>
+                <th class="col" style="min-width:100px">Дом</th>
+                <th class="col" style="min-width:100px">Секция</th>
+                <th class="col" style="min-width: 100px">Владелец</th>
+                <th class="col" style="min-width: 100px">Остаток</th>
+                <th class="col" style="width: 100px; min-width:120px"></th>
+            </tr>
+            <tr>
+                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
+                <td><input id="StatusSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
+                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
+                <td>
+                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','FlatList','flat-house')">
+                        <option value="0"></option>
+                        {% for house in houses %}
+                        <option value="{{ house.id }}">{{ house.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','FlatList','flat-section')">
+
+                    </select>
+                </td>
+                <td>
+                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','FlatList','flat-owner')">
+                        <option></option>
+                        {% for owner in owners %}
+                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }} {{ owner.patronymic }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','FlatList','flat-remainder')">
+                        <option></option>
+                        <option>Есть долг</option>
+                        <option>Нет долга</option>
+                    </select>
+                </td>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="AccountList">
+
+            <tr onclick="location.href=''">
+                <td class="number"></td>
+                <td class="status"></td>
+                <td class="flat"></td>
+                <td class="house"></td>
+                <td class="section"></td>
+                <td class="owner"></td>
+                <td class="remainder"></td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+        <div class="box-footer clearfix">
+        <div>
+            Количество счетов:
+            <span class="text-bolt">{{ count }}</span>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

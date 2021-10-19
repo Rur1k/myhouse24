@@ -4,7 +4,7 @@
 {% block page_name %}Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'flat' %}">Квартиры</a></li>
-    <li><a href="{% url 'flat' %}">Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}</a></li>
+    <li><a href="{% url 'flat_info' flat.instance.id %}">Квартира №{{ flat.instance.number_flat }}, {{flat.instance.house}}</a></li>
     <li class="active">Редактирование</li>
 {% endblock %}
 {% block content %}
@@ -66,8 +66,8 @@
             <div class="col-md-12 text-right">
                 <div class="form-group">
                     <a href="{% url 'flat' %}" class="btn btn-default">Отменить</a>
-                    <button type="submit" class="btn btn-success">Сохранить</button>
-                    <button type="submit" class="btn btn-success bg-green-active">Сохранить и добавить новую</button>
+                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                    <button type="submit" name="save_and_new" class="btn btn-success bg-green-active">Сохранить и добавить новую</button>
                 </div>
             </div>
         </form>

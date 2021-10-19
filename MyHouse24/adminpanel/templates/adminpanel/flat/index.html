@@ -81,7 +81,7 @@
             </thead>
             <tbody id="FlatList">
             {% for flat in flats %}
-            <tr onclick="location.href=''">
+            <tr onclick="location.href='{% url 'flat_info' flat.id %}'">
                 <td class="flat-number">{{ flat.number_flat }}</td>
                 <td class="flat-house"><div hidden="hidden">{{ flat.house.id }}</div>{{ flat.house }}</td>
                 <td class="flat-section"><div hidden="hidden">{{ flat.section.id }}</div>{{ flat.section }}</td>

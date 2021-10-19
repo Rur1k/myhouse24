@@ -608,7 +608,10 @@ def flat_create(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Квартира успешно создана")
-            return redirect('flat')
+            if 'save' in request.POST:
+                return redirect('flat')
+            elif 'save_and_new' in request.POST:
+                return redirect('flat_create')
         else:
             messages.error(request, "Ошибка валидации")
             print(form.errors)
@@ -627,7 +630,10 @@ def flat_update(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, f"Квартира №{flat_info.number_flat}, {flat_info.house} успешно отредактирована")
-            return redirect('flat')
+            if 'save' in request.POST:
+                return redirect('flat')
+            elif 'save_and_new' in request.POST:
+                return redirect('flat_create')
         else:
             messages.error(request, "Ошибка валидации")
             print(form.errors)
@@ -645,6 +651,12 @@ def flat_delete(request, id):
     messages.success(request, f"Квартира успешно удалена")
     return redirect('flat')
 
+def flat_info(request, id):
+    data = {
+        'flat': Flat.objects.get(id=id)
+    }
+    return render(request, 'adminpanel/flat/info.html', data)
+
 def select_section_flat(request):
     house_id = request.GET.get('house')
     section = Section.objects.filter(house=house_id)
@@ -654,6 +666,14 @@ def select_floor_flat(request):
     house_id = request.GET.get('house')
     floors = Floor.objects.filter(house=house_id)
     return render(request, 'adminpanel/flat/ajax/select_floor_flat.html', { 'floors':floors })
+
+# Лицевые счета
+def account(request):
+    data = {
+        'houses': House.objects.all(),
+        'owners': ApartmentOwner.objects.all(),
+    }
+    return render(request, 'adminpanel/account/index.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
