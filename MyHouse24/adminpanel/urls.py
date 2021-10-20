@@ -52,6 +52,9 @@ urlpatterns = [
     # Лицевые счета
     path('account', views.account, name='account'),
     path('account/create', views.account_create, name='account_create'),
+    path('account/<int:id>', views.account_info, name='account_info'),
+    path('account/update/<int:id>', views.account_update, name='account_update'),
+    path('account/delete/<int:id>', views.account_delete, name='account_delete'),
     path('account/ajax/select_section_account', views.select_section_account, name='select_section_account'),
     path('account/ajax/select_flat_account', views.select_flat_account, name='select_flat_account'),
     path('account/ajax/order_flat_account', views.order_flat_account, name='order_flat_account'),

@@ -1,0 +1,95 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Лицевой счет №{{account.instance.number}}{% endblock %}
+{% block page_name %}Лицевой счет №{{account.instance.number}}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'account' %}">Лицевые счета</a></li>
+    <li><a href="{% url 'account_info' account.instance.id %}">Лицевой счет №{{account.instance.number}}</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<form id="AccountCreateForm" novalidate method="post"
+      action="" enctype="multipart/form-data"
+      data-section-url="{% url 'select_section_account' %}"
+      data-flat-url="{% url 'select_flat_account' %}"
+      data-order-flat-url="{% url 'order_flat_account' %}"
+      data-username-url="{% url 'select_username_account' %}"
+      data-phone-url="{% url 'select_phone_account' %}">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"> № </div>
+                        {{ account.number }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Статус</label>
+                    {{ account.status }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Дом</label>
+                    {{ account.house }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Секция</label>
+                    {{ account.section }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Квартира</label>
+                    {{ account.flat }}
+                </div>
+                <div class="col-md-12">
+                    <p>
+                        <b>Владелец:</b>
+                        {% if owner is not None %}
+                        <span id="user-fullname">
+                            <a href = "{% url 'apartment_owner_info' owner.id %}">
+                                {{ owner.last_name }} {{ owner.first_name }} {{ owner.patronymic }}
+                            </a>
+                        </span>
+                        {% else %}
+                        <span id="user-fullname">не выбран</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <b>Телефон:</b>
+                        {% if owner is not None %}
+                        <span id="user-phone">
+                            <a href="#">{{ owner.telephone }}</a>
+                        </span>
+                        {% else %}
+                        <span id="user-phone">не выбран</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'account' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -669,21 +669,34 @@ def select_floor_flat(request):
 
 # Лицевые счета
 def account(request):
+    accounts = Account.objects.all()
     data = {
+        'accounts': accounts,
+        'status': StatusAccount.objects.all(),
         'houses': House.objects.all(),
         'owners': ApartmentOwner.objects.all(),
+        'count': accounts.count()
     }
     return render(request, 'adminpanel/account/index.html', data)
 
 def account_create(request):
+    status_none = StatusAccount.objects.filter(id=1).first()
+
     if request.method == 'POST':
+        print(request.POST)
         form = AccountForm(request.POST)
         if form.is_valid():
-            form.save()
+            obj = form.save(commit=False)
+            if form.cleaned_data['status'] is None:
+                obj.status = status_none
+            obj.save()
+
             messages.success(request, "Лицевой счет успешно создан")
             return redirect('account')
         else:
-            messages.error(request, "Ошибка валидации")
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
             print(form.errors)
     else:
         form = AccountForm()
@@ -691,6 +704,45 @@ def account_create(request):
         'account': form,
     }
     return render(request, 'adminpanel/account/create.html', data)
+
+def account_info(request, id):
+    data = {
+        'account': Account.objects.get(id=id)
+    }
+    return render(request, 'adminpanel/account/info.html', data)
+
+def account_update(request, id):
+    account_info = Account.objects.get(id=id)
+    if account_info.flat is not None:
+        owner = account_info.flat.owner
+    else:
+        owner = None
+
+    if request.method == 'POST':
+        form = AccountForm(request.POST, instance=account_info)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Лицевой счет успешно отредактирован")
+            return redirect('account')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = AccountForm(instance=account_info)
+
+    data = {
+        'account': form,
+        'owner': owner
+    }
+    return render(request, 'adminpanel/account/update.html', data)
+
+def account_delete(request, id):
+    obj = Account.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Лицевой счет успешно удален")
+    return redirect('account')
 
 def select_section_account(request):
     house_id = request.GET.get('house')

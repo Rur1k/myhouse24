@@ -249,3 +249,4 @@ class Account(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)

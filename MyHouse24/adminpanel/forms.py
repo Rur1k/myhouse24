@@ -486,19 +486,45 @@ class AccountForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.instance.id is not None:
-            self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
-            self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.house.id)
+            if self.instance.house:
+                self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
+                self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.house.id)
+            else:
+                self.fields['section'].queryset = Section.objects.none()
+                self.fields['flat'].queryset = Flat.objects.none()
 
             house_id = self.data.get('house')
-            if house_id is not None:
+            if house_id:
                 self.fields['section'].queryset = Section.objects.filter(house=house_id)
                 self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
         else:
             self.fields['section'].queryset = Section.objects.none()
             self.fields['flat'].queryset = Flat.objects.none()
             house_id = self.data.get('house')
-            self.fields['section'].queryset = Section.objects.filter(house=house_id)
-            self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+            print(house_id)
+            if house_id:
+                self.fields['section'].queryset = Section.objects.filter(house=house_id)
+                self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+
+    def clean(self):
+        cd = self.cleaned_data
+        if self.instance.id is not None:
+            if 'number' in cd:
+                if cd['number'] is None:
+                    raise forms.ValidationError('Лицевой счет не может быть пустым!')
+                if self.instance.number != cd['number']:
+                    if Account.objects.filter(number=cd['number']).first() is not None:
+                        raise forms.ValidationError('Лицевой счет ' + cd['number'] + ' - занят! Укажите другой.')
+        else:
+            if 'number' in cd:
+                if cd['number'] is None:
+                    raise forms.ValidationError('Лицевой счет не может быть пустым!')
+                if Account.objects.filter(number=cd['number']).first() is not None:
+                    raise forms.ValidationError('Лицевой счет '+ cd['number'] +' - занят! Укажите другой.')
+            else:
+                raise forms.ValidationError('Лицевой счет не может быть пустым')
+
+        return self.cleaned_data
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
