@@ -675,6 +675,48 @@ def account(request):
     }
     return render(request, 'adminpanel/account/index.html', data)
 
+def account_create(request):
+    if request.method == 'POST':
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Лицевой счет успешно создан")
+            return redirect('account')
+        else:
+            messages.error(request, "Ошибка валидации")
+            print(form.errors)
+    else:
+        form = AccountForm()
+    data = {
+        'account': form,
+    }
+    return render(request, 'adminpanel/account/create.html', data)
+
+def select_section_account(request):
+    house_id = request.GET.get('house')
+    sections = Section.objects.filter(house=house_id)
+    return render(request, 'adminpanel/account/ajax/select_section_account.html', { 'sections':sections })
+
+def select_flat_account(request):
+    house_id = request.GET.get('house')
+    flats = Flat.objects.filter(house=house_id)
+    return render(request, 'adminpanel/account/ajax/select_flat_account.html', { 'flats':flats })
+
+def order_flat_account(request):
+    section_id = request.GET.get('section')
+    flats = Flat.objects.filter(section=section_id)
+    return render(request, 'adminpanel/account/ajax/order_flat.html', { 'flats':flats })
+
+def select_username_account(request):
+    flat_id = request.GET.get('flat')
+    flat = Flat.objects.filter(id=flat_id).first()
+    return render(request, 'adminpanel/account/ajax/select-username-full.html', { 'user':flat.owner })
+
+def select_phone_account(request):
+    flat_id = request.GET.get('flat')
+    flat = Flat.objects.filter(id=flat_id).first()
+    return render(request, 'adminpanel/account/ajax/select-phone.html', { 'user':flat.owner })
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

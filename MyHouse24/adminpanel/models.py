@@ -230,3 +230,22 @@ class Flat(models.Model):
     owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
     tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
     personal_account = models.CharField(max_length=128, null=True, blank=True)
+
+    def __str__(self):
+        return self.number_flat
+
+# Модели для ЛС
+class StatusAccount(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Account(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    number = models.CharField(max_length=64, null=True, blank=True)
+    status = models.ForeignKey(StatusAccount, on_delete=models.CASCADE, null=True, blank=True)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)

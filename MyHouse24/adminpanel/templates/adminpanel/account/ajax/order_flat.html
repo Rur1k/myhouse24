@@ -1,0 +1,5 @@
+<option value="">Выберите...</option>
+{% for obj in flats %}
+<option value="{{ obj.id }}">{{ obj.number_flat }}</option>
+{% endfor %}
+

@@ -451,12 +451,54 @@ class FlatForm(forms.ModelForm):
             if house_id is not None:
                 self.fields['section'].queryset = Section.objects.filter(house=house_id)
                 self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
-
         else:
             house_id = self.data.get('house')
             self.fields['section'].queryset = Section.objects.filter(house=house_id)
             self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
 
+# Формы для ЛС
+class AccountForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['id', 'number', 'status', 'house', 'section', 'flat']
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'house': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-house-account'
+            }),
+            'section': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-section-account'
+            }),
+            'flat': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-flat-account'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.id is not None:
+            self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
+            self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.house.id)
+
+            house_id = self.data.get('house')
+            if house_id is not None:
+                self.fields['section'].queryset = Section.objects.filter(house=house_id)
+                self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+        else:
+            self.fields['section'].queryset = Section.objects.none()
+            self.fields['flat'].queryset = Flat.objects.none()
+            house_id = self.data.get('house')
+            self.fields['section'].queryset = Section.objects.filter(house=house_id)
+            self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

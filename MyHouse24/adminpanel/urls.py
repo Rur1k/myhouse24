@@ -51,6 +51,12 @@ urlpatterns = [
     path('flat/ajax/select_floor_flat', views.select_floor_flat, name='select_floor_flat'),
     # Лицевые счета
     path('account', views.account, name='account'),
+    path('account/create', views.account_create, name='account_create'),
+    path('account/ajax/select_section_account', views.select_section_account, name='select_section_account'),
+    path('account/ajax/select_flat_account', views.select_flat_account, name='select_flat_account'),
+    path('account/ajax/order_flat_account', views.order_flat_account, name='order_flat_account'),
+    path('account/ajax/select_username_account', views.select_username_account, name='select_username_account'),
+    path('account/ajax/select_phone_account', views.select_phone_account, name='select_phone_account'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
