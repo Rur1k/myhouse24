@@ -606,16 +606,25 @@ def flat_create(request):
     if request.method == "POST":
         print(request.POST)
         form = FlatForm(request.POST)
-        print(form)
         if form.is_valid():
             form.save()
+            flat_obj = form.save(commit=False)
+            if Account.objects.filter(number=form.cleaned_data['personal_account']).first() is None:
+                account_obj = Account.objects.create(
+                    number=form.cleaned_data['personal_account'],
+                    house=form.cleaned_data['house'],
+                    section=form.cleaned_data['section'],
+                    flat=flat_obj
+                )
             messages.success(request, "Квартира успешно создана")
             if 'save' in request.POST:
                 return redirect('flat')
             elif 'save_and_new' in request.POST:
                 return redirect('flat_create')
         else:
-            messages.error(request, "Ошибка валидации")
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
             print(form.errors)
     else:
         form = FlatForm()
@@ -656,7 +665,8 @@ def flat_delete(request, id):
 
 def flat_info(request, id):
     data = {
-        'flat': Flat.objects.get(id=id)
+        'flat': Flat.objects.get(id=id),
+        'account': Account.objects.filter(flat=id).first()
     }
     return render(request, 'adminpanel/flat/info.html', data)
 

@@ -59,11 +59,11 @@
                     <div class="col-md-12 margin-bottom-20">
                         <label>Лицевой счет</label>
                         {{ flat.personal_account }}
-                        <select id="id-select-account-flat" class="form-control selectpicker">
-                            <option value="" selected disabled hidden>или выберите из списка...</option>
-                            <option>1</option>
+                        <select id="id-select-account-flat" class="form-control selectpicker"
+                                title="или выберите из списка..."
+                                data-live-search="true">
                             {% for obj in free_account %}
-                            <option value="{{ obj.number }}">{{ obj.number }}</option>
+                            <option value="{{ obj.id }}">{{ obj.number }}</option>
                             {% endfor %}
                         </select>
                     </div>

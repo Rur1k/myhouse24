@@ -419,7 +419,8 @@ class FlatForm(forms.ModelForm):
             }),
             'house': forms.Select(attrs={
                 'class': 'form-control',
-                'id': 'id-house-flat'
+                'id': 'id-house-flat',
+                'title': 'Выберите...'
             }),
             'section': forms.Select(attrs={
                 'class': 'form-control',
@@ -456,6 +457,13 @@ class FlatForm(forms.ModelForm):
             house_id = self.data.get('house')
             self.fields['section'].queryset = Section.objects.filter(house=house_id)
             self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+
+    def clean(self):
+        cd = self.cleaned_data
+        print("Аккаунт"+cd['personal_account'])
+        if 'personal_account' in cd:
+            if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
+                raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
 
 # Формы для ЛС
 class AccountForm(forms.ModelForm):
