@@ -601,6 +601,8 @@ def flat(request):
     return render(request, 'adminpanel/flat/index.html', data)
 
 def flat_create(request):
+    free_account = Account.objects.filter(flat=None)
+
     if request.method == "POST":
         print(request.POST)
         form = FlatForm(request.POST)
@@ -619,6 +621,7 @@ def flat_create(request):
         form = FlatForm()
     data = {
         'flat': form,
+        'free_account': free_account,
     }
     return  render(request, 'adminpanel/flat/create.html', data)
 

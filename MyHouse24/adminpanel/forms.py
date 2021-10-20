@@ -436,7 +436,8 @@ class FlatForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'personal_account': forms.TextInput(attrs={
-                'class': 'form-control'
+                'class': 'form-control',
+                'id': 'id-personal-account-flat'
             }),
         }
 
@@ -515,12 +516,18 @@ class AccountForm(forms.ModelForm):
                 if self.instance.number != cd['number']:
                     if Account.objects.filter(number=cd['number']).first() is not None:
                         raise forms.ValidationError('Лицевой счет ' + cd['number'] + ' - занят! Укажите другой.')
+                if self.instance.flat != cd['flat']:
+                    if Account.objects.filter(flat=cd['flat']).first() is not None:
+                        raise forms.ValidationError('К выбраной квартире уже привязан счет!')
+
         else:
             if 'number' in cd:
                 if cd['number'] is None:
                     raise forms.ValidationError('Лицевой счет не может быть пустым!')
                 if Account.objects.filter(number=cd['number']).first() is not None:
                     raise forms.ValidationError('Лицевой счет '+ cd['number'] +' - занят! Укажите другой.')
+                if Account.objects.filter(flat=cd['flat']).first() is not None:
+                    raise forms.ValidationError('К выбраной квартире уже привязан счет!')
             else:
                 raise forms.ValidationError('Лицевой счет не может быть пустым')
 

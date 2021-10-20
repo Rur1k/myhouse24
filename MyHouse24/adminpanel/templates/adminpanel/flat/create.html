@@ -55,10 +55,17 @@
                         {{ flat.tariff }}
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 form-group">
                     <div class="col-md-12 margin-bottom-20">
                         <label>Лицевой счет</label>
                         {{ flat.personal_account }}
+                        <select id="id-select-account-flat" class="form-control selectpicker">
+                            <option value="" selected disabled hidden>или выберите из списка...</option>
+                            <option>1</option>
+                            {% for obj in free_account %}
+                            <option value="{{ obj.number }}">{{ obj.number }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>

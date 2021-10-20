@@ -173,3 +173,11 @@ $('#showPass').click(function() {
     }
 });
 
+// Выбор и передача выбраного ЛС в поле внутри квартир
+$("#id-select-account-flat").change(function () {
+      var accountNumber = $(this).val();
+      var accountReturn = document.getElementById('id-personal-account-flat');
+      accountReturn.value = accountNumber;
+      $(this).val("");
+
+    });
