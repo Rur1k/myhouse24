@@ -667,7 +667,6 @@ def flat_delete(request, id):
 def flat_info(request, id):
     data = {
         'flat': Flat.objects.get(id=id),
-        'account': Account.objects.filter(flat=id).first()
     }
     return render(request, 'adminpanel/flat/info.html', data)
 
@@ -703,6 +702,8 @@ def account_create(request):
             obj = form.save(commit=False)
             if form.cleaned_data['status'] is None:
                 obj.status = status_none
+            # if form.cleaned_data['flat']:
+            #     flatUpdateAccount = Flat.objects.filter(id=obj.flat.id).update(personal_account=obj.number)
             obj.save()
 
             messages.success(request, "Лицевой счет успешно создан")
@@ -728,18 +729,32 @@ def account_info(request, id):
 
 def account_update(request, id):
     account_info = Account.objects.get(id=id)
+
     if account_info.flat is not None:
         owner = account_info.flat.owner
         section = Section.objects.filter(house=account_info.flat.house)
+        flat = Flat.objects.filter(id=account_info.flat.id).first()
     else:
         owner = None
         section = None
-
+        flat = None
 
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=account_info)
         if form.is_valid():
+            obj = form.save(commit=False)
+            # print('Данные:')
+            # print(form.cleaned_data['flat'])
+            # print(flat)
+            #
+            # if form.cleaned_data['flat'] is None:
+            #     Flat.objects.filter(id=flat.id).update(personal_account=None)
+            # elif form.cleaned_data['flat'] != flat:
+            #     Flat.objects.filter(id=obj.flat.id).update(personal_account=obj.number)
+            #     Flat.objects.filter(id=flat.id).update(personal_account=None)
+
             form.save()
+
             messages.success(request, "Лицевой счет успешно отредактирован")
             return redirect('account')
         else:

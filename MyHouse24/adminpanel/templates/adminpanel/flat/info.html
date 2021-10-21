@@ -38,8 +38,8 @@
                         <tbody>
                         <tr>
                             <th class="col-md-6">Лицевой счет</th>
-                            {% if account.number %}
-                            <td><a href="{% url 'account_info' account.id %}">{{ account.number }}</a></td>
+                            {% if flat.account.number %}
+                            <td><a href="{% url 'account_info' flat.account.id %}">{{ flat.account.number }}</a></td>
                             {% else %}
                             <td>(нет счета)</td>
                             {% endif %}
@@ -77,7 +77,7 @@
                             {% if flat.tariff %}
                             <td><a href="{% url 'setting_tariffs_info' flat.tariff.id %}">{{ flat.tariff }}</a></td>
                             {% else %}
-                            <td>не задано</td>
+                            <td>не указано</td>
                             {% endif %}
                         </tr>
                         </tbody>

@@ -86,8 +86,20 @@
                 <td class="flat-house"><div hidden="hidden">{{ flat.house.id }}</div>{{ flat.house }}</td>
                 <td class="flat-section"><div hidden="hidden">{{ flat.section.id }}</div>{{ flat.section }}</td>
                 <td class="flat-floor"><div hidden="hidden">{{ flat.floor.id }}</div>{{ flat.floor }}</td>
-                <td class="flat-owner"><div hidden="hidden">{{ flat.owner.id }}</div>{{ flat.owner }}</td>
-                <td class="flat-remainder"></td>
+                <td class="flat-owner">
+                    {% if flat.owner %}
+                    <div hidden="hidden">{{ flat.owner.id }}</div>{{ flat.owner }}
+                    {% else %}
+                    (не задано)
+                    {% endif %}
+                </td>
+                <td class="flat-remainder">
+                    {% if flat.account %}
+                        {{ flat.account.saldo }}
+                    {% else %}
+                        (нет счета)
+                    {% endif %}
+                </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'flat_update' flat.id %}" title="Редактировать" data-toggle="tooltip">

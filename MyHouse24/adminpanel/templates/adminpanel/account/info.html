@@ -60,19 +60,45 @@
                         </tr>
                         <tr>
                             <th class="col-md-6">Дом</th>
-                            <td><a href="{% url 'info_house' account.house.id %}">{{ account.house }}</a></td>
+                            <td>
+                                {% if account.flat.house %}
+                                <a href="{% url 'info_house' account.flat.house.id %}">{{ account.flat.house }}</a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Секция</th>
-                            <td>{{ account.section }}</td>
+                            <td>
+                                {% if account.flat.section %}
+                                {{ account.flat.section }}
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Квартира</th>
-                            <td><a href="{% url 'flat_info' account.flat.id%}">{{ account.flat }}</a></td>
+                            <td>
+                                {% if account.flat %}
+                                <a href="{% url 'flat_info' account.flat.id%}">{{ account.flat }}</a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Владелец</th>
-                            <td><a href="{% url 'apartment_owner_info' account.flat.owner.id %}">{{ account.flat.owner }}</a></td>
+                            <td>
+                                {% if account.flat.owner %}
+                                <a href="{% url 'apartment_owner_info' account.flat.owner.id %}">
+                                    {{ account.flat.owner }}
+                                </a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Остаток, грн.</th>

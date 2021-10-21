@@ -409,7 +409,7 @@ class ApartmentOwnerForm(forms.ModelForm):
 class FlatForm(forms.ModelForm):
     class Meta:
         model = Flat
-        fields = [ 'id', 'number_flat', 'square', 'house', 'section', 'floor', 'owner', 'tariff', 'personal_account']
+        fields = [ 'id', 'number_flat', 'square', 'house', 'section', 'floor', 'owner', 'tariff']
         widgets = {
             'number_flat': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -435,10 +435,6 @@ class FlatForm(forms.ModelForm):
             }),
             'tariff': forms.Select(attrs={
                 'class': 'form-control',
-            }),
-            'personal_account': forms.TextInput(attrs={
-                'class': 'form-control',
-                'id': 'id-personal-account-flat'
             }),
         }
 
@@ -512,8 +508,6 @@ class AccountForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
-        print('данные с формы: ')
-        print(cd)
         if self.instance.id is not None:
             if 'number' in cd:
                 if cd['number'] is None:
@@ -522,8 +516,9 @@ class AccountForm(forms.ModelForm):
                     if Account.objects.filter(number=cd['number']).first() is not None:
                         raise forms.ValidationError('Лицевой счет ' + cd['number'] + ' - занят! Укажите другой.')
                 if self.instance.flat != cd['flat']:
-                    if Account.objects.filter(flat=cd['flat']).first() is not None:
-                        raise forms.ValidationError('К выбраной квартире уже привязан счет!')
+                    if cd['flat'] is not None:
+                        if Account.objects.filter(flat=cd['flat']).first() is not None:
+                            raise forms.ValidationError('К выбраной квартире уже привязан счет!')
 
         else:
             if 'number' in cd:
@@ -531,6 +526,7 @@ class AccountForm(forms.ModelForm):
                     raise forms.ValidationError('Лицевой счет не может быть пустым!')
                 if Account.objects.filter(number=cd['number']).first() is not None:
                     raise forms.ValidationError('Лицевой счет '+ cd['number'] +' - занят! Укажите другой.')
+
                 if Account.objects.filter(flat=cd['flat']).first() is not None:
                     raise forms.ValidationError('К выбраной квартире уже привязан счет!')
             else:
