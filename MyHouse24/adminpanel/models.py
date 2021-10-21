@@ -244,9 +244,7 @@ class StatusAccount(models.Model):
 
 class Account(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
-    number = models.CharField(max_length=64, null=True, blank=True)
+    number = models.CharField(max_length=128, unique=True)
     status = models.ForeignKey(StatusAccount, on_delete=models.CASCADE, default=1, blank=True)
-    house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)

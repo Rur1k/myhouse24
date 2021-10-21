@@ -593,7 +593,7 @@ def apartment_owner_delete(request, id):
 def flat(request):
     flats = Flat.objects.all()
     data = {
-        'flats': flats,
+        'flats': flats.order_by('-id'),
         'houses': House.objects.all(),
         'owners': ApartmentOwner.objects.all(),
         'count': flats.count(),
@@ -609,13 +609,13 @@ def flat_create(request):
         if form.is_valid():
             form.save()
             flat_obj = form.save(commit=False)
-            if Account.objects.filter(number=form.cleaned_data['personal_account']).first() is None:
-                account_obj = Account.objects.create(
-                    number=form.cleaned_data['personal_account'],
-                    house=form.cleaned_data['house'],
-                    section=form.cleaned_data['section'],
-                    flat=flat_obj
-                )
+            # if Account.objects.filter(number=form.cleaned_data['personal_account']).first() is None:
+            #     account_obj = Account.objects.create(
+            #         number=form.cleaned_data['personal_account'],
+            #         house=form.cleaned_data['house'],
+            #         section=form.cleaned_data['section'],
+            #         flat=flat_obj
+            #     )
             messages.success(request, "Квартира успешно создана")
             if 'save' in request.POST:
                 return redirect('flat')
@@ -638,16 +638,17 @@ def flat_update(request, id):
     flat_info= Flat.objects.get(id=id)
     if request.method == "POST":
         form = FlatForm(request.POST, instance=flat_info)
-        print(form)
         if form.is_valid():
-            form.save()
+
             messages.success(request, f"Квартира №{flat_info.number_flat}, {flat_info.house} успешно отредактирована")
             if 'save' in request.POST:
                 return redirect('flat')
             elif 'save_and_new' in request.POST:
                 return redirect('flat_create')
         else:
-            messages.error(request, "Ошибка валидации")
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
             print(form.errors)
     else:
         form = FlatForm(instance=flat_info)
@@ -715,6 +716,7 @@ def account_create(request):
         form = AccountForm()
     data = {
         'account': form,
+        'house': House.objects.all()
     }
     return render(request, 'adminpanel/account/create.html', data)
 
@@ -728,8 +730,11 @@ def account_update(request, id):
     account_info = Account.objects.get(id=id)
     if account_info.flat is not None:
         owner = account_info.flat.owner
+        section = Section.objects.filter(house=account_info.flat.house)
     else:
         owner = None
+        section = None
+
 
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=account_info)
@@ -746,7 +751,9 @@ def account_update(request, id):
 
     data = {
         'account': form,
-        'owner': owner
+        'owner': owner,
+        'house': House.objects.all(),
+        'section': section
     }
     return render(request, 'adminpanel/account/update.html', data)
 

@@ -458,32 +458,28 @@ class FlatForm(forms.ModelForm):
             self.fields['section'].queryset = Section.objects.filter(house=house_id)
             self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
 
-    def clean(self):
-        cd = self.cleaned_data
-        print("Аккаунт"+cd['personal_account'])
-        if 'personal_account' in cd:
-            if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
-                raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
+    # def clean(self):
+    #     cd = self.cleaned_data
+    #     if self.instance.id:
+    #         if cd['personal_account'] != self.instance.personal_account:
+    #             if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
+    #                 raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
+    #     else:
+    #         if 'personal_account' in cd:
+    #             if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
+    #                 raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
 
 # Формы для ЛС
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ['id', 'number', 'status', 'house', 'section', 'flat']
+        fields = ['id', 'number', 'status', 'flat']
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
             'status': forms.Select(attrs={
                 'class': 'form-control',
-            }),
-            'house': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'id-house-account'
-            }),
-            'section': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'id-section-account'
             }),
             'flat': forms.Select(attrs={
                 'class': 'form-control',
@@ -494,29 +490,30 @@ class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        print(self.fields)
         if self.instance.id is not None:
-            if self.instance.house:
-                self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
-                self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.house.id)
+            if self.instance.flat:
+                self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
+
             else:
-                self.fields['section'].queryset = Section.objects.none()
                 self.fields['flat'].queryset = Flat.objects.none()
 
-            house_id = self.data.get('house')
-            if house_id:
-                self.fields['section'].queryset = Section.objects.filter(house=house_id)
-                self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+            if self.data.get('flat'):
+                self.fields['flat'].queryset = Flat.objects.none()
+                flat = Flat.objects.filter(id=self.data.get('flat')).first()
+                if flat:
+                    self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
         else:
-            self.fields['section'].queryset = Section.objects.none()
-            self.fields['flat'].queryset = Flat.objects.none()
-            house_id = self.data.get('house')
-            print(house_id)
-            if house_id:
-                self.fields['section'].queryset = Section.objects.filter(house=house_id)
-                self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+            if self.data.get('flat'):
+                self.fields['flat'].queryset = Flat.objects.none()
+                flat = Flat.objects.filter(id=self.data.get('flat')).first()
+                if flat:
+                    self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
 
     def clean(self):
         cd = self.cleaned_data
+        print('данные с формы: ')
+        print(cd)
         if self.instance.id is not None:
             if 'number' in cd:
                 if cd['number'] is None:

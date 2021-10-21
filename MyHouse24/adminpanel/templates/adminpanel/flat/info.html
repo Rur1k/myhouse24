@@ -38,7 +38,11 @@
                         <tbody>
                         <tr>
                             <th class="col-md-6">Лицевой счет</th>
+                            {% if account.number %}
                             <td><a href="{% url 'account_info' account.id %}">{{ account.number }}</a></td>
+                            {% else %}
+                            <td>(нет счета)</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th class="col-md-6">Номер квартиры</th>
@@ -62,11 +66,19 @@
                         </tr>
                         <tr>
                             <th class="col-md-6">Владелец</th>
+                            {% if flat.owner %}
                             <td><a href="{% url 'apartment_owner_info' flat.owner.id %}">{{ flat.owner }}</a></td>
+                            {% else %}
+                            <td>не указано</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th class="col-md-6">Тариф</th>
+                            {% if flat.tariff %}
                             <td><a href="{% url 'setting_tariffs_info' flat.tariff.id %}">{{ flat.tariff }}</a></td>
+                            {% else %}
+                            <td>не задано</td>
+                            {% endif %}
                         </tr>
                         </tbody>
                     </table>

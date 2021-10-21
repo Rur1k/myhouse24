@@ -46,11 +46,16 @@
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Дом</label>
-                    {{ account.house }}
+                    <select id="id-house-account" name="house" class="form-control" title="Выберите...">
+                        <option value="">Выберите...</option>
+                        {% for obj in house %}
+                            <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Секция</label>
-                    {{ account.section }}
+                    <select id="id-section-account" class="form-control" title="Выберите..."></select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Квартира</label>
