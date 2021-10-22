@@ -2,6 +2,14 @@ from django.contrib.auth.models import User
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 from .models import *
+import random
+
+def generationAccountNumber():
+    while True:
+        genAccountNumber = random.randrange(9999) + 100000
+        if Account.objects.filter(number=genAccountNumber).first() is None:
+            break
+    return genAccountNumber
 
 # Формы авторизации
 class LoginForm(forms.Form):
@@ -498,7 +506,6 @@ class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        print(self.fields)
         if self.instance.id is not None:
             if self.instance.flat:
                 self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
@@ -512,6 +519,8 @@ class AccountForm(forms.ModelForm):
                 if flat:
                     self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
         else:
+            self.fields['number'].initial = generationAccountNumber() # Генерация ЛС
+
             if self.data.get('flat'):
                 self.fields['flat'].queryset = Flat.objects.none()
                 flat = Flat.objects.filter(id=self.data.get('flat')).first()
@@ -539,8 +548,9 @@ class AccountForm(forms.ModelForm):
                 if Account.objects.filter(number=cd['number']).first() is not None:
                     raise forms.ValidationError('Лицевой счет '+ cd['number'] +' - занят! Укажите другой.')
 
-                if Account.objects.filter(flat=cd['flat']).first() is not None:
-                    raise forms.ValidationError('К выбраной квартире уже привязан счет!')
+                if cd['flat'] is not None:
+                    if Account.objects.filter(flat=cd['flat']).first() is not None:
+                        raise forms.ValidationError('К выбраной квартире уже привязан счет!')
             else:
                 raise forms.ValidationError('Лицевой счет не может быть пустым')
 

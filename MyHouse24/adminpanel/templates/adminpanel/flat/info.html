@@ -41,7 +41,7 @@
                             {% if flat.account.number %}
                             <td><a href="{% url 'account_info' flat.account.id %}">{{ flat.account.number }}</a></td>
                             {% else %}
-                            <td>(нет счета)</td>
+                            <td>не указано</td>
                             {% endif %}
                         </tr>
                         <tr>
@@ -50,7 +50,11 @@
                         </tr>
                         <tr>
                             <th class="col-md-6">Площадь</th>
+                            {% if flat.square %}
                             <td>{{ flat.square }} м²</td>
+                            {% else %}
+                            <td>не указано</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th class="col-md-6">Дом</th>
@@ -58,11 +62,19 @@
                         </tr>
                         <tr>
                             <th class="col-md-6">Секция</th>
+                            {% if flat.section %}
                             <td>{{ flat.section }}</td>
+                            {% else %}
+                            <td>не указано</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th class="col-md-6">Этаж</th>
+                            {% if flat.floor %}
                             <td>{{ flat.floor }}</td>
+                            {% else %}
+                            <td>не указано</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th class="col-md-6">Владелец</th>

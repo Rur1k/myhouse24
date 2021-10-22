@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
+from django.db.models import Max
 from .forms import *
 from .models import *
 
@@ -690,7 +691,7 @@ def select_floor_flat(request):
 def account(request):
     accounts = Account.objects.all()
     data = {
-        'accounts': accounts,
+        'accounts': accounts.order_by('-id'),
         'status': StatusAccount.objects.all(),
         'houses': House.objects.all(),
         'owners': ApartmentOwner.objects.all(),
@@ -708,8 +709,6 @@ def account_create(request):
             obj = form.save(commit=False)
             if form.cleaned_data['status'] is None:
                 obj.status = status_none
-            # if form.cleaned_data['flat']:
-            #     flatUpdateAccount = Flat.objects.filter(id=obj.flat.id).update(personal_account=obj.number)
             obj.save()
 
             messages.success(request, "Лицевой счет успешно создан")
