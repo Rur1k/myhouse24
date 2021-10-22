@@ -601,8 +601,6 @@ def flat(request):
     return render(request, 'adminpanel/flat/index.html', data)
 
 def flat_create(request):
-    free_account = Account.objects.filter(flat=None)
-
     if request.method == "POST":
         print(request.POST)
         form = FlatForm(request.POST)
@@ -628,7 +626,7 @@ def flat_create(request):
         form = FlatForm()
     data = {
         'flat': form,
-        'free_account': free_account,
+        'free_account': Account.objects.filter(flat=None),
     }
     return  render(request, 'adminpanel/flat/create.html', data)
 
@@ -637,6 +635,15 @@ def flat_update(request, id):
     if request.method == "POST":
         form = FlatForm(request.POST, instance=flat_info)
         if form.is_valid():
+            form.save()
+            if request.POST['account']:
+                if request.POST['account'] != flat_info.account:
+                    if Account.objects.filter(flat=flat_info):
+                        Account.objects.filter(flat=flat_info).update(flat=None)
+                    if Account.objects.filter(number=request.POST['account']).first() is None:
+                        Account.objects.create(number=request.POST['account'], flat=form.save(commit=False))
+                    elif Account.objects.filter(number=request.POST['account'], flat=None).first():
+                        Account.objects.filter(number=request.POST['account']).update(flat=form.save(commit=False))
 
             messages.success(request, f"Квартира №{flat_info.number_flat}, {flat_info.house} успешно отредактирована")
             if 'save' in request.POST:
@@ -652,6 +659,7 @@ def flat_update(request, id):
         form = FlatForm(instance=flat_info)
     data = {
         'flat': form,
+        'free_account': Account.objects.filter(flat=None),
     }
     return  render(request, 'adminpanel/flat/update.html', data)
 
