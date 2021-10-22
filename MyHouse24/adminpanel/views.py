@@ -608,14 +608,12 @@ def flat_create(request):
         form = FlatForm(request.POST)
         if form.is_valid():
             form.save()
-            flat_obj = form.save(commit=False)
-            # if Account.objects.filter(number=form.cleaned_data['personal_account']).first() is None:
-            #     account_obj = Account.objects.create(
-            #         number=form.cleaned_data['personal_account'],
-            #         house=form.cleaned_data['house'],
-            #         section=form.cleaned_data['section'],
-            #         flat=flat_obj
-            #     )
+            if request.POST['account']:
+                if Account.objects.filter(number=request.POST['account']).first() is None:
+                    Account.objects.create(number=request.POST['account'], flat=form.save(commit=False))
+                elif Account.objects.filter(number=request.POST['account'], flat=None).first():
+                    Account.objects.filter(number=request.POST['account']).update(flat=form.save(commit=False))
+
             messages.success(request, "Квартира успешно создана")
             if 'save' in request.POST:
                 return redirect('flat')

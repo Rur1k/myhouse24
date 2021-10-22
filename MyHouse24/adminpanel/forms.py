@@ -441,29 +441,39 @@ class FlatForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.id is not None:
+        if self.instance.id:
             self.fields['section'].queryset = Section.objects.filter(house=self.instance.house.id)
             self.fields['floor'].queryset = Floor.objects.filter(house=self.instance.house.id)
 
             house_id = self.data.get('house')
-            if house_id is not None:
+            if house_id:
                 self.fields['section'].queryset = Section.objects.filter(house=house_id)
                 self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
         else:
             house_id = self.data.get('house')
-            self.fields['section'].queryset = Section.objects.filter(house=house_id)
-            self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+            if house_id:
+                self.fields['section'].queryset = Section.objects.filter(house=house_id)
+                self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
 
-    # def clean(self):
-    #     cd = self.cleaned_data
-    #     if self.instance.id:
-    #         if cd['personal_account'] != self.instance.personal_account:
-    #             if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
-    #                 raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
-    #     else:
-    #         if 'personal_account' in cd:
-    #             if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
-    #                 raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
+    def clean(self):
+        cd = self.cleaned_data
+        print('Данные с проверки формы')
+        print(self.data.get('account'))
+        if self.instance.id:
+            pass
+            # if cd['personal_account'] != self.instance.personal_account:
+            #     if Flat.objects.filter(personal_account=cd['personal_account']).first() is not None:
+            #         raise forms.ValidationError('Указанный лицевой счет уже привязан к другой квартире! Выберит из списка сводобный или укажите новый.')
+        else:
+            if cd['number_flat'] is None:
+                raise forms.ValidationError('Необходимо заполнить поле "Номер квартиры"')
+            if cd['house'] is None:
+                raise forms.ValidationError('Необходимо запорнить поле "Дом"')
+
+            if Account.objects.filter(number=self.data.get('account')):
+                if Account.objects.filter(number=self.data.get('account'), flat=None).first() is None:
+                    raise forms.ValidationError('Указанный счет занят. Выберите из списка свободный или укажите другой.')
+
 
 # Формы для ЛС
 class AccountForm(forms.ModelForm):
