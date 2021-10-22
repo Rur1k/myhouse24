@@ -120,3 +120,20 @@ th.sorted[data-order="1"]::after {
     width: 160px;
     height: 160px;
 }
+
+.page-header-spec {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-header-spec .label-mid {
+    margin: 0 15px;
+}
+
+.page-header-spec .form-group {
+    flex-basis: 45%;
+    margin: 0;
+}
+

@@ -804,6 +804,16 @@ def account_transaction(request):
     }
     return render(request, 'adminpanel/account-transaction/index.html', data)
 
+def account_transaction_create(request):
+    if request.method == 'POST':
+        pass
+    else:
+        form = AccountTransactionForm()
+    data = {
+        'transaction': form
+    }
+    return render(request, 'adminpanel/account-transaction/create.html', data)
+
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

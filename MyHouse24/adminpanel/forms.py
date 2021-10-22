@@ -556,6 +556,53 @@ class AccountForm(forms.ModelForm):
 
         return self.cleaned_data
 
+# Формы для Кассы
+class AccountTransactionForm(forms.ModelForm):
+    class Meta:
+        model = AccountTransaction
+        fields = [
+            'id',
+            'number',
+            'type',
+            'date',
+            'is_complete',
+            'owner',
+            'transaction',
+            'manager',
+            'sum',
+            'description',
+        ]
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+            'is_complete': forms.CheckboxInput(attrs={
+                'class': 'check',
+            }),
+            'owner': forms.Select(attrs={
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true',
+                'title': 'Выберите...'
+            }),
+            'transaction': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'manager': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'sum': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

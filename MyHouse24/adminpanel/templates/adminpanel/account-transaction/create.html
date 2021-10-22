@@ -1,0 +1,87 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Новая приходная ведомость{% endblock %}
+{% block page_name %}Новая приходная ведомость{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'account_transaction' %}">Платежи</a></li>
+    <li class="active">Новая приходная ведомость</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<form id="AccountTransactionCreateForm" novalidate method="post"
+      action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"> № </div>
+                        {{ transaction.number }}
+                    </div>
+                </div>
+                <span class="label-mid">от</span>
+                <div class="form-group">
+                    <div class="input-group">
+                        {{ transaction.date }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body">
+            <div class="row col-md-6">
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Владелец квартиры</label>
+                    {{ transaction.owner }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Лицевой счет</label>
+                    <select class="form-control selectpicker" title="Выберите..." data-live-search="true">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Статья</label>
+                    {{ transaction.transaction }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Сумма</label>
+                    {{ transaction.sum }}
+                </div>
+            </div>
+            <div class="row col-md-6">
+                <div class="col-md-12 margin-bottom-15">
+                    {{ transaction.is_complete }}
+                    <label>Проведен</label>
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Менеждер</label>
+                    {{ transaction.manager }}
+                </div>
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'account_transaction' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <label>Комментарий</label>
+                {{ transaction.description }}
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
