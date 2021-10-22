@@ -247,3 +247,25 @@ class Account(models.Model):
     status = models.ForeignKey(StatusAccount, on_delete=models.CASCADE, default=1, blank=True)
     flat = models.OneToOneField(Flat, on_delete=models.CASCADE, null=True, blank=True)
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
+
+# Модели Кассы
+class AccountTransactionType(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class AccountTransaction(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    type = models.ForeignKey(AccountTransactionType, on_delete=models.CASCADE)
+    number = models.CharField(max_length=128, unique=True)
+    date = models.DateField()
+    is_complete = models.BooleanField(default=1)
+    owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
+    transaction = models.ForeignKey(SettingTransactionPurpose, on_delete=models.CASCADE, null=True, blank=True)
+    manager = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
+    sum = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
+    description = models.TextField()
+
+

@@ -738,26 +738,13 @@ def account_update(request, id):
     if account_info.flat is not None:
         owner = account_info.flat.owner
         section = Section.objects.filter(house=account_info.flat.house)
-        flat = Flat.objects.filter(id=account_info.flat.id).first()
     else:
         owner = None
         section = None
-        flat = None
 
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=account_info)
         if form.is_valid():
-            obj = form.save(commit=False)
-            # print('Данные:')
-            # print(form.cleaned_data['flat'])
-            # print(flat)
-            #
-            # if form.cleaned_data['flat'] is None:
-            #     Flat.objects.filter(id=flat.id).update(personal_account=None)
-            # elif form.cleaned_data['flat'] != flat:
-            #     Flat.objects.filter(id=obj.flat.id).update(personal_account=obj.number)
-            #     Flat.objects.filter(id=flat.id).update(personal_account=None)
-
             form.save()
 
             messages.success(request, "Лицевой счет успешно отредактирован")
@@ -808,6 +795,15 @@ def select_phone_account(request):
     flat_id = request.GET.get('flat')
     flat = Flat.objects.filter(id=flat_id).first()
     return render(request, 'adminpanel/account/ajax/select-phone.html', { 'user':flat.owner })
+
+# Бизнес логика "Касса"
+def account_transaction(request):
+
+    data = {
+
+    }
+    return render(request, 'adminpanel/account-transaction/index.html', data)
+
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

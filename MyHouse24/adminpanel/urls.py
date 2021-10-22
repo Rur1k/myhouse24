@@ -60,6 +60,8 @@ urlpatterns = [
     path('account/ajax/order_flat_account', views.order_flat_account, name='order_flat_account'),
     path('account/ajax/select_username_account', views.select_username_account, name='select_username_account'),
     path('account/ajax/select_phone_account', views.select_phone_account, name='select_phone_account'),
+    # Касса
+    path('account-transaction', views.account_transaction, name='account_transaction'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),
