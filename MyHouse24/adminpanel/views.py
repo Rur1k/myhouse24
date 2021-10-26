@@ -4,10 +4,9 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
-from django.db.models import Max
+from django.db.models import Max, Sum
 from .forms import *
 from .models import *
-
 
 # Логика входа в админку
 def login_admin(request):
@@ -690,7 +689,13 @@ def select_floor_flat(request):
 # Лицевые счета
 def account(request):
     accounts = Account.objects.all()
+    balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
+    account_balance = Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo'))
+    account_debt = Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo'))
     data = {
+        'balance': balance,
+        'account_balance': account_balance,
+        'account_debt': account_debt,
         'accounts': accounts.order_by('-id'),
         'status': StatusAccount.objects.all(),
         'houses': House.objects.all(),
@@ -746,7 +751,6 @@ def account_update(request, id):
         form = AccountForm(request.POST, instance=account_info)
         if form.is_valid():
             form.save()
-
             messages.success(request, "Лицевой счет успешно отредактирован")
             return redirect('account')
         else:
@@ -800,25 +804,56 @@ def select_phone_account(request):
 def account_transaction(request):
 
     data = {
-
+        'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
+        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
+        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
+        'AccountTransaction': AccountTransaction.objects.all().order_by('-id'),
+        'TypeTransaction': SettingTransactionPurpose.objects.all(),
+        'owners': ApartmentOwner.objects.all(),
+        'items': SettingPaymentItem.objects.all(),
+        'sum_coming': AccountTransaction.objects.filter(type=1, is_complete=1).aggregate(Sum('sum')),
+        'sum_consumption': AccountTransaction.objects.filter(type=2, is_complete=1).aggregate(Sum('sum')),
     }
     return render(request, 'adminpanel/account-transaction/index.html', data)
 
 def account_transaction_create(request, type=None):
     if type:
-        TransactionType = SettingPaymentItem.objects.get(id=1)
+        TransactionType = SettingPaymentItem.objects.get(id=type)
+    else:
+        TransactionType = None
 
     if request.method == 'POST':
-        pass
+        form = AccountTransactionForm(request.POST, initial={'type': TransactionType})
+        if form.is_valid():
+            obj = form.save(commit=False)
+
+            if form.cleaned_data['account']:
+                obj.account = request.POST.get('account')
+
+            if type == 2 and form.cleaned_data['sum'] > 0:
+                obj.sum = form.cleaned_data['sum'] * -1
+
+            obj.save()
+            messages.success(request, "Транзакция добавлена!")
+            return redirect('account_transaction')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
     else:
-        initial = {
-            'type': TransactionType
-        }
-        form = AccountTransactionForm(initial=initial)
+        form = AccountTransactionForm(initial={'type': TransactionType})
     data = {
-        'transaction': form
+        'transaction': form,
+        'type': type
     }
     return render(request, 'adminpanel/account-transaction/create.html', data)
+
+def account_transaction_delete(request, id):
+    obj = AccountTransaction.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Транзакция успешно удалена")
+    return redirect('account_transaction')
 
 def select_account_trans(request):
     owner_id = request.GET.get('owner')

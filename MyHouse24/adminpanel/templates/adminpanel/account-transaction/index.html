@@ -23,7 +23,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-green overflow-hidden">
                         <div class="inner">
-                            <h3> грн</h3>
+                            <h3>{{ balance.sum__sum }} грн</h3>
                             <p>Состояние кассы</p>
                         </div>
                         <div class="icon">
@@ -34,7 +34,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-blue overflow-hidden">
                         <div class="inner">
-                            <h3> грн</h3>
+                            <h3>{{ account_balance.saldo__sum }} грн</h3>
                             <p>Баланс по счетам</p>
                         </div>
                         <div class="icon">
@@ -45,7 +45,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-red overflow-hidden">
                         <div class="inner">
-                            <h3> грн</h3>
+                            <h3>{{ account_debt.saldo__sum }} грн</h3>
                             <p>Задолженность по счетам</p>
                         </div>
                         <div class="icon">
@@ -63,7 +63,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'account_transaction_create' 1 %}">Создать приход</a></li>
-                    <li><a href="">Создать расход</a></li>
+                    <li><a href="{% url 'account_transaction_create' 2 %}">Создать расход</a></li>
                     <li><a href="">Выгрузить в Excel</a></li>
                 </ul>
             </div>
@@ -91,27 +91,40 @@
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
             <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountList','account-number')"></td>
-                <td><input id="DateSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountList','account-number')"></td>
+                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountTransactionList','account-trans-number')"></td>
+                <td><input id="DateSearch" type="text" class="form-control" onkeyup="searchTable('DateSearch','AccountTransactionList','account-number')"></td>
                 <td>
-                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountList','account-status')">
-                        <option value="0"></option>
-                    </select>
-                </td>
-                <td><input id="TypeTransSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','AccountList','account-flat')"></td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('HouseSearch','AccountList','account-house')">
-                        <option value="0"></option>
+                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountTransactionList','account-status-trans')">
+                        <option value=""></option>
+                        <option value="True">Проведен</option>
+                        <option value="False">Не проведен</option>
                     </select>
                 </td>
                 <td>
-                    <select id="AccountSearch" class="form-control" onchange="searchTable('SectionSearch','AccountList','account-section')">
-                        <option>Выберите дом</option>
-                    </select>
-                </td>
-                <td>
-                    <select id="TransSearch" class="form-control" onchange="searchTable('OwnerSearch','AccountList','account-owner')">
+                    <select id="TypeTransSearch" class="form-control" onchange="searchTable('TypeTransSearch','AccountTransactionList','account-type-trans')">
                         <option></option>
+                        {% for obj in TypeTransaction %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','AccountTransactionList','account-owner-trans')">
+                        <option></option>
+                        {% for obj in owners %}
+                        <option value="{{ obj.id }}">{{ obj }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input id="AccountSearch" type="text" class="form-control" onkeyup="searchTable('AccountSearch','AccountTransactionList','account-trans')">
+                </td>
+                <td>
+                    <select id="TransSearch" class="form-control" onchange="searchTable('TransSearch','AccountTransactionList','trans')">
+                        <option></option>
+                        {% for obj in items %}
+                        <option value="{{ obj.id }}">{{ obj }}</option>
+                        {% endfor %}
                     </select>
                 </td>
                 <th></th>
@@ -119,39 +132,68 @@
             </tr>
             </thead>
             <tbody id="AccountTransactionList">
-
+            {% for obj in AccountTransaction %}
             <tr onclick="location.href=''">
-                <td class="account-trans-number"></td>
-                <td class="account-date-trans"></td>
-                <td class="account-status-trans"></td>
-                <td class="account-type-trans"></td>
-                <td class="account-owner-trans"></td>
-                <td class="account-trans"></td>
-                <td class="trans"></td>
-                <td class="summ"></td>
+                <td class="account-trans-number">{{ obj.number }}</td>
+                <td class="account-date-trans">{{ obj.date }}</td>
+                <td class="account-status-trans">
+                    {% if obj.is_complete %}
+                    <div hidden="hidden">{{ obj.is_complete }}</div> Проведен
+                    {% else %}
+                    <div hidden="hidden">{{ obj.is_complete }}</div> Не проведен
+                    {% endif %}
+                </td>
+                <td class="account-type-trans">
+                    {% if obj.transaction %}
+                    <div hidden="hidden">{{ obj.transaction.id }}</div>{{ obj.transaction }}
+                    {% else %}
+                    (не задано)
+                    {% endif %}
+                </td>
+                <td class="account-owner-trans">
+                    {% if obj.owner %}
+                    <div hidden="hidden">{{ obj.owner.id }}</div>{{ obj.owner }}
+                    {% else %}
+                    (не задано)
+                    {% endif %}
+                </td>
+                <td class="account-trans">
+                    {% if obj.account %}
+                    {{ obj.account }}
+                    {% else %}
+                    (не задано)
+                    {% endif %}
+                </td>
+                {% if obj.type.id == 1 %}
+                <td class="trans text-green"><div hidden="hidden">{{ obj.type.id }}</div>{{ obj.type }}</td>
+                <td class="summ text-green">{{ obj.sum }}</td>
+                {% else %}
+                <td class="trans text-red"><div hidden="hidden">{{ obj.type.id }}</div>{{ obj.type }}</td>
+                <td class="summ text-red">{{ obj.sum }}</td>
+                {% endif %}
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'account_transaction_delete' obj.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
                 </td>
             </tr>
-
+            {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="box-footer clearfix">
         <div>
             Проведен приход:
-            <span class="text-bolt"></span>
+            <span class="text-bolt">{{ sum_coming.sum__sum }}</span>
         </div>
         <div>
             Проведен расход:
-            <span class="text-bolt"></span>
+            <span class="text-bolt">{{ sum_consumption.sum__sum }}</span>
         </div>
     </div>
 </div>

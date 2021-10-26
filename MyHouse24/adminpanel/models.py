@@ -3,6 +3,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User, UserManager
+import datetime
 
 # Дополнительные функции для работы с моделями
 def file_size(value): # Функция которая расчитывает максимальный размер файла для модели "Document"
@@ -255,15 +256,15 @@ class Account(models.Model):
 
 class AccountTransaction(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
-    type = models.ForeignKey(SettingPaymentItem, on_delete=models.CASCADE)
+    type = models.ForeignKey(SettingPaymentItem, on_delete=models.CASCADE, null=True, blank=True)
     number = models.CharField(max_length=128, unique=True)
-    date = models.DateField()
+    date = models.DateField(null=True, blank=True)
     is_complete = models.BooleanField(default=1)
     owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
-    account = models.CharField(max_length=128)
+    account = models.CharField(max_length=128, null=True, blank=True)
     transaction = models.ForeignKey(SettingTransactionPurpose, on_delete=models.CASCADE, null=True, blank=True)
     manager = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
     sum = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
 
 

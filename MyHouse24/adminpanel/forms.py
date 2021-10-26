@@ -11,6 +11,13 @@ def generationAccountNumber():
             break
     return genAccountNumber
 
+def generationTransactionNumber():
+    while True:
+        genNumber = random.randrange(99999) + 20000000
+        if AccountTransaction.objects.filter(number=genNumber).first() is None:
+            break
+    return genNumber
+
 # Формы авторизации
 class LoginForm(forms.Form):
     email = forms.CharField(widget=forms.TextInput(attrs={
@@ -567,6 +574,7 @@ class AccountTransactionForm(forms.ModelForm):
             'date',
             'is_complete',
             'owner',
+            'account',
             'transaction',
             'manager',
             'sum',
@@ -605,9 +613,36 @@ class AccountTransactionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        inst = self.fields
-        print(inst)
+        if self.instance.id:
+            pass
+        else:
+            type = self.initial['type']
+            self.fields['number'].initial = generationTransactionNumber()
+            if type.id == 1:
+                self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=type.id)
+            else:
+                self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=type.id)
 
+    def clean(self):
+        cd = self.cleaned_data
+
+        print(cd)
+
+        if self.instance.id:
+            pass
+        else:
+            if 'number' in cd:
+                if AccountTransaction.objects.filter(number=cd['number']).first() is not None:
+                    raise forms.ValidationError('Транзакция с указанным номером уже существует, укажите другой.')
+                if cd['date'] is None:
+                    raise forms.ValidationError('Укажите дату транзакции.')
+                if 'sum' in cd:
+                    if cd['sum'] == 0 or cd['sum'] is None:
+                        raise forms.ValidationError('"Сумма" - не может быть равна нулю или быть пустой.')
+                else:
+                    raise forms.ValidationError('Необходимо заполнить "Сумма".')
+            else:
+                raise forms.ValidationError('Укажите номер транзакции.')
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

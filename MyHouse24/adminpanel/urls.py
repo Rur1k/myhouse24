@@ -63,6 +63,7 @@ urlpatterns = [
     # Касса
     path('account-transaction', views.account_transaction, name='account_transaction'),
     path('account-transaction/create&type=<int:type>', views.account_transaction_create, name='account_transaction_create'),
+    path('account-transaction/delete=<int:id>', views.account_transaction_delete, name='account_transaction_delete'),
     path('account-transaction/ajax/select_account', views.select_account_trans, name='select_account_trans'),
 
 
