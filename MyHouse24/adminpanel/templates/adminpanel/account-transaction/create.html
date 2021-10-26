@@ -18,7 +18,7 @@
     {% endfor %}
 {% endif %}
 <form id="AccountTransactionCreateForm" novalidate method="post"
-      action="" enctype="multipart/form-data">
+      action="" enctype="multipart/form-data" data-account-url="{% url 'select_account_trans' %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-xs-12 col-md-7 col-lg-6">
@@ -47,9 +47,8 @@
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Лицевой счет</label>
-                    <select class="form-control selectpicker" title="Выберите..." data-live-search="true">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                    <select id='id-account-trans' class="form-control" title="Выберите...">
+                        <option>Выберите...</option>
                     </select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
@@ -67,7 +66,7 @@
                     <label>Проведен</label>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
-                    <label>Менеждер</label>
+                    <label>Менеджер</label>
                     {{ transaction.manager }}
                 </div>
             </div>

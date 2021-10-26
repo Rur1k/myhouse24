@@ -804,15 +804,30 @@ def account_transaction(request):
     }
     return render(request, 'adminpanel/account-transaction/index.html', data)
 
-def account_transaction_create(request):
+def account_transaction_create(request, type=None):
+    if type:
+        TransactionType = SettingPaymentItem.objects.get(id=1)
+
     if request.method == 'POST':
         pass
     else:
-        form = AccountTransactionForm()
+        initial = {
+            'type': TransactionType
+        }
+        form = AccountTransactionForm(initial=initial)
     data = {
         'transaction': form
     }
     return render(request, 'adminpanel/account-transaction/create.html', data)
+
+def select_account_trans(request):
+    owner_id = request.GET.get('owner')
+    flat = Flat.objects.filter(owner=owner_id)
+    account = []
+    for obj in flat:
+        if obj.account is not None:
+            account.append(obj.account)
+    return render(request, 'adminpanel/account-transaction/ajax/select_account.html', { 'account':account })
 
 
 # Бизнес логика складки "Управление сайтом"

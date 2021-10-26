@@ -136,4 +136,21 @@ function SelectServiceUnit(select){
       });
 }
 
+// Выбор ЛС по пользователю в "Касса" - создание прихода
+$("#id-owner-trans").change(function () {
+      var url = $("#AccountTransactionCreateForm").attr("data-account-url");
+      var ownerId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'owner': ownerId
+        },
+        success: function (data) {
+          $("#id-account-trans").html(data);
+          console.log(data);
+        }
+      });
+    });
+
 

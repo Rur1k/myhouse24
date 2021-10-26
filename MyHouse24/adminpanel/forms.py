@@ -586,7 +586,7 @@ class AccountTransactionForm(forms.ModelForm):
             'owner': forms.Select(attrs={
                 'class': 'form-control selectpicker',
                 'data-live-search': 'true',
-                'title': 'Выберите...'
+                'id': 'id-owner-trans'
             }),
             'transaction': forms.Select(attrs={
                 'class': 'form-control'
@@ -601,6 +601,12 @@ class AccountTransactionForm(forms.ModelForm):
                 'class': 'form-control'
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        inst = self.fields
+        print(inst)
 
 
 # Формы для настройки сайта
