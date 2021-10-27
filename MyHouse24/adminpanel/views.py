@@ -907,6 +907,12 @@ def select_account_trans(request):
             account.append(obj.account)
     return render(request, 'adminpanel/account-transaction/ajax/select_account.html', { 'account':account })
 
+# Бизнес логика "Показания счетчиков"
+def counter_data_counters(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/counter-data/index.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

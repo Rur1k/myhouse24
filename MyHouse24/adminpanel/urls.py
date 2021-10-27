@@ -69,6 +69,9 @@ urlpatterns = [
     path('account-transaction/update/<int:id>', views.account_transaction_update, name='account_transaction_update'),
     path('account-transaction/delete=<int:id>', views.account_transaction_delete, name='account_transaction_delete'),
     path('account-transaction/ajax/select_account', views.select_account_trans, name='select_account_trans'),
+    # Показания счетчиков
+    path('counter-data/counters', views.counter_data_counters, name='counter_data_counters'),
+
 
 
     # Авторизация
