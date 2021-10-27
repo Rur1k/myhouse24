@@ -816,6 +816,13 @@ def account_transaction(request):
     }
     return render(request, 'adminpanel/account-transaction/index.html', data)
 
+def account_transaction_info(request, id):
+
+    data = {
+        'transaction': AccountTransaction.objects.get(id=id)
+    }
+    return render(request, 'adminpanel/account-transaction/info.html', data)
+
 def account_transaction_create(request, type=None, id=None):
     if type:
         TransactionType = SettingPaymentItem.objects.get(id=type)
@@ -869,7 +876,7 @@ def account_transaction_update(request, id):
 
             obj.save()
             messages.success(request, "Транзакция обновлена!")
-            return redirect('account_transaction')
+            return redirect('account_transaction_info', id)
         else:
             message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
             print(form.errors)

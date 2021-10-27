@@ -17,9 +17,9 @@
 {% block mini_page_name %}
     <li><a href="{% url 'account_transaction' %}">Платежи</a></li>
     {% if type == 1 %}
-    <li><a href="">Приходная ведомость №{{ transaction.instance.number }}</a></li>
+    <li><a href="{% url 'account_transaction_info' transaction.instance.id %}">Приходная ведомость №{{ transaction.instance.number }}</a></li>
     {% else %}
-    <li><a href="">Расходная ведомость №{{ transaction.instance.number }}</a></li>
+    <li><a href="{% url 'account_transaction_info' transaction.instance.id %}">Расходная ведомость №{{ transaction.instance.number }}</a></li>
     {% endif %}
     <li class="active">
         Редактирование

@@ -133,7 +133,7 @@
             </thead>
             <tbody id="AccountTransactionList">
             {% for obj in AccountTransaction %}
-            <tr onclick="location.href=''">
+            <tr onclick="location.href='{% url 'account_transaction_info' obj.id %}'">
                 <td class="account-trans-number">{{ obj.number }}</td>
                 <td class="account-date-trans">{{ obj.date }}</td>
                 <td class="account-status-trans">
