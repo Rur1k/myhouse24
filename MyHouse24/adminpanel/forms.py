@@ -3,6 +3,8 @@ from django import forms
 from ckeditor.widgets import CKEditorWidget
 from .models import *
 import random
+import datetime
+
 
 def generationAccountNumber():
     while True:
@@ -596,6 +598,12 @@ class AccountTransactionForm(forms.ModelForm):
                 'data-live-search': 'true',
                 'id': 'id-owner-trans'
             }),
+            'account': forms.Select(attrs={
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true',
+                'title': 'Выберите...',
+                'id': 'id-account-trans'
+            }),
             'transaction': forms.Select(attrs={
                 'class': 'form-control'
             }),
@@ -614,9 +622,24 @@ class AccountTransactionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.instance.id:
-            pass
+            if self.initial['number'] is None:
+                self.initial['number'] = generationTransactionNumber()
+            self.initial['date'] = self.instance.date.isoformat()
+            if self.instance.type.id == 1:
+                self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=self.instance.type.id)
+                if self.instance.owner:
+                    flat = Flat.objects.filter(owner=self.instance.owner.id)
+                    if flat:
+                        account = []
+                        for obj in flat:
+                            if obj.account is not None:
+                                account.append(obj.account.id)
+                        self.fields['account'].queryset = Account.objects.filter(id__in=account)
+            else:
+                self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=self.instance.type.id)
         else:
             type = self.initial['type']
+            self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.fields['number'].initial = generationTransactionNumber()
             if type.id == 1:
                 self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=type.id)
@@ -625,11 +648,20 @@ class AccountTransactionForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
-
-        print(cd)
-
         if self.instance.id:
-            pass
+            if 'number' in cd:
+                is_transaction = AccountTransaction.objects.filter(number=cd['number']).first()
+                if is_transaction is not None and is_transaction.number != self.instance.number :
+                    raise forms.ValidationError('Транзакция с указанным номером уже существует, укажите другой.')
+                if cd['date'] is None:
+                    raise forms.ValidationError('Укажите дату транзакции.')
+                if 'sum' in cd:
+                    if cd['sum'] == 0 or cd['sum'] is None:
+                        raise forms.ValidationError('"Сумма" - не может быть равна нулю или быть пустой.')
+                else:
+                    raise forms.ValidationError('Необходимо заполнить "Сумма".')
+            else:
+                raise forms.ValidationError('Укажите номер транзакции.')
         else:
             if 'number' in cd:
                 if AccountTransaction.objects.filter(number=cd['number']).first() is not None:

@@ -2,26 +2,27 @@
 {% load static %}
 {% block title %}
     {% if type == 1 %}
-    Новая приходная ведомость
+    Приходная ведомость
     {% else %}
-    Новая расходная ведомость
+    Расходная ведомость
     {% endif %}
 {% endblock %}
 {% block page_name %}
     {% if type == 1 %}
-    Новая приходная ведомость
+    Приходная ведомость
     {% else %}
-    Новая расходная ведомость
+    Расходная ведомость
     {% endif %}
 {% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'account_transaction' %}">Платежи</a></li>
+    {% if type == 1 %}
+    <li><a href="">Приходная ведомость №{{ transaction.instance.number }}</a></li>
+    {% else %}
+    <li><a href="">Расходная ведомость №{{ transaction.instance.number }}</a></li>
+    {% endif %}
     <li class="active">
-        {% if type == 1 %}
-        Новая приходная ведомость
-        {% else %}
-        Новая расходная ведомость
-        {% endif %}
+        Редактирование
     </li>
 {% endblock %}
 {% block content %}
@@ -59,6 +60,16 @@
     </div>
     <div class="box">
         <div class="box-body">
+            <div class="col-md-12 text-right">
+            <a  href="{% url 'account_transaction_copy' transaction.instance.type.id transaction.instance.id %}" class="btn btn-default btn-sm">
+                <span class="hidden-xs">Копировать</span>
+                <i class="fa fa-copy visible-xs" aria-hidden="true"></i>
+            </a>
+            <a class="btn btn-default btn-sm" href="{% url 'account_transaction_delete' transaction.instance.id %}" onclick="return confirmDelete()">
+                <span class="hidden-xs">Удалить</span>
+                <i class="fa fa-trash visible-xs"></i>
+            </a>
+        </div>
             <div class="row col-md-6">
                 {% if type == 1 %}
                 <div class="col-md-12 margin-bottom-15">

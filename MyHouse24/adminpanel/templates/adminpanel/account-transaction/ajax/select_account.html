@@ -1,4 +1,3 @@
-<option>Выберите...</option>
 {% for obj in account %}
-<option>{{ obj.number }}</option>
+<option value="{{ obj.id }}">{{ obj.number }}</option>
 {% endfor %}

@@ -816,37 +816,73 @@ def account_transaction(request):
     }
     return render(request, 'adminpanel/account-transaction/index.html', data)
 
-def account_transaction_create(request, type=None):
+def account_transaction_create(request, type=None, id=None):
     if type:
         TransactionType = SettingPaymentItem.objects.get(id=type)
     else:
         TransactionType = None
+    if id is not None:
+        account_transaction_info = AccountTransaction.objects.get(id=id)
 
     if request.method == 'POST':
         form = AccountTransactionForm(request.POST, initial={'type': TransactionType})
         if form.is_valid():
             obj = form.save(commit=False)
-
-            if form.cleaned_data['account']:
-                obj.account = request.POST.get('account')
-
+            flat = Flat.objects.filter(account=form.cleaned_data['account']).first()
+            if flat:
+                if flat.owner is not None:
+                    obj.owner = flat.owner
             if type == 2 and form.cleaned_data['sum'] > 0:
                 obj.sum = form.cleaned_data['sum'] * -1
-
             obj.save()
             messages.success(request, "Транзакция добавлена!")
             return redirect('account_transaction')
         else:
+            message = "Ошибка не опеределна, обратитесь к разработчику!"
             for error in form.non_field_errors():
                 message = form.non_field_errors()
             messages.error(request, message)
     else:
-        form = AccountTransactionForm(initial={'type': TransactionType})
+        if id is not None:
+            form = AccountTransactionForm(instance=account_transaction_info, initial={'number': None})
+        else:
+            form = AccountTransactionForm(initial={'type': TransactionType})
     data = {
         'transaction': form,
         'type': type
     }
     return render(request, 'adminpanel/account-transaction/create.html', data)
+
+def account_transaction_update(request, id):
+    account_transaction_info = AccountTransaction.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = AccountTransactionForm(request.POST, instance=account_transaction_info)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            flat = Flat.objects.filter(account=form.cleaned_data['account']).first()
+            if flat:
+                if flat.owner is not None:
+                    obj.owner = flat.owner
+            if type == 2 and form.cleaned_data['sum'] > 0:
+                obj.sum = form.cleaned_data['sum'] * -1
+
+            obj.save()
+            messages.success(request, "Транзакция обновлена!")
+            return redirect('account_transaction')
+        else:
+            message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
+            print(form.errors)
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = AccountTransactionForm(instance=account_transaction_info)
+    data = {
+        'transaction': form,
+        'type': account_transaction_info.type.id
+    }
+    return render(request, 'adminpanel/account-transaction/update.html', data)
 
 def account_transaction_delete(request, id):
     obj = AccountTransaction.objects.filter(id=id)

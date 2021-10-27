@@ -147,8 +147,9 @@ $("#id-owner-trans").change(function () {
           'owner': ownerId
         },
         success: function (data) {
-          $("#id-account-trans").html(data);
-          console.log(data);
+            $("#id-account-trans").html(data);
+            $("#id-account-trans").selectpicker("refresh");
+            console.log(data);
         }
       });
     });

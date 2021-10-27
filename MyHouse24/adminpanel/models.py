@@ -252,6 +252,9 @@ class Account(models.Model):
     flat = models.OneToOneField(Flat, on_delete=models.CASCADE, null=True, blank=True)
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
 
+    def __str__(self):
+        return self.number
+
 # Модели Кассы
 
 class AccountTransaction(models.Model):
@@ -261,7 +264,7 @@ class AccountTransaction(models.Model):
     date = models.DateField(null=True, blank=True)
     is_complete = models.BooleanField(default=1)
     owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
-    account = models.CharField(max_length=128, null=True, blank=True)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     transaction = models.ForeignKey(SettingTransactionPurpose, on_delete=models.CASCADE, null=True, blank=True)
     manager = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
     sum = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
