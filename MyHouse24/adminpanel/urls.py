@@ -71,6 +71,7 @@ urlpatterns = [
     path('account-transaction/ajax/select_account', views.select_account_trans, name='select_account_trans'),
     # Показания счетчиков
     path('counter-data/counters', views.counter_data_counters, name='counter_data_counters'),
+    path('counter-data/create', views.counter_data_create, name='counter_data_create'),
 
 
 

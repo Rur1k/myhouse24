@@ -910,9 +910,30 @@ def select_account_trans(request):
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
     data = {
-
+        'counters': CounterData.objects.all()
     }
     return render(request, 'adminpanel/counter-data/index.html', data)
+
+def counter_data_create(request):
+    if request.method == 'POST':
+        form = CounterDataForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f"Показания успешно внесены.")
+            return redirect('counter_data_counters')
+        else:
+            message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
+            print(form.errors)
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = CounterDataForm()
+    data = {
+        'counter': form,
+    }
+    return render(request, 'adminpanel/counter-data/create.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

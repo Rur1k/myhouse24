@@ -270,4 +270,20 @@ class AccountTransaction(models.Model):
     sum = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
     description = models.TextField(null=True, blank=True)
 
+# Модели "Показания счетчиков"
 
+class StatusCounter(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class CounterData(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    number = models.CharField(max_length=128, unique=True)
+    date = models.DateField(null=True, blank=True)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
+    counter = models.ForeignKey(SettingService, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.ForeignKey(StatusCounter, on_delete=models.CASCADE, default=1, blank=True)
+    counter_data = models.IntegerField(null=True, blank=True)

@@ -4,19 +4,36 @@ from ckeditor.widgets import CKEditorWidget
 from .models import *
 import random
 import datetime
+import re
 
 
 def generationAccountNumber():
+    today_date = datetime.datetime.now().date()
+    today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
+    genNumber = str(today_date) + "000000"
     while True:
-        genAccountNumber = random.randrange(9999) + 100000
+        genAccountNumber = int(genNumber) + random.randrange(9999)
         if Account.objects.filter(number=genAccountNumber).first() is None:
             break
     return genAccountNumber
 
 def generationTransactionNumber():
+    today_date = datetime.datetime.now().date()
+    today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
+    genNumber = str(today_date) + "000000"
     while True:
-        genNumber = random.randrange(99999) + 20000000
+        genNumber = int(genNumber) + random.randrange(9999)
         if AccountTransaction.objects.filter(number=genNumber).first() is None:
+            break
+    return genNumber
+
+def generationNumber():
+    today_date = datetime.datetime.now().date()
+    today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
+    genNumber = str(today_date) + "000000"
+    while True:
+        genNumber = int(genNumber) + random.randrange(9999)
+        if CounterData.objects.filter(number=genNumber).first() is None:
             break
     return genNumber
 
@@ -675,6 +692,51 @@ class AccountTransactionForm(forms.ModelForm):
                     raise forms.ValidationError('Необходимо заполнить "Сумма".')
             else:
                 raise forms.ValidationError('Укажите номер транзакции.')
+
+class CounterDataForm(forms.ModelForm):
+    class Meta:
+        model = CounterData
+        fields = [
+            'id',
+            'number',
+            'date',
+            'flat',
+            'counter',
+            'status',
+            'counter_data',
+        ]
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+            'flat': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-flat-counter'
+            }),
+            'counter': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'counter_data': forms.NumberInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.initial['date'] = datetime.datetime.now().date().isoformat()
+        self.fields['number'].initial = generationNumber()  # Генерация номер показания
+
+    def clean(self):
+        pass
+
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
