@@ -909,8 +909,12 @@ def select_account_trans(request):
 
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
+    counters = CounterData.objects.extra(where={'counter_data > 0 '}).distinct('flat','counter')
+    print(counters)
+
+
     data = {
-        'counters': CounterData.objects.all()
+        'counters': counters
     }
     return render(request, 'adminpanel/counter-data/index.html', data)
 
@@ -932,8 +936,26 @@ def counter_data_create(request):
         form = CounterDataForm()
     data = {
         'counter': form,
+        'house': House.objects.all()
     }
     return render(request, 'adminpanel/counter-data/create.html', data)
+
+def select_section_counter(request):
+    house_id = request.GET.get('house')
+    sections = Section.objects.filter(house=house_id)
+    return render(request, 'adminpanel/account/ajax/select_section_account.html', { 'sections':sections })
+
+def select_flat_counter(request):
+    house_id = request.GET.get('house')
+    flats = Flat.objects.filter(house=house_id)
+    return render(request, 'adminpanel/account/ajax/select_flat_account.html', { 'flats':flats })
+
+def order_flat_counter(request):
+    section_id = request.GET.get('section')
+    flats = Flat.objects.filter(section=section_id)
+    return render(request, 'adminpanel/account/ajax/order_flat.html', { 'flats':flats })
+
+
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

@@ -72,14 +72,14 @@
             </tr>
             </thead>
             <tbody id="CounterList">
-
+            {% for obj in counters %}
             <tr onclick="location.href=''">
-                <td class="flat-house"></td>
-                <td class="flat-section"></td>
-                <td class="flat-number"></td>
-                <td class="flat-floor"></td>
-                <td class="flat-owner"></td>
-                <td class="flat-remainder"></td>
+                <td class="flat-house">{{ obj.flat.house }}</td>
+                <td class="flat-section">{{ obj.flat.section }}</td>
+                <td class="flat-flat">{{ obj.flat }}</td>
+                <td class="flat-counter">{{ obj.counter }}</td>
+                <td class="flat-today">{{ obj.counter_data }}</td>
+                <td class="flat-item">{{ obj.counter.unit }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="" title="Снять новое показание счетчика" data-toggle="tooltip">
@@ -91,7 +91,7 @@
                     </div>
                 </td>
             </tr>
-
+            {% endfor %}
             </tbody>
         </table>
     </div>

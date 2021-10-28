@@ -18,7 +18,10 @@
     {% endfor %}
 {% endif %}
 <form id="CounterDataCreateForm" novalidate method="post"
-      action="" enctype="multipart/form-data">
+      action="" enctype="multipart/form-data"
+    data-section-url="{% url 'select_section_counter' %}"
+      data-flat-url="{% url 'select_flat_counter' %}"
+      data-order-flat-url="{% url 'order_flat_counter' %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-xs-12 col-md-7 col-lg-6">
@@ -43,15 +46,16 @@
             <div class="row col-md-6">
                 <div class="col-md-12 margin-bottom-15">
                     <label>Дом</label>
-                    <select class="form-control">
-                        <option></option>
+                    <select id="id-house-counter" name="house" class="form-control" title="Выберите...">
+                        <option value="">Выберите...</option>
+                        {% for obj in house %}
+                            <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Секция</label>
-                    <select class="form-control">
-                        <option></option>
-                    </select>
+                    <select id="id-section-counter" class="form-control" title="Выберите..."></select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Квартира</label>

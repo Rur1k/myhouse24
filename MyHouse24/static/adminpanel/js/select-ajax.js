@@ -154,4 +154,46 @@ $("#id-owner-trans").change(function () {
       });
     });
 
+// Связные списки для создания объекта показания счетчика
+$("#id-house-counter").change(function () {
+      var url_section = $("#CounterDataCreateForm").attr("data-section-url");
+      var url_flat = $("#CounterDataCreateForm").attr("data-flat-url");
+      var houseId = $(this).val();
+
+      $.ajax({
+        url: url_section,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-section-counter").html(data);
+        }
+      });
+      $.ajax({
+        url: url_flat,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-flat-counter").html(data);
+        }
+      });
+    });
+
+// Сортировка квартиры по секции
+$("#id-section-counter").change(function () {
+      var url = $("#CounterDataCreateForm").attr("data-order-flat-url");
+      var sectionId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'section': sectionId
+        },
+        success: function (data) {
+          $("#id-flat-counter").html(data);
+        }
+      });
+    });
+
 

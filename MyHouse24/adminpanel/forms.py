@@ -733,10 +733,27 @@ class CounterDataForm(forms.ModelForm):
 
         self.initial['date'] = datetime.datetime.now().date().isoformat()
         self.fields['number'].initial = generationNumber()  # Генерация номер показания
+        if self.data.get('house'):
+            self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+        else:
+            self.fields['flat'].queryset = Flat.objects.none()
 
     def clean(self):
-        pass
-
+        cd = self.cleaned_data
+        print(cd)
+        if 'number' in cd:
+            if 'date' in cd:
+                if cd['date'] is None:
+                    raise forms.ValidationError('Укажите дату внесения показаний.')
+                if 'flat' in cd:
+                    if cd['flat'] is None:
+                        raise forms.ValidationError('"Квартира" - не может быть пустым.')
+                else:
+                    raise forms.ValidationError('"Квартира" - не может быть пустым.')
+            else:
+                raise forms.ValidationError('Укажите дату внесения показаний.')
+        else:
+            raise forms.ValidationError('Номер показания не может быть пустым.')
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
