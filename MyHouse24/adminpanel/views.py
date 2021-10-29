@@ -740,13 +740,12 @@ def account_info(request, id):
 def account_update(request, id):
     account_info = Account.objects.get(id=id)
 
-    if account_info.flat is not None:
+    if account_info.flat:
         owner = account_info.flat.owner
         section = Section.objects.filter(house=account_info.flat.house)
     else:
         owner = None
         section = None
-
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=account_info)
         if form.is_valid():
@@ -910,9 +909,6 @@ def select_account_trans(request):
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
     counters = CounterData.objects.extra(where={'counter_data > 0 '}).distinct('flat','counter')
-    print(counters)
-
-
     data = {
         'counters': counters
     }
@@ -923,7 +919,6 @@ def counter_data_create(request):
         form = CounterDataForm(request.POST)
         if form.is_valid():
             form.save()
-
             messages.success(request, f"Показания успешно внесены.")
             return redirect('counter_data_counters')
         else:
@@ -939,6 +934,46 @@ def counter_data_create(request):
         'house': House.objects.all()
     }
     return render(request, 'adminpanel/counter-data/create.html', data)
+
+def counter_data_update(request, id):
+    data = CounterData.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = CounterDataForm(request.POST, instance=data)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Показания успешно изменены.")
+            return redirect('counter_data_list', form.save(commit=False).flat.id)
+        else:
+            message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
+            print(form.errors)
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = CounterDataForm(instance=data)
+    data = {
+        'counter': form,
+        'house': House.objects.all(),
+        'section': Section.objects.filter(house=data.flat.house)
+    }
+    return render(request, 'adminpanel/counter-data/update.html', data)
+
+def counter_data_list(request, id):
+    counters = CounterData.objects.filter(flat=id)
+    data = {
+        'counters': counters,
+        'counter': counters.first(),
+        'house': House.objects.all()
+    }
+    return render(request, 'adminpanel/counter-data/counter-list.html', data)
+
+def counter_data_delete(request, id, flat_id):
+    obj = CounterData.objects.filter(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Показания успешно удалены")
+    return redirect('counter_data_list', flat_id)
 
 def select_section_counter(request):
     house_id = request.GET.get('house')

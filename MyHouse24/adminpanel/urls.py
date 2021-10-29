@@ -72,6 +72,9 @@ urlpatterns = [
     # Показания счетчиков
     path('counter-data/counters', views.counter_data_counters, name='counter_data_counters'),
     path('counter-data/create', views.counter_data_create, name='counter_data_create'),
+    path('counter-data/update/<int:id>', views.counter_data_update, name='counter_data_update'),
+    path('counter-data/counter-list&flat_id=<int:id>', views.counter_data_list, name='counter_data_list'),
+    path('counter-data/delete=<int:id>/redirect=<int:flat_id>', views.counter_data_delete, name='counter_data_delete'),
     path('counter-data/ajax/select_section_account', views.select_section_counter, name='select_section_counter'),
     path('counter-data/ajax/select_flat_account', views.select_flat_counter, name='select_flat_counter'),
     path('counter-data/ajax/order_flat_account', views.order_flat_counter, name='order_flat_counter'),

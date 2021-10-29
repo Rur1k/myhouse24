@@ -1,9 +1,10 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}Счетчики{% endblock %}
-{% block page_name %}Счетчики{% endblock %}
+{% block title %}Показания счетчиков, кв.{{ counter.flat.number_flat }} {% endblock %}
+{% block page_name %}Показания счетчиков, кв.{{ counter.flat.number_flat}} {% endblock %}
 {% block mini_page_name %}
-    <li class="active">Счетчики</li>
+    <li><a href="{% url 'counter_data_counters' %}">Счетчики</a></li>
+    <li class="active">Показания счетчиков, кв.{{ counter.flat.number_flat }}</li>
 {% endblock %}
 {% block content %}
 {% if messages %}
@@ -28,14 +29,18 @@
         <a class="btn btn-default" href="">Очистить</a>
     </div>
     <div class="grid-view">
-        <table id="CounterTable" class="table table-striped table-bordered table-hover table_sort">
+        <table id="CounterListTable" class="table table-striped table-bordered table-hover table_sort">
             <thead>
             <tr>
-                <th class="col" style="min-width:100px">Дом</th>
-                <th class="col" style="min-width: 100px">Секция</th>
-                <th class="col" style="width:120px">№ Квартиры</th>
-                <th class="col" style="min-width:100px">Счетчик</th>
-                <th class="col" style="min-width:100px">Текущее показание</th>
+                <th class="col" style="min-width:100px">№</th>
+                <th class="col" style="min-width:100px">Статус</th>
+                <th class="col" style="min-width:100px">Дата</th>
+                <th class="col" style="min-width: 100px">Месяц</th>
+                <th class="col" style="width:120px">Дом</th>
+                <th class="col" style="min-width:100px">Секция</th>
+                <th class="col" style="min-width:100px">№ Квартиры</th>
+                <th class="col" style="min-width: 100px">Счетчик</th>
+                <th class="col" style="min-width: 100px">Показания</th>
                 <th class="col" style="min-width: 100px">Ед. изм.</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
@@ -71,22 +76,26 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody id="CounterList">
+            <tbody id="CounterListData">
             {% for obj in counters %}
-            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id%}'">
-                <td class="flat-house">{{ obj.flat.house }}</td>
-                <td class="flat-section">{{ obj.flat.section }}</td>
-                <td class="flat-flat">{{ obj.flat }}</td>
-                <td class="flat-counter">{{ obj.counter }}</td>
-                <td class="flat-today">{{ obj.counter_data }}</td>
-                <td class="flat-item">{{ obj.counter.unit }}</td>
+            <tr onclick="location.href=''">
+                <td class="">{{ obj.number }}</td>
+                <td class="">{{ obj.status }}</td>
+                <td class="">{{ obj.date | date:'d.m.Y' }}</td>
+                <td class="">{{ obj.date }}</td>
+                <td class="">{{ obj.flat.house }}</td>
+                <td class="">{{ obj.flat.section }}</td>
+                <td class="">{{ obj.flat.number }}</td>
+                <td class="">{{ obj.counter }}</td>
+                <td class="">{{ obj.counter_data }}</td>
+                <td class="">{{ obj.counter.unit }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" title="Снять новое показание счетчика" data-toggle="tooltip">
-                            <i class="fa fa-dashboard"></i>
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_update' obj.id %}" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_list' obj.flat.id %}" title="Открыть историю показания счетчика" data-toggle="tooltip">
-                            <i class="fa fa-eye"></i>
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_delete' obj.id counter.flat.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
                         </a>
                     </div>
                 </td>

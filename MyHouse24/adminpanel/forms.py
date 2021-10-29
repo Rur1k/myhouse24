@@ -532,10 +532,9 @@ class AccountForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.id is not None:
+        if self.instance.id:
             if self.instance.flat:
                 self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
-
             else:
                 self.fields['flat'].queryset = Flat.objects.none()
 
@@ -731,16 +730,20 @@ class CounterDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.initial['date'] = datetime.datetime.now().date().isoformat()
-        self.fields['number'].initial = generationNumber()  # Генерация номер показания
-        if self.data.get('house'):
-            self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+        if self.instance.id:
+            self.initial['date'] = self.instance.date.isoformat()
+            self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
+
         else:
-            self.fields['flat'].queryset = Flat.objects.none()
+            self.initial['date'] = datetime.datetime.now().date().isoformat()
+            self.fields['number'].initial = generationNumber()  # Генерация номер показания
+            if self.data.get('house'):
+                self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+            else:
+                self.fields['flat'].queryset = Flat.objects.none()
 
     def clean(self):
         cd = self.cleaned_data
-        print(cd)
         if 'number' in cd:
             if 'date' in cd:
                 if cd['date'] is None:
