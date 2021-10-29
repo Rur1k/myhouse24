@@ -908,7 +908,8 @@ def select_account_trans(request):
 
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
-    counters = CounterData.objects.extra(where={'counter_data > 0 '}).distinct('flat','counter')
+    counters = CounterData.objects.annotate(Max('counter_data'))
+    print(counters)
     data = {
         'counters': counters
     }

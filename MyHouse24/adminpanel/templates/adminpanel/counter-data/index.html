@@ -73,7 +73,7 @@
             </thead>
             <tbody id="CounterList">
             {% for obj in counters %}
-            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id%}'">
+            <tr onclick="location.href=''">
                 <td class="flat-house">{{ obj.flat.house }}</td>
                 <td class="flat-section">{{ obj.flat.section }}</td>
                 <td class="flat-flat">{{ obj.flat }}</td>
@@ -85,7 +85,7 @@
                         <a class="btn btn-default btn-sm" href="" title="Снять новое показание счетчика" data-toggle="tooltip">
                             <i class="fa fa-dashboard"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_list' obj.flat.id %}" title="Открыть историю показания счетчика" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="" title="Открыть историю показания счетчика" data-toggle="tooltip">
                             <i class="fa fa-eye"></i>
                         </a>
                     </div>

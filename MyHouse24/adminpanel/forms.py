@@ -734,6 +734,9 @@ class CounterDataForm(forms.ModelForm):
             self.initial['date'] = self.instance.date.isoformat()
             self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
 
+            if self.data.get('flat') != self.instance.flat:
+                if self.data.get('house'):
+                    self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
         else:
             self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.fields['number'].initial = generationNumber()  # Генерация номер показания
@@ -744,19 +747,39 @@ class CounterDataForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
-        if 'number' in cd:
-            if 'date' in cd:
-                if cd['date'] is None:
-                    raise forms.ValidationError('Укажите дату внесения показаний.')
-                if 'flat' in cd:
-                    if cd['flat'] is None:
+        if self.instance.id:
+            if 'number' in cd:
+                is_counter = CounterData.objects.filter(number=cd['number']).first()
+                if is_counter is not None and is_counter.number != self.instance.number:
+                    raise forms.ValidationError('Показания с указанным номером уже существует, укажите другой.')
+                if 'date' in cd:
+                    if cd['date'] is None:
+                        raise forms.ValidationError('Укажите дату внесения показаний.')
+                    if 'flat' in cd:
+                        if cd['flat'] is None:
+                            raise forms.ValidationError('"Квартира" - не может быть пустым.')
+                    else:
                         raise forms.ValidationError('"Квартира" - не может быть пустым.')
                 else:
-                    raise forms.ValidationError('"Квартира" - не может быть пустым.')
+                    raise forms.ValidationError('Укажите дату внесения показаний.')
             else:
-                raise forms.ValidationError('Укажите дату внесения показаний.')
+                raise forms.ValidationError('Номер показания не может быть пустым.')
         else:
-            raise forms.ValidationError('Номер показания не может быть пустым.')
+            if 'number' in cd:
+                if CounterData.objects.filter(number=cd['number']).first() is not None:
+                    raise forms.ValidationError('Показания с указанным номером уже существует, укажите другой.')
+                if 'date' in cd:
+                    if cd['date'] is None:
+                        raise forms.ValidationError('Укажите дату внесения показаний.')
+                    if 'flat' in cd:
+                        if cd['flat'] is None:
+                            raise forms.ValidationError('"Квартира" - не может быть пустым.')
+                    else:
+                        raise forms.ValidationError('"Квартира" - не может быть пустым.')
+                else:
+                    raise forms.ValidationError('Укажите дату внесения показаний.')
+            else:
+                raise forms.ValidationError('Номер показания не может быть пустым.')
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
