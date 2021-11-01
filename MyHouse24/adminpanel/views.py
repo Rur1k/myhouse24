@@ -908,14 +908,15 @@ def select_account_trans(request):
 
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
-    counters = CounterData.objects.annotate(Max('counter_data'))
+    counters = CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat', 'counter')
     print(counters)
     data = {
         'counters': counters
     }
     return render(request, 'adminpanel/counter-data/index.html', data)
 
-def counter_data_create(request):
+def counter_data_create(request, flat_id=None, service_id=None):
+
     if request.method == 'POST':
         form = CounterDataForm(request.POST)
         if form.is_valid():
@@ -929,7 +930,7 @@ def counter_data_create(request):
                 message = form.non_field_errors()
             messages.error(request, message)
     else:
-        form = CounterDataForm()
+            form = CounterDataForm()
     data = {
         'counter': form,
         'house': House.objects.all()

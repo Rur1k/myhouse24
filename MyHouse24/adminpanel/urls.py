@@ -72,6 +72,7 @@ urlpatterns = [
     # Показания счетчиков
     path('counter-data/counters', views.counter_data_counters, name='counter_data_counters'),
     path('counter-data/create', views.counter_data_create, name='counter_data_create'),
+    path('counter-data/create&flat_id=<int:flat_id>&service_id=<int:service_id>', views.counter_data_create, name='counter_data_create_flat_service'),
     path('counter-data/update/<int:id>', views.counter_data_update, name='counter_data_update'),
     path('counter-data/counter-list&flat_id=<int:id>', views.counter_data_list, name='counter_data_list'),
     path('counter-data/delete=<int:id>/redirect=<int:flat_id>', views.counter_data_delete, name='counter_data_delete'),
