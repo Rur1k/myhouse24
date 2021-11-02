@@ -1022,8 +1022,14 @@ def order_flat_counter(request):
     flats = Flat.objects.filter(section=section_id)
     return render(request, 'adminpanel/account/ajax/order_flat.html', { 'flats':flats })
 
-
-
+# бизнес логика вкладки "Квитанции на оплату"
+def invoice(request):
+    data = {
+        'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
+        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
+        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
+    }
+    return render(request, 'adminpanel/invoice/index.html', data)
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

@@ -81,6 +81,8 @@ urlpatterns = [
     path('counter-data/ajax/select_section_account', views.select_section_counter, name='select_section_counter'),
     path('counter-data/ajax/select_flat_account', views.select_flat_counter, name='select_flat_counter'),
     path('counter-data/ajax/order_flat_account', views.order_flat_counter, name='order_flat_counter'),
+    # Квитанции на оплату
+    path('invoice/', views.invoice, name='invoice'),
 
 
 
