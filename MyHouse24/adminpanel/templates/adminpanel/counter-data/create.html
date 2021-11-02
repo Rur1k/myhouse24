@@ -4,6 +4,9 @@
 {% block page_name %}Новое показание{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'counter_data_counters' %}">Счетчики</a></li>
+    {% if flat %}
+    <li><a href="{% url 'counter_data_list' flat.id %}">Показания счетчиков, кв.{{ flat.number_flat }}</a></li>
+    {% endif %}
     <li class="active">Новое показание</li>
 {% endblock %}
 {% block content %}
@@ -55,7 +58,18 @@
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Секция</label>
-                    <select id="id-section-counter" class="form-control" title="Выберите..."></select>
+                    <select id="id-section-counter" class="form-control" title="Выберите...">
+                         <option value="">Выберите...</option>
+                        {% if section %}
+                            {% for obj in section %}
+                                {% if obj == counter.instance.flat.section %}
+                                    <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                                {% else %}
+                                    <option value="{{ obj.id }}">{{ obj.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </select>
                 </div>
                 <div class="col-md-12 margin-bottom-15">
                     <label>Квартира</label>

@@ -20,7 +20,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group pull-right margin-bottom">
-            <a class="btn btn-success" href="{% url 'counter_data_create' %}" >Добавить показание</a>
+            <a class="btn btn-success" href="{% url 'counter_data_create_flat_service' counter.flat.id 0 %}" >Добавить показание</a>
         </div>
     </div>
 </div>
@@ -36,59 +36,72 @@
                 <th class="col" style="min-width:100px">Статус</th>
                 <th class="col" style="min-width:100px">Дата</th>
                 <th class="col" style="min-width: 100px">Месяц</th>
-                <th class="col" style="width:120px">Дом</th>
+                <th class="col" style="min-width:150px">Дом</th>
                 <th class="col" style="min-width:100px">Секция</th>
-                <th class="col" style="min-width:100px">№ Квартиры</th>
+                <th class="col" style="min-width:60px">№ Квартиры</th>
                 <th class="col" style="min-width: 100px">Счетчик</th>
                 <th class="col" style="min-width: 100px">Показания</th>
-                <th class="col" style="min-width: 100px">Ед. изм.</th>
-                <th class="col" style="width: 100px; min-width:120px"></th>
+                <th class="col" style="min-width: 80px">Ед. изм.</th>
+                <th class="col" style="width: 100px; min-width:100px"></th>
             </tr>
             <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
+                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','CounterListData','counterData-number')"></td>
                 <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','FlatList','flat-house')">
-                        <option value="0"></option>
+                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','CounterListData','counterData-status')">
+                        <option value="">Выберите...</option>
+                        {% for obj in status %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
 
                     </select>
                 </td>
                 <td>
-                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','FlatList','flat-section')">
-
+                    <input id="DateSearch" class="form-control" onkeyup="searchTable('DateSearch','CounterListData','counterData-date')">
+                </td>
+                <td></td>
+                <td>
+                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','CounterListData','counterData-house')">
+                        <option value="">Выберите...</option>
+                        {% for obj in house %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
                     </select>
                 </td>
                 <td>
-                    <select id="FloorSearch" class="form-control" onchange="searchTable('FloorSearch','FlatList','flat-floor')">
+                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','CounterListData','counterData-section')">
+                        <option>Выберите дом</option>
 
                     </select>
                 </td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','FlatList','flat-owner')">
-                        <option></option>
+                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','CounterListData','counterData-flat')"></td>
+                <th>
+                    <select id="CounterSearch" class="form-control" onchange="searchTable('CounterSearch','CounterListData','counterData-counter')">
+                        <option value="">Выберите...</option>
+                        {% for obj in counter_unit %}
+                        {% if obj.id == selected_counter %}
+                        <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                        {% else %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endif %}
+                        {% endfor %}
 
                     </select>
-                </td>
-                <td>
-                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','FlatList','flat-remainder')">
-                        <option></option>
-                    </select>
-                </td>
-                <th></th>
+                </th>
             </tr>
             </thead>
             <tbody id="CounterListData">
             {% for obj in counters %}
-            <tr onclick="location.href=''">
-                <td class="">{{ obj.number }}</td>
-                <td class="">{{ obj.status }}</td>
-                <td class="">{{ obj.date | date:'d.m.Y' }}</td>
-                <td class="">{{ obj.date }}</td>
-                <td class="">{{ obj.flat.house }}</td>
-                <td class="">{{ obj.flat.section }}</td>
-                <td class="">{{ obj.flat.number }}</td>
-                <td class="">{{ obj.counter }}</td>
-                <td class="">{{ obj.counter_data }}</td>
-                <td class="">{{ obj.counter.unit }}</td>
+            <tr onclick="location.href='{% url 'counter_data_info' obj.id %}'">
+                <td class="counterData-number">{{ obj.number }}</td>
+                <td class="counterData-status"><div hidden="hidden">{{ obj.status.id }}</div>{{ obj.status }}</td>
+                <td class="counterData-date">{{ obj.date | date:'d.m.Y' }}</td>
+                <td class="counterData-">{{ obj.date | date:'F Y'}}</td>
+                <td class="counterData-house"><div hidden="hidden">{{ obj.flat.house.id }}</div>{{ obj.flat.house }}</td>
+                <td class="counterData-section"><div hidden="hidden">{{ obj.flat.section.id }}</div>{{ obj.flat.section }}</td>
+                <td class="counterData-flat">{{ obj.flat.number_flat }}</td>
+                <td class="counterData-counter"><div hidden="hidden">{{ obj.counter.id }}</div>{{ obj.counter }}</td>
+                <td class="counterData-data">{{ obj.counter_data }}</td>
+                <td class="counterData-unit">{{ obj.counter.unit }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'counter_data_update' obj.id %}" title="Редактировать" data-toggle="tooltip">

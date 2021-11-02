@@ -73,7 +73,7 @@
             </thead>
             <tbody id="CounterList">
             {% for obj in counters %}
-            <tr onclick="location.href=''">
+            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'">
                 <td class="flat-house">{{ obj.flat.house }}</td>
                 <td class="flat-section">{{ obj.flat.section }}</td>
                 <td class="flat-flat">{{ obj.flat }}</td>
@@ -82,10 +82,10 @@
                 <td class="flat-item">{{ obj.counter.unit }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_create_flat_service' obj.flat.id obj.counter.unit.id %}" title="Снять новое показание счетчика" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_create_flat_service' obj.flat.id obj.counter.id %}" title="Снять новое показание счетчика" data-toggle="tooltip">
                             <i class="fa fa-dashboard"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" title="Открыть историю показания счетчика" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_list_counter' obj.flat.id obj.counter.id %}" title="Открыть историю показания счетчика" data-toggle="tooltip">
                             <i class="fa fa-eye"></i>
                         </a>
                     </div>

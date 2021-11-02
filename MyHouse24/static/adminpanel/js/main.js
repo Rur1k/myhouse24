@@ -1,3 +1,6 @@
+$("document").ready(function() {
+    $('#CounterSearch').trigger('change')
+});
 
 // Сортировка таблиц
 document.addEventListener('DOMContentLoaded', () => {

@@ -740,10 +740,16 @@ class CounterDataForm(forms.ModelForm):
         else:
             self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.fields['number'].initial = generationNumber()  # Генерация номер показания
-            if self.data.get('house'):
-                self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+
+            if 'flat' in self.initial:
+                self.fields['flat'].queryset = Flat.objects.filter(house=self.initial['flat'].house.id)
+            elif self.data.get('flat'):
+                self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
             else:
-                self.fields['flat'].queryset = Flat.objects.none()
+                if self.data.get('house'):
+                    self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+                else:
+                    self.fields['flat'].queryset = Flat.objects.none()
 
     def clean(self):
         cd = self.cleaned_data

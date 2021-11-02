@@ -916,13 +916,19 @@ def counter_data_counters(request):
     return render(request, 'adminpanel/counter-data/index.html', data)
 
 def counter_data_create(request, flat_id=None, service_id=None):
-
+    section = None
+    flat_obj = Flat.objects.filter(id=flat_id).first()
     if request.method == 'POST':
         form = CounterDataForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, f"Показания успешно внесены.")
-            return redirect('counter_data_counters')
+            if 'save' in request.POST:
+                return redirect('counter_data_list', form.save(commit=False).flat.id)
+            elif 'save_and_new' in request.POST and flat_id and service_id:
+                return redirect('counter_data_create_flat_service', flat_id, service_id)
+            else:
+                return redirect('counter_data_create')
         else:
             message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
             print(form.errors)
@@ -930,10 +936,17 @@ def counter_data_create(request, flat_id=None, service_id=None):
                 message = form.non_field_errors()
             messages.error(request, message)
     else:
+        if flat_id:
+            section = Section.objects.filter(house=flat_obj.house)
+            form=CounterDataForm(initial={'flat': flat_obj, 'counter': service_id})
+        else:
             form = CounterDataForm()
+
     data = {
         'counter': form,
-        'house': House.objects.all()
+        'house': House.objects.all(),
+        'section': section,
+        'flat': flat_obj
     }
     return render(request, 'adminpanel/counter-data/create.html', data)
 
@@ -945,7 +958,12 @@ def counter_data_update(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, f"Показания успешно изменены.")
-            return redirect('counter_data_list', form.save(commit=False).flat.id)
+            if 'save' in request.POST:
+                return redirect('counter_data_list', form.save(commit=False).flat.id)
+            elif 'save_and_new' in request.POST and id is not None:
+                return redirect('counter_data_create_flat_service', data.flat.id, 0)
+            else:
+                return  redirect('counter_data_create')
         else:
             message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
             print(form.errors)
@@ -961,14 +979,26 @@ def counter_data_update(request, id):
     }
     return render(request, 'adminpanel/counter-data/update.html', data)
 
-def counter_data_list(request, id):
-    counters = CounterData.objects.filter(flat=id)
+def counter_data_list(request, id, counter_id=None):
+    counters = CounterData.objects.filter(flat=id).order_by('-id')
     data = {
         'counters': counters,
         'counter': counters.first(),
-        'house': House.objects.all()
+        'house': House.objects.all(),
+        'status': StatusCounter.objects.all(),
+        'counter_unit': SettingService.objects.all(),
+        'selected_counter': counter_id
     }
     return render(request, 'adminpanel/counter-data/counter-list.html', data)
+
+
+def counter_data_info(request, id):
+    counter = CounterData.objects.get(id=id)
+    data = {
+        'counter': counter,
+    }
+    return render(request, 'adminpanel/counter-data/info.html', data)
+
 
 def counter_data_delete(request, id, flat_id):
     obj = CounterData.objects.filter(id=id)
