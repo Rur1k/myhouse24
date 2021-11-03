@@ -283,11 +283,9 @@ def setting_tariffs_update(request, id):
     service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0, can_delete=True)
 
     if request.method == "POST":
-        print(request.POST)
         form = SettingTariffForm(request.POST, request.FILES, instance=tariff_info)
         formset = service_form(request.POST, prefix='setting_tariff_service', queryset=services_is_tariff)
         if form.is_valid():
-            print(formset.cleaned_data)
             form.save()
             if formset.is_valid():
                 for subform in formset:
@@ -302,7 +300,7 @@ def setting_tariffs_update(request, id):
                                 SettingServiceIsTariff.objects.filter(id=obj.id).delete()
             else:
                 print('Форм сет не валидный')
-                print(formset)
+                print(formset.errors)
 
         return redirect('setting_tariffs')
     else:
@@ -1025,11 +1023,43 @@ def order_flat_counter(request):
 # бизнес логика вкладки "Квитанции на оплату"
 def invoice(request):
     data = {
+        'invoices': Invoice.objects.all(),
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
         'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
     }
     return render(request, 'adminpanel/invoice/index.html', data)
+
+def select_account_invoice(request):
+    flat_id = request.GET.get('flat')
+    flat = Flat.objects.filter(id=flat_id).first()
+    if flat.account:
+        return flat.account.number
+    else:
+        return None
+
+def invoice_create(request):
+    if request.method == "POST":
+        form = InvoiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Квитанция успешно создана.")
+            return redirect('invoice')
+        else:
+            message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
+            print(form.errors)
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = InvoiceForm()
+
+    data = {
+        'invoice': form,
+        'house': House.objects.all(),
+    }
+    return render(request, 'adminpanel/invoice/create.html', data)
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

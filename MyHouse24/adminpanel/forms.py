@@ -787,6 +787,77 @@ class CounterDataForm(forms.ModelForm):
             else:
                 raise forms.ValidationError('Номер показания не может быть пустым.')
 
+# Формы для Квитанций на оплату
+class InvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = [
+            'id',
+            'number',
+            'date',
+            'flat',
+            'is_carried',
+            'status',
+            'tariff',
+            'date_first',
+            'date_last',
+        ]
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+            'flat': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-flat-invoice'
+            }),
+            'is_carried': forms.CheckboxInput(attrs={
+                'class': 'check',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'tariff': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'date_first': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+            'date_last': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.id:
+            self.initial['date'] = self.instance.date.isoformat()
+            self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
+
+            if self.data.get('flat') != self.instance.flat:
+                if self.data.get('house'):
+                    self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+        else:
+            self.initial['date'] = datetime.datetime.now().date().isoformat()
+            self.fields['number'].initial = generationNumber()  # Генерация номера квитанции
+
+            if 'flat' in self.initial:
+                self.fields['flat'].queryset = Flat.objects.filter(house=self.initial['flat'].house.id)
+            elif self.data.get('flat'):
+                self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
+            else:
+                if self.data.get('house'):
+                    self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+                else:
+                    self.fields['flat'].queryset = Flat.objects.none()
+
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

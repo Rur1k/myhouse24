@@ -92,6 +92,43 @@ $("#id-flat-account").change(function () {
       });
     });
 
+// Вытягивает владельца и номер телефона по квартире
+$("#id-flat-invoice").change(function () {
+      var url_username = $("#InvoiceCreateForm").attr("data-username-url");
+      var url_phone = $("#InvoiceCreateForm").attr("data-phone-url");
+      var url_account = $("#InvoiceCreateForm").attr("data-account-url");
+      var flatId = $(this).val();
+
+      $.ajax({
+        url: url_username,
+        data: {
+          'flat': flatId
+        },
+        success: function (data) {
+          $("#user-fullname").html(data);
+        }
+      });
+      $.ajax({
+        url: url_phone,
+        data: {
+          'flat': flatId
+        },
+        success: function (data) {
+          $("#user-phone").html(data);
+        }
+      });
+      $.ajax({
+        url: url_account,
+        data: {
+          'flat': flatId
+        },
+        success: function (data) {
+            console.log('Бла бла бла')
+          $("#id-account-invoice").val(data);
+        }
+      });
+    });
+
 
 // Сортировка для поиска по таблице квартир
 $("#HouseSearch").change(function () {
@@ -180,6 +217,32 @@ $("#id-house-counter").change(function () {
       });
     });
 
+// Связные списки для создания объекта показания счетчика
+$("#id-house-invoice").change(function () {
+      var url_section = $("#InvoiceCreateForm").attr("data-section-url");
+      var url_flat = $("#InvoiceCreateForm").attr("data-flat-url");
+      var houseId = $(this).val();
+
+      $.ajax({
+        url: url_section,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-section-invoice").html(data);
+        }
+      });
+      $.ajax({
+        url: url_flat,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-flat-invoice").html(data);
+        }
+      });
+    });
+
 // Сортировка квартиры по секции
 $("#id-section-counter").change(function () {
       var url = $("#CounterDataCreateForm").attr("data-order-flat-url");
@@ -192,6 +255,21 @@ $("#id-section-counter").change(function () {
         },
         success: function (data) {
           $("#id-flat-counter").html(data);
+        }
+      });
+    });
+
+$("#id-section-invoice").change(function () {
+      var url = $("#InvoiceCreateForm").attr("data-order-flat-url");
+      var sectionId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'section': sectionId
+        },
+        success: function (data) {
+          $("#id-flat-invoice").html(data);
         }
       });
     });

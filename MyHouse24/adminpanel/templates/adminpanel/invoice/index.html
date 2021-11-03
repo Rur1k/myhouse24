@@ -1,9 +1,9 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}Лицевые счета{% endblock %}
-{% block page_name %}Лицевые счета{% endblock %}
+{% block title %}Квитанции на оплату{% endblock %}
+{% block page_name %}Квитанции на оплату{% endblock %}
 {% block mini_page_name %}
-    <li class="active">Лицевые счета</li>
+    <li class="active">Квитанции на оплату</li>
 {% endblock %}
 {% block content %}
 {% if messages %}
@@ -62,7 +62,7 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="">Создать общую квитанцию</a></li>
+                    <li><a href="{% url 'invoice_create' %}">Создать общую квитанцию</a></li>
                     <li><a href="">Удалить</a></li>
                 </ul>
             </div>
@@ -125,21 +125,21 @@
             </tr>
             </thead>
             <tbody id="AccountList">
-
+            {% for obj in invoices %}
             <tr onclick="location.href=''">
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
-                <td class=""></td>
+                <td class=""><input type="checkbox"></td>
+                <td class="">{{ obj.number }}</td>
+                <td class="">{{ obj.status }}</td>
+                <td class="">{{ obj.date | date:'d.m.Y' }}</td>
+                <td class="">{{ obj.date | date:'F Y' }}</td>
+                <td class="">{{ obj.flat }}</td>
+                <td class="">{{ obj.flat.owner }}</td>
+                <td class="">{{ obj.is_carried }}</td>
                 <td class=""></td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
-                            <i class="fa fa-pencil"></i>
+                        <a class="btn btn-default btn-sm" href="" title="Копировать" data-toggle="tooltip">
+                            <i class="fa fa-copy"></i>
                         </a>
                         <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
@@ -150,7 +150,7 @@
                     </div>
                 </td>
             </tr>
-
+            {% endfor %}
             </tbody>
         </table>
     </div>

@@ -77,7 +77,7 @@ class SettingServiceIsTariff(models.Model):
     tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
     service = models.ForeignKey(SettingService, on_delete=models.CASCADE, null=True, blank=True)
     unit_service = models.ForeignKey(ServiceUnit, on_delete=models.CASCADE, null=True, blank=True)
-    price = models.FloatField(null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
     currency = models.CharField(max_length=128, null=True, blank=True)
 
 class SettingPayCompany(models.Model):
@@ -288,3 +288,23 @@ class CounterData(models.Model):
     counter = models.ForeignKey(SettingService, on_delete=models.CASCADE, null=True, blank=True)
     status = models.ForeignKey(StatusCounter, on_delete=models.CASCADE, default=1, blank=True)
     counter_data = models.IntegerField(null=True, blank=True)
+
+# Модели для квитанций на оплату
+class StatusInvoice(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Invoice(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    number = models.CharField(max_length=128, unique=True)
+    date = models.DateField(null=True, blank=True)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
+    is_carried = models.BooleanField(default=1)
+    status = models.ForeignKey(StatusInvoice, on_delete=models.CASCADE, default=1, blank=True)
+    tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
+    date_first = models.DateField(null=True, blank=True)
+    date_last = models.DateField(null=True, blank=True)
+    sum = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, blank=True)
