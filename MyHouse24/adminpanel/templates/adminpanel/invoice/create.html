@@ -121,11 +121,16 @@
                     </theader>
                     <tbody>
                         <tr>
+                            <td scope="row">{{ service.service }}</td>
+                            <td scope="row">{{ service.consumption }}</td>
+                            <td scope="row">{{ service.unit_service }}</td>
+                            <td scope="row">{{ service.currency }}</td>
                             <td scope="row"><input class="form-control"></td>
-                            <td scope="row"><input class="form-control"></td>
-                            <td scope="row"><input class="form-control"></td>
-                            <td scope="row"><input class="form-control"></td>
-                            <td scope="row"><input class="form-control"></td>
+                            <td scope="row">
+                                <button class="btn btn-default btn-sm" title="Удалить">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="4">
@@ -170,9 +175,33 @@
                         </tr>
                     </theader>
                     <tbody>
+                        {% for obj in counters_data %}
                         <tr>
-
+                            <td scope="row">{{ obj.number }}</td>
+                            <td scope="row">
+                                {% if obj.status %}
+                                    {% if obj.status.id == 1 %}
+                                    <small class="label label-warning">
+                                    {% elif obj.status.id == 2 or  obj.status.id == 3%}
+                                    <small class="label label-success">
+                                    {% else %}
+                                    <small class="label label-primary">
+                                    {% endif %}
+                                        {{ obj.status }}</small>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                            <td scope="row">{{ obj.date | date:'d.m.Y' }}</td>
+                            <td scope="row">{{ obj.date | date:'F Y' }}</td>
+                            <td scope="row">{{ obj.flat.house }}</td>
+                            <td scope="row">{{ obj.flat.section }}</td>
+                            <td scope="row">{{ obj.flat.number_flat }}</td>
+                            <td scope="row">{{ obj.counter }}</td>
+                            <td scope="row">{{ obj.counter_data }}</td>
+                            <td scope="row">{{ obj.counter.unit }}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 

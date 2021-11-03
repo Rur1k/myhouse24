@@ -93,7 +93,21 @@
             {% for obj in counters %}
             <tr onclick="location.href='{% url 'counter_data_info' obj.id %}'">
                 <td class="counterData-number">{{ obj.number }}</td>
-                <td class="counterData-status"><div hidden="hidden">{{ obj.status.id }}</div>{{ obj.status }}</td>
+                <td class="counterData-status">
+                    {% if obj.status %}
+                    {% if obj.status.id == 1 %}
+                    <small class="label label-warning">
+                        {% elif obj.status.id == 2 or  obj.status.id == 3%}
+                        <small class="label label-success">
+                            {% else %}
+                            <small class="label label-primary">
+                                {% endif %}
+                                {{ obj.status }}</small>
+                            {% else %}
+                            не задано
+                            {% endif %}
+                            <div hidden="hidden">{{ obj.status.id }}</div>
+                </td>
                 <td class="counterData-date">{{ obj.date | date:'d.m.Y' }}</td>
                 <td class="counterData-">{{ obj.date | date:'F Y'}}</td>
                 <td class="counterData-house"><div hidden="hidden">{{ obj.flat.house.id }}</div>{{ obj.flat.house }}</td>

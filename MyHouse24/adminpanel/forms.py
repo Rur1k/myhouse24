@@ -858,6 +858,40 @@ class InvoiceForm(forms.ModelForm):
                     self.fields['flat'].queryset = Flat.objects.none()
 
 
+class ServiceIsInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = ServiceIsInvoice
+        fields = [ 'id', 'service', 'price', 'currency', 'unit_service', 'consumption']
+        widgets = {
+            'service': forms.Select(attrs={
+                'class': 'form-control',
+                'onchange': 'SelectServiceUnit(this)'
+            }),
+            'unit_service': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'price': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'currency': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'consumption': forms.TextInput(attrs={
+                'class': 'form-control'
+            })
+        }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['unit_service'].queryset = ServiceUnit.objects.none()
+    #
+    #     if 'setting_tariff_service-0-unit_service' in self.data:
+    #         service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
+    #         unit_id = SettingService.objects.get(id=service_id).unit.id
+    #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
+
+
+
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):
     class Meta:

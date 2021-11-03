@@ -1032,15 +1032,18 @@ def invoice(request):
 
 def select_account_invoice(request):
     flat_id = request.GET.get('flat')
+    print("ид кв"+ flat_id)
     flat = Flat.objects.filter(id=flat_id).first()
     if flat.account:
-        return flat.account.number
+        account = flat.account.number
+        return account
     else:
         return None
 
 def invoice_create(request):
     if request.method == "POST":
         form = InvoiceForm(request.POST)
+        form_service = ServiceIsInvoiceForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, f"Квитанция успешно создана.")
@@ -1053,8 +1056,12 @@ def invoice_create(request):
             messages.error(request, message)
     else:
         form = InvoiceForm()
+        form_service = ServiceIsInvoiceForm()
 
     data = {
+        'counters_data': CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat',
+                                                                                                         'counter'),
+        'service': form_service,
         'invoice': form,
         'house': House.objects.all(),
     }
