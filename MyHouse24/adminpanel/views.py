@@ -1023,6 +1023,7 @@ def order_flat_counter(request):
 # бизнес логика вкладки "Квитанции на оплату"
 def invoice(request):
     data = {
+        'status': StatusInvoice.objects.all(),
         'invoices': Invoice.objects.all(),
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
@@ -1041,9 +1042,12 @@ def select_account_invoice(request):
         return None
 
 def invoice_create(request):
+
+    serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=3, can_delete=True)
+
     if request.method == "POST":
         form = InvoiceForm(request.POST)
-        form_service = ServiceIsInvoiceForm(request.POST)
+        form_service = serviceFormSet(request.POST, prefix='service_invoice')
         if form.is_valid():
             form.save()
             messages.success(request, f"Квитанция успешно создана.")
@@ -1056,7 +1060,7 @@ def invoice_create(request):
             messages.error(request, message)
     else:
         form = InvoiceForm()
-        form_service = ServiceIsInvoiceForm()
+        form_service = serviceFormSet(prefix='service_invoice', queryset=ServiceIsInvoice.objects.none())
 
     data = {
         'counters_data': CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat',

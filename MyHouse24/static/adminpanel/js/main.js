@@ -1,25 +1,26 @@
 $("document").ready(function() {
     $('#CounterSearch').trigger('change')
+
 });
 
 // Сортировка таблиц
-document.addEventListener('DOMContentLoaded', () => {
-    const getSort = ({ target }) => {
-        const order = (target.dataset.order = -(target.dataset.order || -1));
-        const index = [...target.parentNode.cells].indexOf(target);
-        const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
-        const comparator = (index, order) => (a, b) => order * collator.compare(
-            a.children[index].innerHTML,
-            b.children[index].innerHTML
-        );
-        for(const tBody of target.closest('table').tBodies)
-            tBody.append(...[...tBody.rows].sort(comparator(index, order)));
-
-        for(const cell of target.parentNode.cells)
-            cell.classList.toggle('sorted', cell === target);
-    };
-    document.querySelectorAll('.table_sort thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
-});
+//document.addEventListener('DOMContentLoaded', () => {
+//    const getSort = ({ target }) => {
+//        const order = (target.dataset.order = -(target.dataset.order || -1));
+//        const index = [...target.parentNode.cells].indexOf(target);
+//        const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
+//        const comparator = (index, order) => (a, b) => order * collator.compare(
+//            a.children[index].innerHTML,
+//            b.children[index].innerHTML
+//        );
+//        for(const tBody of target.closest('table').tBodies)
+//            tBody.append(...[...tBody.rows].sort(comparator(index, order)));
+//
+//        for(const cell of target.parentNode.cells)
+//            cell.classList.toggle('sorted', cell === target);
+//    };
+//    document.querySelectorAll('.table_sort thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+//});
 
 // Поиск по таблицам
 function searchTable(idSearch, idTable, classField) {
@@ -133,13 +134,26 @@ $('#add_service_to_tariff').click(function() {
         $('#form_set_setting_tariff_service').find('div#id_form_setting_tariff_service_').attr('id', 'id_form_setting_tariff_service_'+ parseInt(form_idx));
     });
 
+$('#add_service_is_invoice').click(function() {
+        var form_idx = $('#id_service_invoice-TOTAL_FORMS').val();
+        $('#formset_service_invoice').append($('#empty_form_service_invoice').html().replace(/prefix/g, form_idx));
+        $('#id_service_invoice-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#formset_service_invoice').find('#id_form_service_invoice-__'+parseInt(form_idx)+'__-service').attr('name', 'service_invoice-'+parseInt(form_idx)+'-service');
+        $('#formset_service_invoice').find('#id_form_service_invoice-__'+parseInt(form_idx)+'__-consumption').attr('name', 'service_invoice-'+parseInt(form_idx)+'-price');
+        $('#formset_service_invoice').find('#id_form_service_invoice-__'+parseInt(form_idx)+'__-unit_service').attr('name', 'service_invoice-'+parseInt(form_idx)+'-unit_service');
+        $('#formset_service_invoice').find('#id_form_service_invoice-__'+parseInt(form_idx)+'__-currency').attr('name', 'service_invoice-'+parseInt(form_idx)+'-currency');
+        $('#formset_service_invoice').find('#id_form_service_invoice-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'service_invoice-'+parseInt(form_idx)+'-DELETE');
+        $('#formset_service_invoice').find('tr#id_form_service_invoice-').attr('id', 'id_form_service_invoice-'+ parseInt(form_idx));
+    });
+
 
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service, .form-setting_tariff_service').hide();
+        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service, .form-setting_tariff_service',
+        '.form-service-invoice').hide();
     }
 });
 
@@ -184,3 +198,63 @@ $("#id-select-account-flat").change(function () {
       $(this).val("");
 
     });
+
+//// Фильтры для таблиц новые
+$('.table-filters input').on('input', function () {
+    filterTableInput($(this).parents('table'));
+});
+
+$('.table-filters select').change(function () {
+    filterTableSelect($(this).parents('table'));
+});
+
+
+
+function filterTableInput($table) {
+    var $filters = $table.find('.table-filters td');
+    var $rows = $table.find('.table-data');
+    $rows.each(function (rowIndex) {
+        var valid = true;
+        $(this).find('td').each(function (colIndex) {
+            if ($filters.eq(colIndex).find('input').val()) {
+                if ($(this).html().toLowerCase().indexOf(
+                $filters.eq(colIndex).find('input').val().toLowerCase()) == -1) {
+                    valid = valid && false;
+                }
+            }
+        });
+        if (valid === true) {
+            $(this).css('display', '');
+        } else {
+            $(this).css('display', 'none');
+        }
+    });
+}
+
+function filterTableSelect($table) {
+    var $filters = $table.find('.table-filters td');
+    var $rows = $table.find('.table-data');
+    $rows.each(function (rowIndex) {
+        var valid = true;
+        $(this).find('td').each(function (colIndex) {
+            if ($filters.eq(colIndex).find('select option').val()) {
+                if ($(this).html().toLowerCase().indexOf(
+                $filters.eq(colIndex).find('select option').val().toLowerCase()) == -1) {
+                    valid = valid && false;
+                }
+            }
+        });
+        if (valid === true) {
+            $(this).css('display', '');
+        } else {
+            $(this).css('display', 'none');
+        }
+    });
+}
+
+
+
+
+
+
+

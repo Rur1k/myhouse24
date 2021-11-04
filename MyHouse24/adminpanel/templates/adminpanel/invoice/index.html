@@ -75,7 +75,7 @@
         <a class="btn btn-default" href="">Очистить</a>
     </div>
     <div class="grid-view">
-        <table id="AccountTable" class="table table-striped table-bordered table-hover table_sort"
+        <table id="filter-table" class="table table-striped table-bordered table-hover table_sort"
                data-section-url="{% url 'select_section_flat' %}">
             <thead>
             <tr>
@@ -90,45 +90,27 @@
                 <th class="col" style="min-width: 100px">Сумма(грн)</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
-            <tr>
+            <tr class="table-filters">
                 <td></td>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountList','account-number')"></td>
+                <td><input type="text" class="form-control"></td>
                 <td>
-                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountList','account-status')">
-                        <option value="0"></option>
+                    <select class="form-control">
+                        <option value=""></option>
+                        <option value="Оплачена">Оплачена</option>
                     </select>
                 </td>
-                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','AccountList','account-flat')"></td>
-                <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','AccountList','account-house')">
-                        <option value="0"></option>
-                    </select>
-                </td>
-                <td>
-                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','AccountList','account-section')">
-                        <option>Выберите дом</option>
-                    </select>
-                </td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','AccountList','account-owner')">
-                        <option></option>
-                    </select>
-                </td>
-                <td>
-                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','AccountList','account-remainder')">
-                        <option></option>
-                        <option>Есть долг</option>
-                        <option>Нет долга</option>
-                    </select>
-                </td>
-                <th></th>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
             </tr>
             </thead>
             <tbody id="AccountList">
             {% for obj in invoices %}
-            <tr onclick="location.href=''">
-                <td class=""><input type="checkbox"></td>
-                <td class="">{{ obj.number }}</td>
+            <tr onclick="location.href=''" class="table-data">
+                <td><input type="checkbox"></td>
+                <td >{{ obj.number }}</td>
                 <td class="">{{ obj.status }}</td>
                 <td class="">{{ obj.date | date:'d.m.Y' }}</td>
                 <td class="">{{ obj.date | date:'F Y' }}</td>

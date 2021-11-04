@@ -26,6 +26,7 @@
       data-phone-url="{% url 'select_phone_account' %}"
       data-account-url="{% url 'select_account_invoice' %}">
     {% csrf_token %}
+    {{ service.management_form }}
     <div class="row">
         <div class="col-xs-12 col-md-7 col-lg-6">
             <div class="page-header-spec">
@@ -119,12 +120,13 @@
                             <th scope="col">Стоимость, грн</th>
                         </tr>
                     </theader>
-                    <tbody>
-                        <tr>
-                            <td scope="row">{{ service.service }}</td>
-                            <td scope="row">{{ service.consumption }}</td>
-                            <td scope="row">{{ service.unit_service }}</td>
-                            <td scope="row">{{ service.currency }}</td>
+                    <tbody id="formset_service_invoice">
+                        {% for obj in service %}
+                        <tr class="form-service-invoice">
+                            <td scope="row">{{ obj.service }}</td>
+                            <td scope="row">{{ obj.consumption }}</td>
+                            <td scope="row">{{ obj.unit_service }}</td>
+                            <td scope="row">{{ obj.currency }}</td>
                             <td scope="row"><input class="form-control"></td>
                             <td scope="row">
                                 <button class="btn btn-default btn-sm" title="Удалить">
@@ -132,9 +134,10 @@
                                 </button>
                             </td>
                         </tr>
+                        {% endfor %}
                         <tr>
                             <td colspan="4">
-                                <button type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
+                                <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
                                 <button type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
                                 <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
                             </td>
@@ -143,7 +146,26 @@
                             </td>
                         </tr>
                     </tbody>
+                    <div id="empty_form_service_invoice" style="display:none">
+                        <tr id='id_form_service_invoice_' class="form-service-invoice">
+                            <td scope="row">{{ service.empty_form.service }}</td>
+                            <td scope="row">{{ service.empty_form.consumption }}</td>
+                            <td scope="row">{{ service.empty_form.unit_service }}</td>
+                            <td scope="row">{{ service.empty_form.currency }}</td>
+                            <td scope="row"><input class="form-control"></td>
+                            <td scope="row">
+                                <button class="btn btn-default btn-sm delete-form" title="Удалить">
+                                    <i class="fa fa-trash">
+                                        <div class="hidden">
+                                            {{ service.empty_form.DELETE }}
+                                        </div>
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                    </div>
                 </table>
+
             </div>
             <div class="col-md-12 text-right">
                 <div class="form-group">
