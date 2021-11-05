@@ -110,6 +110,7 @@
                 </p>
             </div>
             <div class="col-md-12 margin-bottom-20">
+
                 <table class="table">
                     <theader>
                         <tr>
@@ -135,19 +136,9 @@
                             </td>
                         </tr>
                         {% endfor %}
-                        <tr>
-                            <td colspan="4">
-                                <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
-                                <button type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
-                                <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
-                            </td>
-                            <td scope="row">
-                                <h4>Итоги: 0.0 грн.</h4>
-                            </td>
-                        </tr>
                     </tbody>
-                    <div id="empty_form_service_invoice" style="display:none">
-                        <tr id='id_form_service_invoice_' class="form-service-invoice">
+                    <tfoot>
+                        <tr id='empty_form_service_invoice' class="form-service-invoice" hidden="hidden">
                             <td scope="row">{{ service.empty_form.service }}</td>
                             <td scope="row">{{ service.empty_form.consumption }}</td>
                             <td scope="row">{{ service.empty_form.unit_service }}</td>
@@ -163,7 +154,17 @@
                                 </button>
                             </td>
                         </tr>
-                    </div>
+                        <tr>
+                            <td colspan="4">
+                                <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
+                                <button type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
+                                <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
+                            </td>
+                            <td scope="row">
+                                <h4>Итоги: 0.0 грн.</h4>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
 
             </div>

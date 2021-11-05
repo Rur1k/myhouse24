@@ -1043,7 +1043,7 @@ def select_account_invoice(request):
 
 def invoice_create(request):
 
-    serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=3, can_delete=True)
+    serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
 
     if request.method == "POST":
         form = InvoiceForm(request.POST)
