@@ -313,7 +313,6 @@ class ServiceIsInvoice(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
     service = models.ForeignKey(SettingService, on_delete=models.CASCADE, null=True, blank=True)
-    unit_service = models.ForeignKey(ServiceUnit, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
     currency = models.CharField(max_length=128, null=True, blank=True)
     consumption = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, blank=True)

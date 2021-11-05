@@ -140,13 +140,19 @@ $('#add_service_is_invoice').click(function() {
         $('#id_form_service_invoice_').append($('#empty_form_service_invoice').html().replace(/prefix/g, form_idx));
         $('#id_service_invoice-TOTAL_FORMS').val(parseInt(form_idx) + 1);
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-service').attr('name', 'service_invoice-'+parseInt(form_idx)+'-service');
-        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-consumption').attr('name', 'service_invoice-'+parseInt(form_idx)+'-price');
-        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-unit_service').attr('name', 'service_invoice-'+parseInt(form_idx)+'-unit_service');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-consumption').attr('name', 'service_invoice-'+parseInt(form_idx)+'-consumption');
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-currency').attr('name', 'service_invoice-'+parseInt(form_idx)+'-currency');
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'service_invoice-'+parseInt(form_idx)+'-DELETE');
         $('#id_form_service_invoice_').attr('id', 'id_form_service_invoice-'+ parseInt(form_idx));
     });
 
+//Произведение показателей на стоимость
+function MultiplicationInvoice(){
+    var form_idx = $('#id_service_invoice-TOTAL_FORMS').val();
+    for (var i = 0; i <= form_idx; i++){
+        var result = $('')
+    }
+}
 
 // Удаление блока
 $(document).on('click', '.delete-form', function(e){

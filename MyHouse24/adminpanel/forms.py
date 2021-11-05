@@ -861,14 +861,11 @@ class InvoiceForm(forms.ModelForm):
 class ServiceIsInvoiceForm(forms.ModelForm):
     class Meta:
         model = ServiceIsInvoice
-        fields = [ 'id', 'service', 'price', 'currency', 'unit_service', 'consumption']
+        fields = [ 'id', 'service', 'price', 'currency', 'consumption']
         widgets = {
             'service': forms.Select(attrs={
                 'class': 'form-control',
-                'onchange': 'SelectServiceUnit(this)'
-            }),
-            'unit_service': forms.Select(attrs={
-                'class': 'form-control',
+                'onchange': 'SelectServiceUnitIsInvoice(this)'
             }),
             'price': forms.TextInput(attrs={
                 'class': 'form-control'

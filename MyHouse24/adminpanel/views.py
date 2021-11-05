@@ -1024,7 +1024,7 @@ def order_flat_counter(request):
 def invoice(request):
     data = {
         'status': StatusInvoice.objects.all(),
-        'invoices': Invoice.objects.all(),
+        'invoices': Invoice.objects.all().order_by('-id'),
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
         'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
@@ -1050,6 +1050,13 @@ def invoice_create(request):
         form_service = serviceFormSet(request.POST, prefix='service_invoice')
         if form.is_valid():
             form.save()
+            if form_service.is_valid():
+                for subform in form_service:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.invoice = form.save(commit=False)
+                            obj.save()
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:

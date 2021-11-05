@@ -24,7 +24,8 @@
       data-order-flat-url="{% url 'order_flat_counter' %}"
       data-username-url="{% url 'select_username_account' %}"
       data-phone-url="{% url 'select_phone_account' %}"
-      data-account-url="{% url 'select_account_invoice' %}">
+      data-account-url="{% url 'select_account_invoice' %}"
+      data-unit-url="{% url 'select_service_unit' %}">
     {% csrf_token %}
     {{ service.management_form }}
     <div class="row">
@@ -126,7 +127,7 @@
                         <tr class="form-service-invoice">
                             <td scope="row">{{ obj.service }}</td>
                             <td scope="row">{{ obj.consumption }}</td>
-                            <td scope="row">{{ obj.unit_service }}</td>
+                            <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
                             <td scope="row">{{ obj.currency }}</td>
                             <td scope="row"><input class="form-control"></td>
                             <td scope="row">
@@ -141,7 +142,7 @@
                         <tr id='empty_form_service_invoice' class="form-service-invoice" hidden="hidden">
                             <td scope="row">{{ service.empty_form.service }}</td>
                             <td scope="row">{{ service.empty_form.consumption }}</td>
-                            <td scope="row">{{ service.empty_form.unit_service }}</td>
+                            <td scope="row" class="select-invoice-unit"><select class="form-control"></select></td>
                             <td scope="row">{{ service.empty_form.currency }}</td>
                             <td scope="row"><input class="form-control"></td>
                             <td scope="row">
