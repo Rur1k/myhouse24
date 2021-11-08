@@ -25,7 +25,8 @@
       data-username-url="{% url 'select_username_account' %}"
       data-phone-url="{% url 'select_phone_account' %}"
       data-account-url="{% url 'select_account_invoice' %}"
-      data-unit-url="{% url 'select_service_unit' %}">
+      data-unit-url="{% url 'select_service_unit' %}"
+      data-tariff-url="{% url 'select_data_is_tariff' %}">
     {% csrf_token %}
     {{ service.management_form }}
     <div class="row">
@@ -158,7 +159,7 @@
                         <tr>
                             <td colspan="4">
                                 <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
-                                <button type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
+                                <button id="add_service_on_tariff" type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
                                 <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
                             </td>
                             <td scope="row">

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import HttpResponse
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
@@ -1033,13 +1034,20 @@ def invoice(request):
 
 def select_account_invoice(request):
     flat_id = request.GET.get('flat')
-    print("ид кв"+ flat_id)
     flat = Flat.objects.filter(id=flat_id).first()
     if flat.account:
         account = flat.account.number
-        return account
+        return HttpResponse(account)
     else:
         return None
+
+def select_data_is_tariff(request):
+    tariff_id = request.GET.get('id_tariff')
+    data = SettingServiceIsTariff.objects.filter(tariff=tariff_id)
+    formset = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
+    formset_data = formset(prefix='service_invoice', queryset=data)
+    return render(request, 'adminpanel/invoice/ajax/select_data_is_tariff.html', {'service': formset_data})
+
 
 def invoice_create(request):
 

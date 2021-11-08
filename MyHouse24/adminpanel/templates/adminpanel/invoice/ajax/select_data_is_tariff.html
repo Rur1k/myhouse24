@@ -1,0 +1,14 @@
+{% for obj in service %}
+<tr class="form-service-invoice">
+    <td scope="row">{{ obj.service }}</td>
+    <td scope="row">{{ obj.consumption }}</td>
+    <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
+    <td scope="row">{{ obj.currency }}</td>
+    <td scope="row"><input class="form-control"></td>
+    <td scope="row">
+        <button class="btn btn-default btn-sm" title="Удалить">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
+</tr>
+{% endfor %}

@@ -123,7 +123,6 @@ $("#id-flat-invoice").change(function () {
           'flat': flatId
         },
         success: function (data) {
-            console.log('Бла бла бла')
           $("#id-account-invoice").val(data);
         }
       });
@@ -289,4 +288,23 @@ $("#id-section-invoice").change(function () {
       });
     });
 
+// Выбор всех услуг по ТП.
+$('#add_service_on_tariff').click(function() {
+    var id_tariff = $("#id_tariff").val();
+    var url = $("#InvoiceCreateForm").attr("data-tariff-url");
+    if (id_tariff) {
+        $.ajax({
+            url: url,
+            data: {
+                'id_tariff': id_tariff
+            },
+            success: function(data){
+                console.log(data)
+                $('#formset_service_invoice').html(data);
+            }
+        });
 
+    } else {
+        console.log('Не выбран ТП');
+    }
+});
