@@ -1043,8 +1043,10 @@ def select_account_invoice(request):
 
 def select_data_is_tariff(request):
     tariff_id = request.GET.get('id_tariff')
-    data = SettingServiceIsTariff.objects.filter(tariff=tariff_id)
+    data = SettingServiceIsTariff.objects.select_related('service', 'price').filter(tariff=tariff_id)
     formset = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
+
+    print(data)
     formset_data = formset(prefix='service_invoice', queryset=data)
     return render(request, 'adminpanel/invoice/ajax/select_data_is_tariff.html', {'service': formset_data})
 
