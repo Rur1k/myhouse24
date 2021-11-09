@@ -3,11 +3,15 @@
     <td scope="row">{{ obj.service }}</td>
     <td scope="row">{{ obj.consumption }}</td>
     <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
-    <td scope="row">{{ obj.currency }}</td>
-    <td scope="row"><input class="form-control"></td>
+    <td scope="row">{{ obj.price }}</td>
+    <td scope="row">{{ obj.sum }}</td>
     <td scope="row">
-        <button class="btn btn-default btn-sm" title="Удалить">
-            <i class="fa fa-trash"></i>
+        <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
+            <i class="fa fa-trash">
+                <div hidden="hidden">
+                    {{ obj.DELETE }}
+                </div>
+            </i>
         </button>
     </td>
 </tr>

@@ -1043,16 +1043,13 @@ def select_account_invoice(request):
 
 def select_data_is_tariff(request):
     tariff_id = request.GET.get('id_tariff')
-    data = SettingServiceIsTariff.objects.select_related('service', 'price').filter(tariff=tariff_id)
+    data = SettingServiceIsTariff.objects.filter(tariff=tariff_id)
     formset = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
-
-    print(data)
     formset_data = formset(prefix='service_invoice', queryset=data)
     return render(request, 'adminpanel/invoice/ajax/select_data_is_tariff.html', {'service': formset_data})
 
 
 def invoice_create(request):
-
     serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
 
     if request.method == "POST":
@@ -1087,6 +1084,20 @@ def invoice_create(request):
         'house': House.objects.all(),
     }
     return render(request, 'adminpanel/invoice/create.html', data)
+
+def invoice_delete(request, id):
+    obj = Invoice.objects.get(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Квитанция успешно удалена")
+    return redirect('invoice')
+
+def invoice_info(request, id):
+    data_invoice = Invoice.objects.get(id=id)
+    data = {
+        'invoice': data_invoice
+    }
+    return render(request, 'adminpanel/invoice/info.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

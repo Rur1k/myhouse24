@@ -83,9 +83,11 @@ urlpatterns = [
     path('counter-data/ajax/order_flat_account', views.order_flat_counter, name='order_flat_counter'),
     # Квитанции на оплату
     path('invoice/', views.invoice, name='invoice'),
+    path('invoice/<int:id>', views.invoice_info, name='invoice_info'),
     path('invoice/create', views.invoice_create, name='invoice_create'),
     path('invoice/ajax/select_account', views.select_account_invoice, name='select_account_invoice'),
     path('invoice/ajax/select_data_is_tariff', views.select_data_is_tariff, name='select_data_is_tariff'),
+    path('invoice/delete/<int:id>', views.invoice_delete, name='invoice_delete'),
 
 
 

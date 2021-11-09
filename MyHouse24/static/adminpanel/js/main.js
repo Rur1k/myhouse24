@@ -134,6 +134,7 @@ $('#add_service_to_tariff').click(function() {
         $('#form_set_setting_tariff_service').find('div#id_form_setting_tariff_service_').attr('id', 'id_form_setting_tariff_service_'+ parseInt(form_idx));
     });
 
+// Добавление услуг к квитанциям
 $('#add_service_is_invoice').click(function() {
         var form_idx = $('#id_service_invoice-TOTAL_FORMS').val();
         $('#formset_service_invoice').append('<tr id="id_form_service_invoice_" class="form-service-invoice"></tr>')
@@ -141,7 +142,14 @@ $('#add_service_is_invoice').click(function() {
         $('#id_service_invoice-TOTAL_FORMS').val(parseInt(form_idx) + 1);
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-service').attr('name', 'service_invoice-'+parseInt(form_idx)+'-service');
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-consumption').attr('name', 'service_invoice-'+parseInt(form_idx)+'-consumption');
-        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-currency').attr('name', 'service_invoice-'+parseInt(form_idx)+'-currency');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-price').attr('name', 'service_invoice-'+parseInt(form_idx)+'-price');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-sum').attr('name', 'service_invoice-'+parseInt(form_idx)+'-sum');
+
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-service').attr('id', 'id_service_invoice-'+parseInt(form_idx)+'-service');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-consumption').attr('id', 'id_service_invoice-'+parseInt(form_idx)+'-consumption');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-price').attr('id', 'id_service_invoice-'+parseInt(form_idx)+'-price');
+        $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-sum').attr('id', 'id_service_invoice-'+parseInt(form_idx)+'-sum');
+
         $('#formset_service_invoice').find('#id_service_invoice-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'service_invoice-'+parseInt(form_idx)+'-DELETE');
         $('#id_form_service_invoice_').attr('id', 'id_form_service_invoice-'+ parseInt(form_idx));
     });
@@ -149,9 +157,13 @@ $('#add_service_is_invoice').click(function() {
 //Произведение показателей на стоимость
 function MultiplicationInvoice(){
     var form_idx = $('#id_service_invoice-TOTAL_FORMS').val();
-    for (var i = 0; i <= form_idx; i++){
-        var result = $('')
+    var TotalSum = 0
+    for (var i = 0; i < form_idx; i++){
+        var result = $('#id_service_invoice-'+i+'-consumption').val() * $('#id_service_invoice-'+i+'-price').val();
+        $('#id_service_invoice-'+i+'-sum').val(result);
+        TotalSum = TotalSum + result;
     }
+    $('#invoice-total-sum').html(TotalSum);
 }
 
 // Удаление блока

@@ -299,12 +299,13 @@ $('#add_service_on_tariff').click(function() {
                 'id_tariff': id_tariff
             },
             success: function(data){
-                console.log(data)
                 $('#formset_service_invoice').html(data);
+                var service_count = $('#formset_service_invoice').children('.form-service-invoice').length;
+                $('#id_service_invoice-TOTAL_FORMS').val(service_count);
             }
         });
 
     } else {
-        console.log('Не выбран ТП');
+        alert('Тарифный план не выбран');
     }
 });

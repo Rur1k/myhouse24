@@ -129,11 +129,15 @@
                             <td scope="row">{{ obj.service }}</td>
                             <td scope="row">{{ obj.consumption }}</td>
                             <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
-                            <td scope="row">{{ obj.currency }}</td>
-                            <td scope="row"><input class="form-control"></td>
+                            <td scope="row">{{ obj.price }}</td>
+                            <td scope="row">{{ obj.sum }}</td>
                             <td scope="row">
                                 <button class="btn btn-default btn-sm" title="Удалить">
-                                    <i class="fa fa-trash"></i>
+                                    <i class="fa fa-trash">
+                                        <div hidden="hidden">
+                                            {{ obj.DELETE }}
+                                        </div>
+                                    </i>
                                 </button>
                             </td>
                         </tr>
@@ -144,10 +148,10 @@
                             <td scope="row">{{ service.empty_form.service }}</td>
                             <td scope="row">{{ service.empty_form.consumption }}</td>
                             <td scope="row" class="select-invoice-unit"><select class="form-control"></select></td>
-                            <td scope="row">{{ service.empty_form.currency }}</td>
-                            <td scope="row"><input class="form-control"></td>
+                            <td scope="row">{{ service.empty_form.price }}</td>
+                            <td scope="row">{{ service.empty_form.sum }}</td>
                             <td scope="row">
-                                <button class="btn btn-default btn-sm delete-form" title="Удалить">
+                                <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
                                     <i class="fa fa-trash">
                                         <div class="hidden">
                                             {{ service.empty_form.DELETE }}
@@ -163,7 +167,7 @@
                                 <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
                             </td>
                             <td scope="row">
-                                <h4>Итоги: 0.0 грн.</h4>
+                                <h4>Итоги: <span id="invoice-total-sum"></span> грн.</h4>
                             </td>
                         </tr>
                     </tfoot>
