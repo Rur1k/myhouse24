@@ -1,6 +1,14 @@
 $("document").ready(function() {
     $('#CounterSearch').trigger('change')
 
+    // подсчет суммы квитанции в квитанциях
+    var sum = 0;
+    $('.info_sum').each(function(){
+        sum += parseFloat($(this).text());
+    });
+    $('#total_info_invoice').html(sum);
+
+    MultiplicationInvoice()
 });
 
 // Сортировка таблиц

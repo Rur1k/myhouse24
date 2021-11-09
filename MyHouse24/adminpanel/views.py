@@ -1085,6 +1085,56 @@ def invoice_create(request):
     }
     return render(request, 'adminpanel/invoice/create.html', data)
 
+def invoice_update(request, id):
+    data_invoice = Invoice.objects.get(id=id)
+    data_service = ServiceIsInvoice.objects.filter(invoice=id)
+    serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
+
+    if request.method == "POST":
+        print(request.POST)
+        form = InvoiceForm(request.POST, instance=data_invoice)
+        form_service = serviceFormSet(request.POST, prefix='service_invoice', queryset=data_service)
+        if form.is_valid():
+            form.save()
+            if form_service.is_valid():
+                for subform in form_service:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.invoice = form.save(commit=False)
+                            obj.save()
+                        else:
+                            if subform.cleaned_data['id'] in data_service:
+                                obj = subform.save(commit=False)
+                                ServiceIsInvoice.objects.filter(id=obj.id).delete()
+                    else:
+                        obj = subform.save(commit=False)
+                        obj.house = form.save(commit=False)
+                        obj.save()
+            else:
+                print("Валидая провалилась")
+                print(form_service.errors)
+
+            messages.success(request, f"Квитанция успешно отредактирована.")
+            return redirect('invoice_info', id)
+        else:
+            message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
+            print(form.errors)
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+    else:
+        form = InvoiceForm(instance=data_invoice)
+        form_service = serviceFormSet(prefix='service_invoice', queryset=data_service)
+    data = {
+        'counters_data': CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat',
+                                                                                                         'counter'),
+        'service': form_service,
+        'invoice': form,
+        'house': House.objects.all(),
+    }
+    return render(request, 'adminpanel/invoice/update.html', data)
+
 def invoice_delete(request, id):
     obj = Invoice.objects.get(id=id)
     if obj:
@@ -1093,9 +1143,9 @@ def invoice_delete(request, id):
     return redirect('invoice')
 
 def invoice_info(request, id):
-    data_invoice = Invoice.objects.get(id=id)
     data = {
-        'invoice': data_invoice
+        'invoice': Invoice.objects.get(id=id),
+        'services': ServiceIsInvoice.objects.filter(invoice=id)
     }
     return render(request, 'adminpanel/invoice/info.html', data)
 

@@ -839,6 +839,10 @@ class InvoiceForm(forms.ModelForm):
         if self.instance.id:
             self.initial['date'] = self.instance.date.isoformat()
             self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
+            if self.instance.date_first:
+                self.initial['date_first'] = self.instance.date_first.isoformat()
+            if self.instance.date_last:
+                self.initial['date_last'] = self.instance.date_last.isoformat()
 
             if self.data.get('flat') != self.instance.flat:
                 if self.data.get('house'):

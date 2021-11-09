@@ -4,7 +4,7 @@
 {% block page_name %}Квитанция{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'invoice' %}">Квитанция</a></li>
-    <li class="active">Квитанция №{{ transaction.number }}</li>
+    <li class="active">Квитанция №{{ invoice.number }}</li>
 {% endblock %}
 {% block content %}
 {% if messages %}
@@ -48,7 +48,7 @@
                     <span class="hidden-xs">Отправить на e-mail</span>
                     <i class="fa fa-trash visible-xs"></i>
                 </a>
-                <a class="btn btn-primary btn-sm" href="">
+                <a class="btn btn-primary btn-sm" href="{% url 'invoice_update' invoice.id %}">
                     <span class="hidden-xs">Редактировать квитанцию</span>
                     <i class="fa fa-pencil visible-xs"></i>
                 </a>
@@ -60,13 +60,23 @@
                         <tr>
                             <th class="col-md-6">Проведена</th>
                             <td>
-                                {{ invoice.is_carried }}
+                                {% if invoice.is_carried %}
+                                <label class="label label-success">Проведена</label>
+                                {% else %}
+                                <label class="label label-danger">Не проведена</label>
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Статус</th>
                             <td>
-                                {{ invoice.status }}
+                                {% if invoice.status.id == 1 %}
+                                <label class="label label-danger">{{ invoice.status }}</label>
+                                {% elif invoice.status.id == 2 %}
+                                <label class="label label-warning">{{ invoice.status }}</label>
+                                {% else %}
+                                <label class="label label-success">{{ invoice.status }}</label>
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
@@ -78,46 +88,104 @@
                         <tr>
                             <th class="col-md-6">Владелец</th>
                             <td>
-                                {{ invoice.flat.owner }}
+                                {% if invoice.flat.owner %}
+                                <a href="{% url 'apartment_owner_info' invoice.flat.owner.id %}">{{ invoice.flat.owner }}</a>
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Лицевой счет</th>
                             <td>
-                                {{ invoice.flat.account }}
+                                {% if invoice.flat.account %}
+                                <a href="{% url 'account_info' invoice.flat.account.id %}">{{ invoice.flat.account }}</a>
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Телефон</th>
                             <td>
+                                {% if invoice.flat.owner.telephone %}
                                 {{ invoice.flat.owner.telephone }}
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Дом</th>
                             <td>
-                                {{ invoice.flat.house }}
+                                {% if invoice.flat.house %}
+                                <a href="{% url 'info_house' invoice.flat.house.id %}">{{ invoice.flat.house }}</a>
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Квартира</th>
                             <td>
-                                {{ invoice.flat.number_flat }}
+                                {% if invoice.flat %}
+                                <a href="{% url 'flat_info' invoice.flat.id %}">{{ invoice.flat.number_flat }}</a>
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Секция</th>
                             <td>
+                                {% if invoice.flat.section %}
                                 {{ invoice.flat.section }}
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th class="col-md-6">Тариф</th>
                             <td>
-                                {{ invoice.tariff }}
+                                {% if invoice.tariff %}
+                                <a href="{% url 'setting_tariffs_info' invoice.tariff.id %}">{{ invoice.tariff }}</a>
+                                {% else %}
+                                не указано
+                                {% endif %}
                             </td>
                         </tr>
                         </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>#</th>
+                            <th>Услуга</th>
+                            <th>Количество потребления(расход)</th>
+                            <th>Ед. изм.</th>
+                            <th>Цена за ед., грн</th>
+                            <th>Стоимость, грн</th>
+                        </thead>
+                        <tbody>
+                        {% for obj in services %}
+                            <tr>
+                                <td></td>
+                                <td>{{ obj.service }}</td>
+                                <td>{{ obj.consumption }}</td>
+                                <td>{{ obj.service.unit }}</td>
+                                <td>{{ obj.price }}</td>
+                                <td class="info_sum">{{ obj.sum }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5"></td>
+                                <td>Итоги: <span id="total_info_invoice"></span> грн. </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

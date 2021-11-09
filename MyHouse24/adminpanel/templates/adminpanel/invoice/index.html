@@ -123,7 +123,7 @@
                         <a class="btn btn-default btn-sm" href="" title="Копировать" data-toggle="tooltip">
                             <i class="fa fa-copy"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="" title="Редактировать" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'invoice_update' obj.id %}" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
                         <a class="btn btn-default btn-sm" href="{% url 'invoice_delete' obj.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
