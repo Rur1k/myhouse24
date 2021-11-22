@@ -88,17 +88,17 @@
                 <th class="col" style="min-width: 100px">Остаток</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
-            <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountList','account-number')"></td>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
                 <td>
                     <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountList','account-status')">
-                        <option value="0"></option>
+                        <option value=""></option>
                         {% for obj in status %}
                         <option value="{{ obj.id }}">{{ obj.name }}</option>
                         {% endfor %}
                     </select>
                 </td>
-                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','AccountList','account-flat')"></td>
+                <td><input type="text" class="form-control"></td>
                 <td>
                     <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','AccountList','account-house')">
                         <option value="0"></option>
@@ -126,14 +126,13 @@
                         <option>Есть долг</option>
                         <option>Нет долга</option>
                     </select>
-                </td>
-                <th></th>
+                </td>td>
             </tr>
             </thead>
             <tbody id="AccountList">
             {% for account in accounts %}
-            <tr onclick="location.href='{% url 'account_info' account.id %}'">
-                <td class="account-number">{{ account.number }}</td>
+            <tr onclick="location.href='{% url 'account_info' account.id %}'" class="table-data">
+                <td>{{ account.number }}</td>
                 <td class="account-status">
                     {% if account.status.id == 1 %}
                     <label class="label label-success">
@@ -145,7 +144,7 @@
                     </label>
                     {% endif %}
                 </td>
-                <td class="account-flat">
+                <td>
                     {% if account.flat %}
                         {{ account.flat }}
                     {% else %}
@@ -168,6 +167,7 @@
                 </td>
                 <td class="account-owner">
                     {% if account.flat.owner %}
+                        <div hidden="hidden">{{ account.flat.owner.id }}</div>
                         {{ account.flat.owner }}
                     {% else %}
                         (не задано)

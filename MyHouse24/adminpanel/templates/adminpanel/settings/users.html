@@ -39,6 +39,16 @@
                 <th class="col" style="min-width:100px">Статус</th>
                 <th class="col" style="width: 120px; min-width:120px"></th>
             </tr>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+            </tr>
             <tr>
                 <th></th>
                 <td><input id="UserAdminSearch" type="text" class="form-control" onkeyup="searchTable('UserAdminSearch','UserAdminList','user-admin-name')"></td>
@@ -65,7 +75,7 @@
             </thead>
             <tbody id="UserAdminList">
             {% for user in users %}
-            <tr onclick="location.href='{% url 'setting_user_admin_info' user.id %}'">
+            <tr onclick="location.href='{% url 'setting_user_admin_info' user.id %}'" class="table-data">
                 <td>{{ user.id }}</td>
                 <td class="user-admin-name">{{ user.first_name }} {{ user.last_name }}</td>
                 <td class="user-admin-role">{{ user.role }}</td>

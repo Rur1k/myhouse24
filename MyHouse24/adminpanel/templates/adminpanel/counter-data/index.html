@@ -39,47 +39,35 @@
                 <th class="col" style="min-width: 100px">Ед. изм.</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
-            <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
-                <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','FlatList','flat-house')">
-                        <option value="0"></option>
+<!--            <tr class="table-filters">-->
+<!--                <td>-->
+<!--                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','CounterList','flat-house')">-->
+<!--                        <option value="0"></option>-->
 
-                    </select>
-                </td>
-                <td>
-                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','FlatList','flat-section')">
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
 
-                    </select>
-                </td>
-                <td>
-                    <select id="FloorSearch" class="form-control" onchange="searchTable('FloorSearch','FlatList','flat-floor')">
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td><input type="text" class="form-control"></td>-->
+<!--                <td>-->
+<!--                    <select id="CounterSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
 
-                    </select>
-                </td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','FlatList','flat-owner')">
-                        <option></option>
-
-                    </select>
-                </td>
-                <td>
-                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','FlatList','flat-remainder')">
-                        <option></option>
-                    </select>
-                </td>
-                <th></th>
-            </tr>
+<!--                    </select>-->
+<!--                </td>-->
+<!--            </tr>-->
             </thead>
             <tbody id="CounterList">
             {% for obj in counters %}
-            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'">
-                <td class="flat-house">{{ obj.flat.house }}</td>
-                <td class="flat-section">{{ obj.flat.section }}</td>
-                <td class="flat-flat">{{ obj.flat }}</td>
-                <td class="flat-counter">{{ obj.counter }}</td>
-                <td class="flat-today">{{ obj.counter_data }}</td>
-                <td class="flat-item">{{ obj.counter.unit }}</td>
+            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'" class="table-data">
+                <td class="counter-house">{{ obj.flat.house }}</td>
+                <td class="counter-section">{{ obj.flat.section }}</td>
+                <td>{{ obj.flat }}</td>
+                <td class="counter-counter">{{ obj.counter }}</td>
+                <td>{{ obj.counter_data }}</td>
+                <td>{{ obj.counter.unit }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'counter_data_create_flat_service' obj.flat.id obj.counter.id %}" title="Снять новое показание счетчика" data-toggle="tooltip">

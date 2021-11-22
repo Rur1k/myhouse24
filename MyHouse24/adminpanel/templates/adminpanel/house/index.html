@@ -18,41 +18,51 @@
         <a class="btn btn-default" href="{% url 'house' %}">Очистить</a>
     </div>
     <div class="grid-view">
-            <table id="HouseTable" class="table table-striped table-bordered table-hover table_sort">
-                <thead>
-                <tr>
-                    <th class="col" style="min-width:20px">#</th>
-                    <th class="col" style="min-width:200px">Название</th>
-                    <th class="col" style="min-width: 200px">Адрес</th>
-                    <th class="col" style="width: 100px; min-width:100px"></th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <td><input id="HouseNameSearch" type="text" class="form-control" onkeyup="searchTable('HouseNameSearch','HouseList','house-name')"></td>
-                    <td><input id="HouseAddressSearch" type="text" class="form-control" onkeyup="searchTable('HouseAddressSearch','HouseList','house-address')"></td>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody id="HouseList">
-                    {% for house in list %}
-                    <tr onclick="location.href='{% url 'info_house' house.id%}'">
-                        <td>{{ house.id }}</td>
-                        <td class="house-name">{{ house.name }}</td>
-                        <td class="house-address">{{ house.address }}</td>
-                        <td class="text-center">
-                            <div class="btn-group pull-center">
-                                <a class="btn btn-default btn-sm" href="{% url 'update_house' house.id %}" title="Редактировать" data-toggle="tooltip">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                                <a class="btn btn-default btn-sm" href="{% url 'delete_house' house.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <table id="HouseTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:20px">#</th>
+                <th class="col" style="min-width:200px">Название</th>
+                <th class="col" style="min-width: 200px">Адрес</th>
+                <th class="col" style="width: 100px; min-width:100px"></th>
+            </tr>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><input id="HouseNameSearch" type="text" class="form-control" onkeyup="searchTable('HouseNameSearch','HouseList','house-name')"></td>
+                <td><input id="HouseAddressSearch" type="text" class="form-control" onkeyup="searchTable('HouseAddressSearch','HouseList','house-address')"></td>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="HouseList">
+            {% for house in list %}
+            <tr onclick="location.href='{% url 'info_house' house.id%}'" class="table-data">
+                <td>{{ house.id }}</td>
+                <td class="house-name">{{ house.name }}</td>
+                <td class="house-address">{{ house.address }}</td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="{% url 'update_house' house.id %}" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'delete_house' house.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="box-footer clearfix">
         <div>

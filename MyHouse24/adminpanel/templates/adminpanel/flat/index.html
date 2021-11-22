@@ -41,6 +41,16 @@
                 <th class="col" style="min-width: 100px">Остаток</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+            </tr>
             <tr>
                 <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
                 <td>
@@ -81,7 +91,7 @@
             </thead>
             <tbody id="FlatList">
             {% for flat in flats %}
-            <tr onclick="location.href='{% url 'flat_info' flat.id %}'">
+            <tr onclick="location.href='{% url 'flat_info' flat.id %}'" class="table-data">
                 <td class="flat-number">{{ flat.number_flat }}</td>
                 <td class="flat-house">
                     <div hidden="hidden">{{ flat.house.id }}</div>{{ flat.house }}

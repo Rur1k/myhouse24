@@ -90,16 +90,16 @@
                 <th class="col" style="min-width: 100px">Сумма(грн)</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
-            <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','AccountTransactionList','account-trans-number')"></td>
-                <td><input id="DateSearch" type="text" class="form-control" onkeyup="searchTable('DateSearch','AccountTransactionList','account-number')"></td>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
                 <td>
                     <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountTransactionList','account-status-trans')">
                         <option value=""></option>
                         <option value="True">Проведен</option>
                         <option value="False">Не проведен</option>
                     </select>
-                </td>
+                </td>>
                 <td>
                     <select id="TypeTransSearch" class="form-control" onchange="searchTable('TypeTransSearch','AccountTransactionList','account-type-trans')">
                         <option></option>
@@ -116,9 +116,7 @@
                         {% endfor %}
                     </select>
                 </td>
-                <td>
-                    <input id="AccountSearch" type="text" class="form-control" onkeyup="searchTable('AccountSearch','AccountTransactionList','account-trans')">
-                </td>
+                <td><input type="text" class="form-control"></td>
                 <td>
                     <select id="TransSearch" class="form-control" onchange="searchTable('TransSearch','AccountTransactionList','trans')">
                         <option></option>
@@ -127,13 +125,11 @@
                         {% endfor %}
                     </select>
                 </td>
-                <th></th>
-                <th></th>
             </tr>
             </thead>
             <tbody id="AccountTransactionList">
             {% for obj in AccountTransaction %}
-            <tr onclick="location.href='{% url 'account_transaction_info' obj.id %}'">
+            <tr onclick="location.href='{% url 'account_transaction_info' obj.id %}'" class="table-data">
                 <td class="account-trans-number">{{ obj.number }}</td>
                 <td class="account-date-trans">{{ obj.date }}</td>
                 <td class="account-status-trans">

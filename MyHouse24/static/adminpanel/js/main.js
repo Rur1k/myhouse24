@@ -53,6 +53,7 @@ function searchTable(idSearch, idTable, classField) {
     }
 }
 
+
 // Добавление секций дома
 $('#add_section').click(function() {
         var form_idx = $('#id_section-TOTAL_FORMS').val();
@@ -230,10 +231,6 @@ $('.table-filters input').on('input', function () {
     filterTableInput($(this).parents('table'));
 });
 
-$('.table-filters select').change(function () {
-    filterTableSelect($(this).parents('table'));
-});
-
 
 
 function filterTableInput($table) {
@@ -257,26 +254,7 @@ function filterTableInput($table) {
     });
 }
 
-function filterTableSelect($table) {
-    var $filters = $table.find('.table-filters td');
-    var $rows = $table.find('.table-data');
-    $rows.each(function (rowIndex) {
-        var valid = true;
-        $(this).find('td').each(function (colIndex) {
-            if ($filters.eq(colIndex).find('select option').val()) {
-                if ($(this).html().toLowerCase().indexOf(
-                $filters.eq(colIndex).find('select option').val().toLowerCase()) == -1) {
-                    valid = valid && false;
-                }
-            }
-        });
-        if (valid === true) {
-            $(this).css('display', '');
-        } else {
-            $(this).css('display', 'none');
-        }
-    });
-}
+
 
 
 
