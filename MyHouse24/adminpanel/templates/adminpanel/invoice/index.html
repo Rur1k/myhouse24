@@ -81,7 +81,7 @@
             <tr>
                 <th class="col" style="width:20px"><input type="checkbox"></th>
                 <th class="col" style="width:120px">№ квитанции</th>
-                <th class="col" style="width:150px">Статус</th>
+                <th class="col" style="width:100px">Статус</th>
                 <th class="col" style="width: 100px">Дата</th>
                 <th class="col" style="min-width:100px">Месяц</th>
                 <th class="col" style="min-width:150px">Квартира</th>
@@ -111,16 +111,30 @@
             <tr onclick="location.href='{% url 'invoice_info' obj.id %}'" class="table-data">
                 <td><input type="checkbox"></td>
                 <td >{{ obj.number }}</td>
-                <td class="">{{ obj.status }}</td>
+                <td class="">
+                    {% if obj.status.id == 1 %}
+                    <label class="label label-danger">{{ obj.status }}</label>
+                    {% elif invoice.status.id == 2 %}
+                    <label class="label label-warning">{{ obj.status }}</label>
+                    {% else %}
+                    <label class="label label-success">{{ obj.status }}</label>
+                    {% endif %}
+                </td>
                 <td class="">{{ obj.date | date:'d.m.Y' }}</td>
                 <td class="">{{ obj.date | date:'F Y' }}</td>
-                <td class="">{{ obj.flat }}</td>
+                <td class="">{{ obj.flat }}, {{ obj.flat.house }}</td>
                 <td class="">{{ obj.flat.owner }}</td>
-                <td class="">{{ obj.is_carried }}</td>
+                <td class="">
+                    {% if obj.is_carried == 1 %}
+                    <label class="label label-success">Проведена</label>
+                    {% else %}
+                    <label class="label label-success">Непроведена</label>
+                    {% endif %}
+                </td>
                 <td class=""></td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" title="Копировать" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'invoice_copy' obj.id %}" title="Копировать" data-toggle="tooltip">
                             <i class="fa fa-copy"></i>
                         </a>
                         <a class="btn btn-default btn-sm" href="{% url 'invoice_update' obj.id %}" title="Редактировать" data-toggle="tooltip">

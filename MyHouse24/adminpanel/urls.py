@@ -82,14 +82,17 @@ urlpatterns = [
     path('counter-data/ajax/select_flat_account', views.select_flat_counter, name='select_flat_counter'),
     path('counter-data/ajax/order_flat_account', views.order_flat_counter, name='order_flat_counter'),
     # Квитанции на оплату
-    path('invoice/', views.invoice, name='invoice'),
+    path('invoice', views.invoice, name='invoice'),
     path('invoice/<int:id>', views.invoice_info, name='invoice_info'),
     path('invoice/create', views.invoice_create, name='invoice_create'),
+    path('invoice/create&copy=<int:invoice_id>', views.invoice_create, name='invoice_copy'),
     path('invoice/ajax/select_account', views.select_account_invoice, name='select_account_invoice'),
     path('invoice/ajax/select_data_is_tariff', views.select_data_is_tariff, name='select_data_is_tariff'),
+    path('invoice/ajax/select_data_counter_is_flat', views.select_data_counter_is_flat, name='select_data_counter_is_flat'),
     path('invoice/delete/<int:id>', views.invoice_delete, name='invoice_delete'),
     path('invoice/update/<int:id>', views.invoice_update, name='invoice_update'),
-
+    # Заявки мастера
+    path('master-request', views.master_request, name='master_request'),
 
 
     # Авторизация

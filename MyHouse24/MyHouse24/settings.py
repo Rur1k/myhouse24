@@ -73,7 +73,7 @@ DATABASES = {
         'NAME': 'myhouse24_db',
         'USER': 'admin',
         'PASSWORD': 'devpass',
-        'HOST': 'postgresdb',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }

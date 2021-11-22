@@ -26,7 +26,8 @@
       data-phone-url="{% url 'select_phone_account' %}"
       data-account-url="{% url 'select_account_invoice' %}"
       data-unit-url="{% url 'select_service_unit' %}"
-      data-tariff-url="{% url 'select_data_is_tariff' %}">
+      data-tariff-url="{% url 'select_data_is_tariff' %}"
+      data-counters-url="{% url 'select_data_counter_is_flat'%}">
     {% csrf_token %}
     {{ service.management_form }}
     <div class="row">
@@ -46,6 +47,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите действие
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#!" id="set_service_on_tariff">Вставить все услуги согласно тарифу</a></li>
+                    <li><a href="">Добавить показания счетчиков</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="box">
         <div class="box-body">
@@ -55,7 +68,11 @@
                     <select id="id-house-invoice" name="house" class="form-control" title="Выберите...">
                         <option value="">Выберите...</option>
                         {% for obj in house %}
+                            {% if obj == invoice.instance.flat.house %}
+                            <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                            {% else %}
                             <option value="{{ obj.id }}">{{ obj.name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -65,7 +82,11 @@
                          <option value="">Выберите...</option>
                         {% if section %}
                             {% for obj in section %}
-                                    <option value="{{ obj.id }}">{{ obj.name }}</option>
+                                {% if obj == invoice.instance.flat.section %}
+                                <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                                {% else %}
+                                <option value="{{ obj.id }}">{{ obj.name }}</option>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
                     </select>
@@ -101,14 +122,35 @@
             </div>
             <div class="col-md-6 margin-bottom-20">
                 <label>Лицевой счет</label>
+                {% if invoice.instance.flat.account %}
+                <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account"
+                       value="{{ invoice.instance.flat.account.number }}">
+                {% else %}
                 <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account">
+                {% endif %}
                 <p>
                     <b>Владелец:</b>
-                    <span id="user-fullname">не выбран</span>
+                    {% if invoice.instance.flat.owner is not None %}
+                        <span id="user-fullname">
+                            <a href = "{% url 'apartment_owner_info' invoice.instance.flat.owner.id %}">
+                                {{ invoice.instance.flat.owner.last_name }}
+                                {{ invoice.instance.flat.owner.first_name }}
+                                {{ invoice.instance.flat.owner.patronymic }}
+                            </a>
+                        </span>
+                        {% else %}
+                        <span id="user-fullname">не выбран</span>
+                        {% endif %}
                 </p>
                 <p>
                     <b>Телефон:</b>
-                    <span id="user-phone">не выбран</span>
+                    {% if invoice.instance.flat.owner is not None %}
+                        <span id="user-phone">
+                            <a href="#">{{ invoice.instance.flat.owner.telephone }}</a>
+                        </span>
+                        {% else %}
+                        <span id="user-phone">не выбран</span>
+                        {% endif %}
                 </p>
             </div>
             <div class="col-md-12 margin-bottom-20">
@@ -126,7 +168,10 @@
                     <tbody id="formset_service_invoice">
                         {% for obj in service %}
                         <tr class="form-service-invoice">
-                            <td scope="row">{{ obj.service }}</td>
+                            <td scope="row">
+                                {{ obj.service }}
+                                <div hidden="hidden">{{ obj.id }}</div>
+                            </td>
                             <td scope="row">{{ obj.consumption }}</td>
                             <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
                             <td scope="row">{{ obj.price }}</td>
@@ -187,7 +232,7 @@
         <div class="box-header">
             <h3>Показания счетчиков</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body" id="flat_counter_info_invoice">
             <table class="table">
                     <theader>
                         <tr>

@@ -1048,8 +1048,20 @@ def select_data_is_tariff(request):
     formset_data = formset(prefix='service_invoice', queryset=data)
     return render(request, 'adminpanel/invoice/ajax/select_data_is_tariff.html', {'service': formset_data})
 
+def select_data_counter_is_flat(request):
+    flat_id = request.GET.get('flat')
+    data = CounterData.objects.filter(flat=flat_id).order_by('-id')
+    return  render(request, 'adminpanel/invoice/ajax/select_data_counter_is_flat.html', {'data': data})
 
-def invoice_create(request):
+def invoice_create(request, invoice_id=None):
+    if invoice_id:
+        data_invoice = Invoice.objects.get(id=invoice_id)
+        data_service = ServiceIsInvoice.objects.filter(invoice=invoice_id)
+        section = Section.objects.filter(house=data_invoice.flat.house)
+    else:
+        section = None
+
+
     serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
 
     if request.method == "POST":
@@ -1073,8 +1085,12 @@ def invoice_create(request):
                 message = form.non_field_errors()
             messages.error(request, message)
     else:
-        form = InvoiceForm()
-        form_service = serviceFormSet(prefix='service_invoice', queryset=ServiceIsInvoice.objects.none())
+        if invoice_id:
+            form = InvoiceForm(instance=data_invoice, initial={'number': None})
+            form_service = serviceFormSet(prefix='service_invoice', queryset=data_service)
+        else:
+            form = InvoiceForm()
+            form_service = serviceFormSet(prefix='service_invoice', queryset=ServiceIsInvoice.objects.none())
 
     data = {
         'counters_data': CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat',
@@ -1082,6 +1098,7 @@ def invoice_create(request):
         'service': form_service,
         'invoice': form,
         'house': House.objects.all(),
+        'section': section
     }
     return render(request, 'adminpanel/invoice/create.html', data)
 
@@ -1089,6 +1106,10 @@ def invoice_update(request, id):
     data_invoice = Invoice.objects.get(id=id)
     data_service = ServiceIsInvoice.objects.filter(invoice=id)
     serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
+    if data_invoice.flat:
+        section = Section.objects.filter(house=data_invoice.flat.house)
+    else:
+        section = None
 
     if request.method == "POST":
         print(request.POST)
@@ -1111,10 +1132,6 @@ def invoice_update(request, id):
                         obj = subform.save(commit=False)
                         obj.house = form.save(commit=False)
                         obj.save()
-            else:
-                print("Валидая провалилась")
-                print(form_service.errors)
-
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:
@@ -1127,11 +1144,11 @@ def invoice_update(request, id):
         form = InvoiceForm(instance=data_invoice)
         form_service = serviceFormSet(prefix='service_invoice', queryset=data_service)
     data = {
-        'counters_data': CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat',
-                                                                                                         'counter'),
+        'counters_data': CounterData.objects.filter(flat=data_invoice.flat).order_by('-id'),
         'service': form_service,
         'invoice': form,
         'house': House.objects.all(),
+        'section': section
     }
     return render(request, 'adminpanel/invoice/update.html', data)
 
@@ -1148,6 +1165,13 @@ def invoice_info(request, id):
         'services': ServiceIsInvoice.objects.filter(invoice=id)
     }
     return render(request, 'adminpanel/invoice/info.html', data)
+
+# Заявки на вызов мастера
+def master_request(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/master-request/index.html', data)
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
@@ -1246,6 +1270,7 @@ def website_about(request):
         'seo': seo_form,
     }
     return render(request, 'adminpanel/website/about.html', data)
+
 
 def website_about_delete_photo(request, id):
     obj = PhotoGallery.objects.filter(id=id)

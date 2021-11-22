@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  postgresdb:
+  db:
     build:
       context: ./docker/postgres
       dockerfile: Dockerfile
@@ -19,7 +19,7 @@ services:
     volumes:
       - ./:/usr/src/app
     depends_on:
-      - postgresdb
+      - db
     ports:
       - "8000:8000"
 
@@ -28,7 +28,7 @@ services:
       context: ./docker/nginx
       dockerfile: Dockerfile
     depends_on:
-      - postgresdb
+      - db
       - web
     ports:
       - "80:80"
@@ -39,7 +39,7 @@ services:
     image: adminer
     restart: always
     depends_on:
-      - postgresdb
+      - db
       - web
       - nginx
     network_mode: host
