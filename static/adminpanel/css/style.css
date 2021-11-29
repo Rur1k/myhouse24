@@ -1,0 +1,139 @@
+.main-header .logo img {
+    height: 40px;
+    margin: 5px auto;
+}
+
+.main-header .navbar .header-title {
+    float: left;
+    padding: 15px 10px;
+}
+
+.content-header {
+    padding: 15px;
+    border-bottom: 1px solid #d2d6de
+}
+
+.main-header .navbar .header-title {
+    float: left;
+    padding: 15px, 10px;
+}
+
+.row {
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.largeImg {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.smallImg {
+    width:100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 30px;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+/* Стиль таблиц */
+.table_sort table {
+    border-collapse: collapse;
+}
+
+.table_sort th {
+    cursor: pointer;
+}
+.table_sort tr {
+    cursor: pointer;
+}
+
+
+.table_sort tbody tr:nth-child(even) {
+    background: #e3e3e3;
+}
+
+th.sorted[data-order="1"],
+th.sorted[data-order="-1"] {
+    position: relative;
+}
+
+th.sorted[data-order="1"]::after,
+th.sorted[data-order="-1"]::after {
+    right: 8px;
+    position: absolute;
+}
+
+th.sorted[data-order="-1"]::after {
+  content: "▼"
+}
+
+th.sorted[data-order="1"]::after {
+  content: "▲"
+}
+
+
+/* Стили к настройкам сайта */
+.hidden-edit-image a{
+    display: none;
+}
+
+
+.django-ckeditor-widget {
+    width:100%
+}
+
+.site-main-slider img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.near-img img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.site-about-gallery img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.userAvatar img {
+    margin: 0 15px 15px 0;
+    width: 160px;
+    height: 160px;
+}
+
+.page-header-spec {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-header-spec .label-mid {
+    margin: 0 15px;
+}
+
+.page-header-spec .form-group {
+    flex-basis: 45%;
+    margin: 0;
+}
+

@@ -1,0 +1,88 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Счетчики{% endblock %}
+{% block page_name %}Счетчики{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Счетчики</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group pull-right margin-bottom">
+            <a class="btn btn-success" href="{% url 'counter_data_create' %}" >Добавить показание</a>
+        </div>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="CounterTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:100px">Дом</th>
+                <th class="col" style="min-width: 100px">Секция</th>
+                <th class="col" style="width:120px">№ Квартиры</th>
+                <th class="col" style="min-width:100px">Счетчик</th>
+                <th class="col" style="min-width:100px">Текущее показание</th>
+                <th class="col" style="min-width: 100px">Ед. изм.</th>
+                <th class="col" style="width: 100px; min-width:120px"></th>
+            </tr>
+<!--            <tr class="table-filters">-->
+<!--                <td>-->
+<!--                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','CounterList','flat-house')">-->
+<!--                        <option value="0"></option>-->
+
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
+
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td><input type="text" class="form-control"></td>-->
+<!--                <td>-->
+<!--                    <select id="CounterSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
+
+<!--                    </select>-->
+<!--                </td>-->
+<!--            </tr>-->
+            </thead>
+            <tbody id="CounterList">
+            {% for obj in counters %}
+            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'" class="table-data">
+                <td class="counter-house">{{ obj.flat.house }}</td>
+                <td class="counter-section">{{ obj.flat.section }}</td>
+                <td>{{ obj.flat }}</td>
+                <td class="counter-counter">{{ obj.counter }}</td>
+                <td>{{ obj.counter_data }}</td>
+                <td>{{ obj.counter.unit }}</td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_create_flat_service' obj.flat.id obj.counter.id %}" title="Снять новое показание счетчика" data-toggle="tooltip">
+                            <i class="fa fa-dashboard"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_list_counter' obj.flat.id obj.counter.id %}" title="Открыть историю показания счетчика" data-toggle="tooltip">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

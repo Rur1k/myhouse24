@@ -1,0 +1,136 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Показания счетчиков, кв.{{ counter.flat.number_flat }} {% endblock %}
+{% block page_name %}Показания счетчиков, кв.{{ counter.flat.number_flat}} {% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'counter_data_counters' %}">Счетчики</a></li>
+    <li class="active">Показания счетчиков, кв.{{ counter.flat.number_flat }}</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group pull-right margin-bottom">
+            <a class="btn btn-success" href="{% url 'counter_data_create_flat_service' counter.flat.id 0 %}" >Добавить показание</a>
+        </div>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="CounterListTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:100px">№</th>
+                <th class="col" style="min-width:100px">Статус</th>
+                <th class="col" style="min-width:100px">Дата</th>
+                <th class="col" style="min-width: 100px">Месяц</th>
+                <th class="col" style="min-width:150px">Дом</th>
+                <th class="col" style="min-width:100px">Секция</th>
+                <th class="col" style="min-width:60px">№ Квартиры</th>
+                <th class="col" style="min-width: 100px">Счетчик</th>
+                <th class="col" style="min-width: 100px">Показания</th>
+                <th class="col" style="min-width: 80px">Ед. изм.</th>
+                <th class="col" style="width: 100px; min-width:100px"></th>
+            </tr>
+            <tr>
+                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','CounterListData','counterData-number')"></td>
+                <td>
+                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','CounterListData','counterData-status')">
+                        <option value="">Выберите...</option>
+                        {% for obj in status %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
+
+                    </select>
+                </td>
+                <td>
+                    <input id="DateSearch" class="form-control" onkeyup="searchTable('DateSearch','CounterListData','counterData-date')">
+                </td>
+                <td></td>
+                <td>
+                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','CounterListData','counterData-house')">
+                        <option value="">Выберите...</option>
+                        {% for obj in house %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','CounterListData','counterData-section')">
+                        <option>Выберите дом</option>
+
+                    </select>
+                </td>
+                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','CounterListData','counterData-flat')"></td>
+                <th>
+                    <select id="CounterSearch" class="form-control" onchange="searchTable('CounterSearch','CounterListData','counterData-counter')">
+                        <option value="">Выберите...</option>
+                        {% for obj in counter_unit %}
+                        {% if obj.id == selected_counter %}
+                        <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                        {% else %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+
+                    </select>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="CounterListData">
+            {% for obj in counters %}
+            <tr onclick="location.href='{% url 'counter_data_info' obj.id %}'">
+                <td class="counterData-number">{{ obj.number }}</td>
+                <td class="counterData-status">
+                    {% if obj.status %}
+                    {% if obj.status.id == 1 %}
+                    <small class="label label-warning">
+                        {% elif obj.status.id == 2 or  obj.status.id == 3%}
+                        <small class="label label-success">
+                            {% else %}
+                            <small class="label label-primary">
+                                {% endif %}
+                                {{ obj.status }}</small>
+                            {% else %}
+                            не задано
+                            {% endif %}
+                            <div hidden="hidden">{{ obj.status.id }}</div>
+                </td>
+                <td class="counterData-date">{{ obj.date | date:'d.m.Y' }}</td>
+                <td class="counterData-">{{ obj.date | date:'F Y'}}</td>
+                <td class="counterData-house"><div hidden="hidden">{{ obj.flat.house.id }}</div>{{ obj.flat.house }}</td>
+                <td class="counterData-section"><div hidden="hidden">{{ obj.flat.section.id }}</div>{{ obj.flat.section }}</td>
+                <td class="counterData-flat">{{ obj.flat.number_flat }}</td>
+                <td class="counterData-counter"><div hidden="hidden">{{ obj.counter.id }}</div>{{ obj.counter }}</td>
+                <td class="counterData-data">{{ obj.counter_data }}</td>
+                <td class="counterData-unit">{{ obj.counter.unit }}</td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_update' obj.id %}" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_delete' obj.id counter.flat.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

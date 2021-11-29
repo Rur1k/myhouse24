@@ -1,0 +1,96 @@
+html{
+    height: 100%
+}
+
+
+body {
+    padding-top: 50px;
+    margin-bottom: 60px;
+    height: 100%;
+}
+
+.box{
+    margin-bottom: 30px;
+}
+
+.navbar {
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.navbar-brand {
+    padding: 5px 15px;
+}
+
+.navbar-brand>img {
+    width: 145px;
+    max-height: 40px;
+    vertical-align: middle;
+}
+
+.content {
+    padding-bottom: 20px;
+    min-height: 100%
+}
+
+@media (max-width:1220px){
+.footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+}
+}
+
+.footer p {
+    margin: 20px 0;
+}
+
+/*.carousel {
+    max-height: 100%;
+    margin-bottom: 20px;
+}*/
+
+.advantage-item {
+    margin-bottom: 20px;
+}
+
+.indentation-block{
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.breadcrumb {
+    background-color: #fff;
+    padding: 8px 0;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 30px;
+}
+
+.about img{
+    max-width: 250px;
+}
+
+.services img{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.imgFloatRight {
+    float: right;
+    margin: 0 0 15px 15px;
+}
+
+.gallery .item{
+    margin-bottom: 30px;
+}
+
+.map {
+    width: 100%
+}
+

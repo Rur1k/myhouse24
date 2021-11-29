@@ -1,0 +1,82 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Новая квартира{% endblock %}
+{% block page_name %}Новая квартира{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'flat' %}">Квартиры</a></li>
+    <li class="active">Новая квартира</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="box">
+    <div class="box-body">
+        <form id="FlatCreateForm" novalidate method="post"
+              action="" enctype="multipart/form-data"
+              data-section-url="{% url 'select_section_flat' %}"
+              data-floor-url="{% url 'select_floor_flat' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Номер квартиры</label>
+                        {{ flat.number_flat }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Площадь (кв.м.)</label>
+                        {{ flat.square }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Дом</label>
+                        {{ flat.house }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Секция</label>
+                        {{ flat.section }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Этаж</label>
+                        {{ flat.floor }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Владелец</label>
+                        {{ flat.owner }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Тариф</label>
+                        {{ flat.tariff }}
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Лицевой счет</label>
+                        <input id="id-personal-account-flat" name="account" class="form-control">
+                        <select id="id-select-account-flat" class="form-control selectpicker"
+                                title="или выберите из списка..."
+                                data-live-search="true">
+                            {% for obj in free_account %}
+                            <option value="{{ obj.id }}">{{ obj.number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'flat' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                    <button type="submit" name="save_and_new" class="btn btn-success bg-green-active">Сохранить и добавить новую</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

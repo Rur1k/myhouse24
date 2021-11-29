@@ -1,0 +1,286 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Квитанция{% endblock %}
+{% block page_name %}Квитанция{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'invoice' %}">Квитанции</a></li>
+    <li><a href="{% url 'invoice_info' invoice.instance.id %}">Квитанция №{{ invoice.instance.number }}</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<form id="InvoiceCreateForm" novalidate method="post"
+      action="" enctype="multipart/form-data"
+    data-section-url="{% url 'select_section_counter' %}"
+      data-flat-url="{% url 'select_flat_counter' %}"
+      data-order-flat-url="{% url 'order_flat_counter' %}"
+      data-username-url="{% url 'select_username_account' %}"
+      data-phone-url="{% url 'select_phone_account' %}"
+      data-account-url="{% url 'select_account_invoice' %}"
+      data-unit-url="{% url 'select_service_unit' %}"
+      data-tariff-url="{% url 'select_data_is_tariff' %}"
+      data-counters-url="{% url 'select_data_counter_is_flat'%}">
+    {% csrf_token %}
+    {{ service.management_form }}
+    <div class="row">
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"> № </div>
+                        {{ invoice.number }}
+                    </div>
+                </div>
+                <span class="label-mid">от</span>
+                <div class="form-group">
+                    <div class="input-group">
+                        {{ invoice.date }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите действие
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'invoice_copy' invoice.instance.id %}">Копировать</a></li>
+                    <li><a href="{% url 'invoice_delete' invoice.instance.id %}" onclick="return confirmDelete()">Удалить</a></li>
+                    <li><a href="#!" id="set_service_on_tariff">Вставить все услуги согласно тарифу</a></li>
+                    <li><a href="">Добавить показания счетчиков</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body">
+            <div class="row col-md-6">
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Дом</label>
+                    <select id="id-house-invoice" name="house" class="form-control" title="Выберите...">
+                        <option value="">Выберите...</option>
+                        {% for obj in house %}
+                            {% if obj == invoice.instance.flat.house %}
+                            <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                            {% else %}
+                            <option value="{{ obj.id }}">{{ obj.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Секция</label>
+                    <select id="id-section-invoice" class="form-control" title="Выберите...">
+                         <option value="">Выберите...</option>
+                        {% if section %}
+                            {% for obj in section %}
+                                {% if obj == invoice.instance.flat.section %}
+                                <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
+                                {% else %}
+                                <option value="{{ obj.id }}">{{ obj.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Квартира</label>
+                    {{ invoice.flat }}
+                </div>
+            </div>
+            <div class="row col-md-6">
+                <div class="col-md-12 margin-bottom-15">
+                    {{ invoice.is_carried }}
+                    <label>Проведена</label>
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Статус</label>
+                    {{ invoice.status }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Тариф</label>
+                    {{ invoice.tariff }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <div class="col-md-6">
+                        <label>Период с</label>
+                        {{ invoice.date_first }}
+                    </div>
+                    <div class="col-md-6">
+                        <label>Период по</label>
+                        {{ invoice.date_last }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 margin-bottom-20">
+                <label>Лицевой счет</label>
+                {% if invoice.instance.flat.account %}
+                <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account"
+                       value="{{ invoice.instance.flat.account.number }}">
+                {% else %}
+                <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account">
+                {% endif %}
+                <p>
+                    <b>Владелец:</b>
+                    {% if invoice.instance.flat.owner is not None %}
+                        <span id="user-fullname">
+                            <a href = "{% url 'apartment_owner_info' invoice.instance.flat.owner.id %}">
+                                {{ invoice.instance.flat.owner.last_name }}
+                                {{ invoice.instance.flat.owner.first_name }}
+                                {{ invoice.instance.flat.owner.patronymic }}
+                            </a>
+                        </span>
+                        {% else %}
+                        <span id="user-fullname">не выбран</span>
+                        {% endif %}
+                </p>
+                <p>
+                    <b>Телефон:</b>
+                     {% if invoice.instance.flat.owner is not None %}
+                        <span id="user-phone">
+                            <a href="#">{{ invoice.instance.flat.owner.telephone }}</a>
+                        </span>
+                        {% else %}
+                        <span id="user-phone">не выбран</span>
+                        {% endif %}
+                </p>
+            </div>
+            <div class="col-md-12 margin-bottom-20">
+                <table class="table">
+                    <theader>
+                        <tr>
+                            <th scope="col">Услуга</th>
+                            <th scope="col">Расход</th>
+                            <th scope="col">Ед.изм.</th>
+                            <th scope="col">Цена за ед., грн.</th>
+                            <th scope="col">Стоимость, грн</th>
+                        </tr>
+                    </theader>
+                    <tbody id="formset_service_invoice">
+                        {% for obj in service %}
+                        <tr class="form-service-invoice">
+                            <td scope="row">
+                                <div hidden="hidden">{{ obj.id }}</div>
+                                {{ obj.service }}
+                            </td>
+                            <td scope="row">{{ obj.consumption }}</td>
+                            <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
+                            <td scope="row">{{ obj.price }}</td>
+                            <td scope="row">{{ obj.sum }}</td>
+                            <td scope="row">
+                                <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
+                                    <i class="fa fa-trash">
+                                        <div hidden="hidden">
+                                            {{ obj.DELETE }}
+                                        </div>
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr id='empty_form_service_invoice' class="form-service-invoice" hidden="hidden">
+                            <td scope="row">{{ service.empty_form.service }}</td>
+                            <td scope="row">{{ service.empty_form.consumption }}</td>
+                            <td scope="row" class="select-invoice-unit"><select class="form-control"></select></td>
+                            <td scope="row">{{ service.empty_form.price }}</td>
+                            <td scope="row">{{ service.empty_form.sum }}</td>
+                            <td scope="row">
+                                <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
+                                    <i class="fa fa-trash">
+                                        <div class="hidden">
+                                            {{ service.empty_form.DELETE }}
+                                        </div>
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
+                                <button id="add_service_on_tariff" type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
+                                <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>
+                            </td>
+                            <td scope="row">
+                                <h4>Итоги: <span id="invoice-total-sum"></span> грн.</h4>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'invoice' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h3>Показания счетчиков</h3>
+        </div>
+        <div class="box-body" id="flat_counter_info_invoice">
+            <table class="table">
+                    <theader>
+                        <tr>
+                            <th scope="col">№</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Месяц</th>
+                            <th scope="col">Дом</th>
+                            <th scope="col">Секция</th>
+                            <th scope="col">№ квартиры</th>
+                            <th scope="col">Счетчик</th>
+                            <th scope="col">Показания</th>
+                            <th scope="col">Ед. изм.</th>
+                        </tr>
+                    </theader>
+                    <tbody>
+                        {% for obj in counters_data %}
+                        <tr>
+                            <td scope="row">{{ obj.number }}</td>
+                            <td scope="row">
+                                {% if obj.status %}
+                                    {% if obj.status.id == 1 %}
+                                    <small class="label label-warning">
+                                    {% elif obj.status.id == 2 or  obj.status.id == 3%}
+                                    <small class="label label-success">
+                                    {% else %}
+                                    <small class="label label-primary">
+                                    {% endif %}
+                                        {{ obj.status }}</small>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                            <td scope="row">{{ obj.date | date:'d.m.Y' }}</td>
+                            <td scope="row">{{ obj.date | date:'F Y' }}</td>
+                            <td scope="row">{{ obj.flat.house }}</td>
+                            <td scope="row">{{ obj.flat.section }}</td>
+                            <td scope="row">{{ obj.flat.number_flat }}</td>
+                            <td scope="row">{{ obj.counter }}</td>
+                            <td scope="row">{{ obj.counter_data }}</td>
+                            <td scope="row">{{ obj.counter.unit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </div>
+</form>
+{% endblock %}

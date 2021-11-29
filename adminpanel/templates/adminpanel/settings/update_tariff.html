@@ -1,0 +1,105 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Тариф: {{ tariff.instance.name }}{% endblock %}
+{% block page_name %}Тариф: {{ tariff.instance.name }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_tariffs' %}">Тарифы</a></li>
+    <li><a href="{% url 'setting_tariffs_info' tariff.instance.id %}">Тариф: {{ tariff.instance.name }}</a></li>
+    <li class="active">Редактирование</li>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="post" action="" enctype="multipart/form-data" id="TariffCreateForm" data-unit-url="{% url 'select_service_unit' %}">
+            <div class="container col-md-8">
+                {% csrf_token %}
+                {{ services.management_form }}
+                <div class="col-xm-8 row margin-bottom-30">
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Название тарифа</label>
+                        {{ tariff.name }}
+                    </div>
+                    <div class="col-md-12 margin-bottom">
+                        <label>Описание тарифа</label>
+                        {{ tariff.description }}
+                    </div>
+                    <div id="form_set_setting_tariff_service" class="row">
+                        {% for service in services %}
+                        <div class="col-md-12 margin-bottom-20 form-setting_tariff_service">
+                            <div class="col-md-4 select-service">
+                                <label>Услуга</label>
+                                {{ service.id }}
+                                {{ service.service }}
+                            </div>
+                            <div class="col-md-3">
+                                <label>Цена</label>
+                                {{ service.price }}
+                            </div>
+                            <div class="col-md-2">
+                                <label>Валюта</label>
+                                {{ service.currency }}
+                            </div>
+                            <div class="col-md-3 select-service-unit">
+                                <label>Ед. изм.</label>
+                                <div class="input-group">
+                                    {{ service.unit_service }}
+                                    <span class="input-group-btn">
+                                    <a href="" class="btn btn-default delete-form">
+                                        <i class="fa fa-trash">
+                                            <div hidden="hidden">
+                                                {{ service.DELETE }}
+                                            </div>
+                                        </i>
+                                    </a>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div id="empty_form_setting_tariff_service" style="display:none">
+                        <div id="id_form_setting_tariff_service_" class="col-md-12 margin-bottom-20 form-setting_tariff_service">
+                            <div class="col-md-4 select-service">
+                                <label>Услуга</label>
+                                {{ services.empty_form.service }}
+                            </div>
+                            <div class="col-md-3">
+                                <label>Цена</label>
+                                {{ services.empty_form.price }}
+                            </div>
+                            <div class="col-md-2">
+                                <label>Валюта</label>
+                                {{ services.empty_form.currency }}
+                            </div>
+                            <div class="col-md-3 select-service-unit">
+                                <label>Ед. изм.</label>
+                                <div class="input-group">
+                                    {{ services.empty_form.unit_service }}
+                                    <span class="input-group-btn">
+                                    <a href="" class="btn btn-default delete-form">
+                                        <i class="fa fa-trash">
+                                            <div hidden="hidden">
+                                                {{ services.empty_form.DELETE }}
+                                            </div>
+                                        </i>
+                                    </a>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="add_service_to_tariff" class="btn btn-default pull-left" type="button" value="Добавить услугу">
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="form-group">
+                        <a href="{% url 'setting_tariffs' %}" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

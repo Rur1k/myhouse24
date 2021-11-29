@@ -1,0 +1,165 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Редактирование страницы{% endblock %}
+{% block page_name %}Редактирование страницы{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Редактирование страницы</li>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class="box-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            <div class="container col-md-12">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="col-xm-12"><h3>Редактирование страницы "О нас"</h3></div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Информация</h3>
+                <div class="col-md-8">
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Заголовок</label>
+                        {{ main_form.title }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-15">
+                        <label>Краткий текст</label>
+                        {{ main_form.media }}
+                        {{ main_form.description }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Фото директора</h4>
+                    {% if main_form.instance.image %}
+                    <img src="{{ main_form.instance.image.url }}" class="margin-bottom-15" style="max-height: 310px; max-width: 250px">
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="margin-bottom-15" style="max-height: 310px; max-width: 250px">
+                    {% endif %}
+                    <div class="col-md-12">
+                        <label>Рекомендуемый размер: (250х310)</label>
+                        {{ main_form.image }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Фотогалерея</h3>
+                <div class="col-md-12 site-about-gallery">
+                    {% for photo in gallery %}
+                    <div class="col-md-2 text-center margin-bottom-15 delete-photo">
+                        <img src="{{ photo.photo.url }}" class="margin-bottom-15 img-thumbnail"><br>
+                        <a href="{% url 'about_delete_photo' photo.id %}" onclick="return confirmDelete()">
+                            <i class="fa fa-trash text-red"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12">
+                    <label>Рекомендуемый размер: (1200x1200)</label>
+                    {{ gallery_form.photo }}
+                </div>
+            </div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Дополнительная информация</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Заголовок</label>
+                    {{ dop_form.title_dop }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Краткий текст</label>
+                    {{ dop_form.media }}
+                    {{ dop_form.description_dop }}
+                </div>
+            </div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Дополнительная фотогалерея</h3>
+                <div class="col-md-12 site-about-gallery">
+                    {% for obj in gallery_dop %}
+                    <div class="col-md-2 text-center margin-bottom-15">
+                        <img src="{{ obj.photo_dop.url }}" class="margin-bottom-15 img-thumbnail"><br>
+                        <a href="{% url 'about_delete_dopphoto' obj.id %}" onclick="return confirmDelete()">
+                            <i class="fa fa-trash text-red"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12">
+                    <label>Рекоменуемый размер: (1200x1200)</label>
+                    {{ gallery_dop_form.photo_dop }}
+                </div>
+            </div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Документы</h3>
+                <div class="сol-md-7">
+                    <div id="form_set_document" class="row">
+                        {% for form in formset %}
+                        <div class="col-md-7 margin-bottom-20 form-document">
+                            <div class="col-md-12 margin-bottom-15">
+                                <a href="" class="pull-right text-red delete-form">
+                                    <i class="fa fa-trash">
+                                        <div hidden="hidden">{{ form.DELETE }}</div>
+                                    </i>
+                                </a>
+                                {% if ".pdf" in form.instance.document.url %}
+                                <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px"></i>
+                                {% else  %}
+                                <img src="{{ form.instance.document.url }}" class="pull-left" width="15%" height="15%" style="margin:1%">
+                                {% endif %}
+                                <label>PDF, JPG (макс. размер 20 Mb)</label>
+                                {{ form.id }}
+                                {{ form.document }}
+                            </div>
+                            <div class="col-md-12">
+                                <label>Название документа</label>
+                                {{ form.doc_name }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div id="empty_form_document" style="display:none">
+                        <div id="id_form_document_" class="col-md-7 margin-bottom-20 form-document">
+                             <div class="col-md-12 margin-bottom-15">
+                                <a href="" class="pull-right text-red delete-form">
+                                    <i class="fa fa-trash">
+                                        <div hidden="hidden">{{ formset.empty_form.DELETE }}</div>
+                                    </i>
+                                </a>
+                                <i class="fa fa-file-o fa-3x pull-left" style="width: 32px"></i>
+                                <label>PDF, JPG (макс. размер 20 Mb)</label>
+                                {{ formset.empty_form.document }}
+                            </div>
+                            <div class="col-md-12">
+                                <label>Название документа</label>
+                                {{ formset.empty_form.doc_name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="add_document" class="btn btn-success pull-left" type="button" value="Добавить документ">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xm-12 row margin-bottom-30">
+                <h3 class="col-md-12 margin-bottom-20 page-header">Настройки SEO</h3>
+                <div class="col-md-12 margin-bottom-15">
+                    {{ seo.id }}
+                    <label>Title</label>
+                    {{ seo.seo_title }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Description</label>
+                    {{ seo.seo_description }}
+                </div>
+                <div class="col-md-12 margin-bottom-15">
+                    <label>Keywords</label>
+                    {{ seo.keyword }}
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <a href="{% url 'house' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

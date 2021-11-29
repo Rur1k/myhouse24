@@ -1,0 +1,150 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Показания счетчика{% endblock %}
+{% block page_name %}Показания счетчика{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'counter_data_counters' %}">Счетчики</a></li>
+    <li>
+        <a href="{% url 'counter_data_list' counter.flat.id %}">
+            Показания счетчиков, кв.{{ counter.flat.number_flat }}
+        </a>
+    </li>
+    <li class="active">Показание счетчика №{{ counter.number }}</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"> № </div>
+                        <div class="form-control">{{ counter.number }}</div>
+                    </div>
+                </div>
+                <span class="label-mid">от</span>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="form-control">{{ counter.date }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border text-right">
+                <a class="btn btn-primary btn-sm" href="{% url 'counter_data_update' counter.id %}">
+                    <span class="hidden-xs">Редактировать показание</span>
+                    <i class="fa fa-pencil visible-xs"></i>
+                </a>
+            </div>
+            <div class="box-body row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered">
+                        <tbody>
+                        <tr>
+                            <th class="col-md-6">Счетчик</th>
+                            <td>
+                                {% if counter.counter %}
+                                {{ counter.counter }}
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Дом</th>
+                            <td>
+                                {% if counter.flat.house %}
+                                <a href="{% url 'info_house' counter.flat.house.id %}"> {{ counter.flat.house }}</a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Секция</th>
+                            <td>
+                                {% if counter.flat.section %}
+                                {{ counter.flat.section }}
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Квартира</th>
+                            <td>
+                                {% if counter.flat %}
+                                <a href="{% url 'flat_info' counter.flat.id %}">{{ counter.flat }}</a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Пользователь</th>
+                            <td>
+                                {% if counter.flat.owner %}
+                                <a href="{% url 'apartment_owner_info' counter.flat.owner.id %}">{{ counter.flat.owner }}</a>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Текущее показание</th>
+                            <td>
+                                {% if counter.counter_data %}
+                                {{ counter.counter_data }}
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Ед. изм.</th>
+                            <td>
+                                {% if counter.counter.unit %}
+                                {{ counter.counter.unit }}
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-md-6">Статус</th>
+                            <td>
+                                {% if counter.status %}
+                                    {% if counter.status.id == 1 %}
+                                    <small class="label label-warning">
+                                    {% elif counter.status.id == 2 or  counter.status.id == 3%}
+                                    <small class="label label-success">
+                                    {% else %}
+                                    <small class="label label-primary">
+                                    {% endif %}
+                                        {{ counter.status }}</small>
+                                {% else %}
+                                не задано
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

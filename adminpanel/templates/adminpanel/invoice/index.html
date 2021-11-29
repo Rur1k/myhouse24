@@ -1,0 +1,150 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Квитанции на оплату{% endblock %}
+{% block page_name %}Квитанции на оплату{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Квитанции на оплату</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ balance.sum__sum }} грн</h3>
+                            <p>Состояние кассы</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ account_balance.saldo__sum }} грн</h3>
+                            <p>Баланс по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ account_debt.saldo__sum }} грн</h3>
+                            <p>Задолженность по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите действие
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'invoice_create' %}">Создать общую квитанцию</a></li>
+                    <li><a href="">Удалить</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="filter-table" class="table table-striped table-bordered table-hover table_sort"
+               data-section-url="{% url 'select_section_flat' %}">
+            <thead>
+            <tr>
+                <th class="col" style="width:20px"><input type="checkbox"></th>
+                <th class="col" style="width:120px">№ квитанции</th>
+                <th class="col" style="width:100px">Статус</th>
+                <th class="col" style="width: 100px">Дата</th>
+                <th class="col" style="min-width:100px">Месяц</th>
+                <th class="col" style="min-width:150px">Квартира</th>
+                <th class="col" style="min-width: 100px">Владелец</th>
+                <th class="col" style="min-width: 100px">Проведена</th>
+                <th class="col" style="min-width: 100px">Сумма(грн)</th>
+                <th class="col" style="width: 100px; min-width:120px"></th>
+            </tr>
+            <tr class="table-filters">
+                <td></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+            </tr>
+            </thead>
+            <tbody id="AccountList">
+            {% for obj in invoices %}
+            <tr onclick="location.href='{% url 'invoice_info' obj.id %}'" class="table-data">
+                <td><input type="checkbox"></td>
+                <td >{{ obj.number }}</td>
+                <td class="">
+                    {% if obj.status.id == 1 %}
+                    <label class="label label-danger">{{ obj.status }}</label>
+                    {% elif invoice.status.id == 2 %}
+                    <label class="label label-warning">{{ obj.status }}</label>
+                    {% else %}
+                    <label class="label label-success">{{ obj.status }}</label>
+                    {% endif %}
+                </td>
+                <td class="">{{ obj.date | date:'d.m.Y' }}</td>
+                <td class="">{{ obj.date | date:'F Y' }}</td>
+                <td class="">{{ obj.flat }}, {{ obj.flat.house }}</td>
+                <td class="">{{ obj.flat.owner }}</td>
+                <td class="">
+                    {% if obj.is_carried == 1 %}
+                    <label class="label label-success">Проведена</label>
+                    {% else %}
+                    <label class="label label-success">Непроведена</label>
+                    {% endif %}
+                </td>
+                <td class=""></td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="{% url 'invoice_copy' obj.id %}" title="Копировать" data-toggle="tooltip">
+                            <i class="fa fa-copy"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'invoice_update' obj.id %}" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'invoice_delete' obj.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

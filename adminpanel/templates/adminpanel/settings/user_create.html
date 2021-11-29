@@ -1,0 +1,77 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Новый пользователь{% endblock %}
+{% block page_name %}Новый пользователь{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_user_admin' %}">Пользователи</a></li>
+    <li class="active">Новый пользователь</li>
+{% endblock %}
+{% block content %}
+{% if message_error %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message_error }}
+    </div>
+{% endif %}
+<div class="box">
+    <div class="box-body">
+        <form novalidate method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Имя</label>
+                    {{ user.first_name }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Фамилия</label>
+                    {{ user.last_name }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Телефон</label>
+                    {{ user.telephone }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Роль</label>
+                    {{ user.role }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Статус</label>
+                    {{ user.status }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Email(Логин)</label>
+                    {{ user.email }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Пароль</label>
+                    <div class="input-group">
+                        {{ user.password }}
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="gen_password()">
+                                Сгенерировать
+                            </button>
+                            <button type="button" class="btn btn-primary" id="showPass">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Повторите пароль</label>
+                    {{ user.password2 }}
+                </div>
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <a href="{% url 'setting_user_admin' %}" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

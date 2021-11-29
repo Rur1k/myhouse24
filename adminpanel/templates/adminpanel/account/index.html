@@ -1,0 +1,200 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Лицевые счета{% endblock %}
+{% block page_name %}Лицевые счета{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Лицевые счета</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ balance.sum__sum }} грн</h3>
+                            <p>Состояние кассы</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ account_balance.saldo__sum }} грн</h3>
+                            <p>Баланс по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ account_debt.saldo__sum }} грн</h3>
+                            <p>Задолженность по счетам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите действие
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'account_create' %}">Добавить лицевой счет</a></li>
+                    <li><a href="">Выгрузить в Excel</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-default" href="">Очистить</a>
+    </div>
+    <div class="grid-view">
+        <table id="AccountTable" class="table table-striped table-bordered table-hover table_sort"
+               data-section-url="{% url 'select_section_flat' %}">
+            <thead>
+            <tr>
+                <th class="col" style="width:120px">№</th>
+                <th class="col" style="width:150px">Статус</th>
+                <th class="col" style="width: 100px">Квартира</th>
+                <th class="col" style="min-width:100px">Дом</th>
+                <th class="col" style="min-width:150px">Секция</th>
+                <th class="col" style="min-width: 100px">Владелец</th>
+                <th class="col" style="min-width: 100px">Остаток</th>
+                <th class="col" style="width: 100px; min-width:120px"></th>
+            </tr>
+            <tr class="table-filters">
+                <td><input type="text" class="form-control"></td>
+                <td>
+                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountList','account-status')">
+                        <option value=""></option>
+                        {% for obj in status %}
+                        <option value="{{ obj.id }}">{{ obj.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="text" class="form-control"></td>
+                <td>
+                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','AccountList','account-house')">
+                        <option value="0"></option>
+                        {% for house in houses %}
+                        <option value="{{ house.id }}">{{ house.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','AccountList','account-section')">
+                        <option>Выберите дом</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','AccountList','account-owner')">
+                        <option></option>
+                        {% for owner in owners %}
+                        <option value="{{ owner.id }}">{{ owner.last_name }} {{ owner.first_name }} {{ owner.patronymic }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','AccountList','account-remainder')">
+                        <option></option>
+                        <option>Есть долг</option>
+                        <option>Нет долга</option>
+                    </select>
+                </td>td>
+            </tr>
+            </thead>
+            <tbody id="AccountList">
+            {% for account in accounts %}
+            <tr onclick="location.href='{% url 'account_info' account.id %}'" class="table-data">
+                <td>{{ account.number }}</td>
+                <td class="account-status">
+                    {% if account.status.id == 1 %}
+                    <label class="label label-success">
+                        <div hidden="hidden">{{ account.status.id }}</div>{{ account.status }}
+                    </label>
+                    {% else %}
+                    <label class="label label-danger">
+                        <div hidden="hidden">{{ account.status.id }}</div>{{ account.status }}
+                    </label>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if account.flat %}
+                        {{ account.flat }}
+                    {% else %}
+                        (не задано)
+                    {% endif %}
+                </td>
+                <td class="account-house">
+                    {% if account.flat.house %}
+                    <div hidden="hidden">{{ account.flat.house.id }}</div>{{ account.flat.house }}
+                    {% else %}
+                        (не задано)
+                    {% endif %}
+                </td>
+                <td class="account-section">
+                    {% if account.flat.section %}
+                    <div hidden="hidden">{{ account.flat.section.id }}</div>{{ account.flat.section }}
+                    {% else %}
+                        (не задано)
+                    {% endif %}
+                </td>
+                <td class="account-owner">
+                    {% if account.flat.owner %}
+                        <div hidden="hidden">{{ account.flat.owner.id }}</div>
+                        {{ account.flat.owner }}
+                    {% else %}
+                        (не задано)
+                    {% endif %}
+                </td>
+                <td class="remainder">{{ account.saldo }}</td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="{% url 'account_update' account.id %}" title="Редактировать" data-toggle="tooltip">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="{% url 'account_delete' account.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        <div class="box-footer clearfix">
+        <div>
+            Количество счетов:
+            <span class="text-bolt">{{ count }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

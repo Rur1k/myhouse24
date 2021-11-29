@@ -1,0 +1,90 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}{{ house.name }}{% endblock %}
+{% block page_name %}{{ house.name }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'house' %}">Дома</a></li>
+    <li class="active">{{ house.name }}</li>
+{% endblock %}
+{% block content %}
+<div class="box col-md-12">
+    <div class="box-header with-border text-right">
+        <a href="{% url 'update_house' house.id %}" class="btn btn-primary">Редактировать дом</a>
+    </div>
+    <div class="box-body row">
+        <div class="col-md-4 row">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>Название</th>
+                        <td>{{ house.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Адрес</th>
+                        <td>{{ house.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Секций</th>
+                        {% if sections %}
+                        <td>{{ sections }}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Этажей</th>
+                        {% if floors %}
+                        <td>{{ floors }}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Пользователи</th>
+                        <td>Не назначены</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    {% if house.image_1 %}
+                    <img src="{{ house.image_1.url }}" class="img-responsive largeImg margin-bottom-30"/>
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="img-responsive largeImg margin-bottom-30"/>
+                    {% endif %}
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    {% if house.image_2 %}
+                    <img src="{{ house.image_2.url }}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% endif %}
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    {% if house.image_3 %}
+                    <img src="{{ house.image_3.url }}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% endif %}
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    {% if house.image_4 %}
+                    <img src="{{ house.image_4.url }}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% endif %}
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    {% if house.image_5 %}
+                    <img src="{{ house.image_5.url }}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% else %}
+                    <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30"/>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

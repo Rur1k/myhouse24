@@ -1,0 +1,99 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}О нас{% endblock %}
+{% block content %}
+
+<div class="col-md-12 row">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Главная</a></li>
+            <li class="active">
+                О нас
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="col-md-12 row about margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>{{ info.title }}</h1>
+            </div>
+            <img src="{{ info.image.url }}" class="img-responsive imgFloatRight">
+            {{ info.description | safe }}
+        </div>
+    </div>
+</div>
+<div class="gallery g1">
+    <div class="container">
+        <div class="tz-gallery">
+            <div class="row">
+                {% for photo in gallery %}
+                <div class="col-md-3 item">
+                    <a class="lightbox" href="{{ photo.photo.url }}">
+                        <img src="{{ photo.photo.url }}" class="img-responsive img-thumbnail">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 row about margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>{{ dop_info.title_dop }}</h1>
+            </div>
+            {{ dop_info.description_dop | safe }}
+        </div>
+    </div>
+</div>
+<div class="gallery g2">
+    <div class="container">
+        <div class="tz-gallery">
+            <div class="row">
+                {% for photo in dop_gallery %}
+                <div class="col-md-3 item">
+                    <a class="lightbox" href="{{ photo.photo_dop.url }}">
+                        <img src="{{ photo.photo_dop.url }}" class="img-responsive img-thumbnail">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 row document margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>Документы</h1>
+            </div>
+            {% for doc in document %}
+            <div class="media">
+                <div class="media-left">
+                    <div class="media-object">
+                        {% if ".pdf" in doc.document.url %}
+                        <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px"></i>
+                        {% else  %}
+                        <i class="fa fa-file-image-o fa-3x pull-left" style="width: 32px"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">{{ doc.doc_name }}</h4>
+                    <a href="{{ doc.document.url }}" download>
+                        <i class="fa fa-download" aria-hidden="true">Скачать</i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Контакты{% endblock %}
+{% block content %}
+
+<div class="col-md-12 row">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Главная</a></li>
+            <li class="active">
+                Контакты
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="col-md-12 map margin-bottom-30 text-center">
+    {{ contact.code_map | safe }}
+</div>
+
+<div class="col-md-12 row margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="col-md-8">
+                <div class="page-header">
+                    <h1>{{ contact.title }}</h1>
+                </div>
+                {{ contact.description | safe}}
+                {% if contact.site %}
+                <p>
+                    <b>
+                        <i>Официальный сайт компании -&nbsp;</i>
+                        <a target="_blank" rel="nofollow" href="{{ contact.site }}">
+                            <b>
+                                <i>{{ contact.site }}</i>
+                            </b>
+                        </a>
+                    </b>
+                </p>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <div class="page-header">
+                    <h1>Контакты</h1>
+                </div>
+                <div class="box">
+                    <p>
+                        <i class="fa fa-user-circle"></i>
+                        {{ contact.fio }}
+                    </p>
+                    <p>
+                        <i class="fa fa-compass"></i>
+                        {{ contact.address }}
+                    </p>
+                    <p>
+                        <i class="fa fa-map-marker"></i>
+                        {{ contact.location }}
+                    </p>
+                    <p>
+                        <i class="fa fa-phone"></i>
+                        {{ contact.phone }}
+                    </p>
+                    <p>
+                        <i class="fa fa-envelope"></i>
+                        {{ contact.email }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Новая статья{% endblock %}
+{% block page_name %}Новая статья{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_transaction_purpose' %}">Статьи приходов/расходов</a></li>
+    <li class="active">Новая статья</li>
+{% endblock %}
+{% block content %}
+<div class="box">
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="box-body">
+            <div class="col-md-9">
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Название </label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Приход/расход</label>
+                    {{ form.item }}
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <a href="" class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

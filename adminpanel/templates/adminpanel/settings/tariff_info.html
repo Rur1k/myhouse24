@@ -1,0 +1,59 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{% block title %}Тариф: {{ tariff.name }}{% endblock %}
+{% block page_name %}Тариф: {{ tariff.name }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'setting_tariffs' %}">Тарифы</a></li>
+    <li class="active">Тариф: {{ tariff.name }}</li>
+{% endblock %}
+{% block content %}
+<div class="box col-md-12">
+    <div class="box-header with-border text-right">
+        <a href="{% url 'setting_tariffs_update' tariff.id %}" class="btn btn-primary">Редактировать тариф</a>
+    </div>
+    <div class="box-body row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-md-4">Названи тарифа</th>
+                    <td>{{ tariff.name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-4">Описание</th>
+                    <td>{{ tariff.description }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-4">Дата редактирования</th>
+                    <td>{{ tariff.date_update }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12" style="overflow-x: auto">
+            <table class="table table-responsive table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th class="col" style="min-width:20px">#</th>
+                    <th class="col" style="min-width:100px">Услуга</th>
+                    <th class="col" style="min-width:100px">Ед. изм.</th>
+                    <th class="col" style="min-width:100px">Цена за ед., грн</th>
+                    <th class="col" style="min-width:50px">Валюта</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%  for service in services %}
+                <tr>
+                    <td></td>
+                    <td>{{ service.service.name }}</td>
+                    <td>{{ service.unit_service.unit }}</td>
+                    <td>{{ service.price }}</td>
+                    <td>{{ service.currency }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

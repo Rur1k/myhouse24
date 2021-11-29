@@ -1,0 +1,40 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Услуги{% endblock %}
+{% block content %}
+
+<div class="col-md-12 row">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Главная</a></li>
+            <li class="active">
+                Услуги
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="col-md-12 row services margin-bottom-30">
+    <div class="col-md-12">
+        <div class="container">
+            <div class="page-header">
+                <h1>Наши услуги</h1>
+            </div>
+            <div class="row">
+                {% for service in services %}
+                <div class="col-md-12 margin-bottom-30">
+                    <div class="col-md-7">
+                        <img src="{{ service.image.url }}" class="img-responsive img-thumbnail">
+                    </div>
+                    <div class="col-md-5">
+                        <h3 class="page-header">{{ service.name }}</h3>
+                        {{ service.description | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
