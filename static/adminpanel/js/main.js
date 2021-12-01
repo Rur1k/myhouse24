@@ -10,7 +10,31 @@ $("document").ready(function() {
 
     MultiplicationInvoice()
     // Инициализация DataTable
-    FilterInput('#AccountTransactionTable', [0,1,5], [2,3,4,6,7,8])
+    //FilterInput('#AccountTransactionTable', [0,1,5], [2,3,4,6,7,8])
+    FilterSelect('#AccountTransactionTable')
+
+//    $('#AccountTransactionTable').DataTable({
+//        dom: 't',
+//        ordering: false,
+//        paging: false,
+//            "bFilter": true,
+//                initComplete: function () {
+//                    this.api().column(2).every( function () {
+//                        var column = this;
+//                        var select = $('<select><option value="">All Subjects</option></select>')
+//                            .appendTo( $(column.header()).empty() )
+//                            .on( 'change', function () {
+//                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+//                                column
+//                                    .search( val ? '^'+val+'$' : '', true, false )
+//                                    .draw();
+//                            } );
+//                        column.data().unique().sort().each( function ( d, j ) {
+//                            select.append( '<option value="'+d+'">'+d+'</option>' )
+//                        } );
+//                    } );
+//            },
+//    });
 
 
 });
@@ -83,6 +107,39 @@ function FilterInput(Table, arr, empty) {
                         });
                 });
         },
+    });
+}
+
+function FilterSelect(Table) {
+    $(Table+' thead tr')
+        .clone(true)
+        .addClass('filters')
+        .appendTo(Table+' thead');
+
+    var table = $(Table).DataTable({
+        dom: 't',
+        ordering: false,
+        paging: false,
+        orderCellsTop: true,
+        fixedHeader: true,
+        initComplete : function(){
+            this.api().columns([2,3,4]).every( function () {
+                var column = this;
+                var select = $('<select><option value="">Выберите...</option></select>')
+                    .appendTo( $(column.header()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option>'+d+'</option>' )
+                } );
+            } );
+            }
     });
 }
 
