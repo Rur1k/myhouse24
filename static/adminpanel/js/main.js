@@ -10,37 +10,14 @@ $("document").ready(function() {
 
     MultiplicationInvoice()
     // Инициализация DataTable
-    //FilterInput('#AccountTransactionTable', [0,1,5], [2,3,4,6,7,8])
-    FilterSelect('#AccountTransactionTable')
-
-//    $('#AccountTransactionTable').DataTable({
-//        dom: 't',
-//        ordering: false,
-//        paging: false,
-//            "bFilter": true,
-//                initComplete: function () {
-//                    this.api().column(2).every( function () {
-//                        var column = this;
-//                        var select = $('<select><option value="">All Subjects</option></select>')
-//                            .appendTo( $(column.header()).empty() )
-//                            .on( 'change', function () {
-//                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-//                                column
-//                                    .search( val ? '^'+val+'$' : '', true, false )
-//                                    .draw();
-//                            } );
-//                        column.data().unique().sort().each( function ( d, j ) {
-//                            select.append( '<option value="'+d+'">'+d+'</option>' )
-//                        } );
-//                    } );
-//            },
-//    });
+    FilterBase('#AccountTransactionTable', [0,1,5], [2,3,4,6], [7,8])
+    //FilterSelect('#AccountTransactionTable')
 
 
 });
 
-//Функция фильтрации input
-function FilterInput(Table, arr, empty) {
+//Функция фильтрации базовая на основе таблицы.
+function FilterBase(Table, arr_input, arr_select, arr_empty) {
     $(Table+' thead tr')
         .clone(true)
         .addClass('filters')
@@ -50,13 +27,13 @@ function FilterInput(Table, arr, empty) {
         dom: 't',
         ordering: false,
         paging: false,
-        orderCellsTop: true,
+        orderCellsTop: false,
         fixedHeader: true,
         initComplete: function () {
             var api = this.api();
 
             // Заполнение полей путыми значениями
-            api.columns(empty).eq(0).each(function (colIdx) {
+            api.columns(arr_empty).eq(0).each(function (colIdx) {
                     // Set the header cell to contain the input element
                     var cell = $('.filters th').eq(
                         $(api.column(colIdx).header()).index()
@@ -64,18 +41,14 @@ function FilterInput(Table, arr, empty) {
                     var title = $(cell).text();
                     $(cell).html('<text></text>');
             });
-
-            // For each column
-            api
-                .columns(arr)
-                .eq(0)
-                .each(function (colIdx) {
+            // Заполнение полей input
+            api.columns(arr_input).eq(0).each(function (colIdx) {
                     // Set the header cell to contain the input element
                     var cell = $('.filters th').eq(
                         $(api.column(colIdx).header()).index()
                     );
                     var title = $(cell).text();
-                    $(cell).html('<input type="text">');
+                    $(cell).html('<input type="text" class="form-control">');
                     // On every keypress in this input
                     $(
                         'input',
@@ -106,6 +79,23 @@ function FilterInput(Table, arr, empty) {
                                 .setSelectionRange(cursorPosition, cursorPosition);
                         });
                 });
+
+            api.columns(arr_select).every( function () {
+                var column = this;
+                var select = $('<select class="form-control"><option value=""></option></select>')
+                    .appendTo( $(column.header()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option>'+d+'</option>' )
+                } );
+            } );
         },
     });
 }
@@ -120,10 +110,12 @@ function FilterSelect(Table) {
         dom: 't',
         ordering: false,
         paging: false,
-        orderCellsTop: true,
+        orderCellsTop: false,
         fixedHeader: true,
         initComplete : function(){
-            this.api().columns([2,3,4]).every( function () {
+            var api = this.api();
+
+            api.columns([2,3,4]).every( function () {
                 var column = this;
                 var select = $('<select><option value="">Выберите...</option></select>')
                     .appendTo( $(column.header()).empty() )

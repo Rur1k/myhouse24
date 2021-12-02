@@ -80,15 +80,15 @@
                data-section-url="{% url 'select_section_flat' %}">
             <thead>
             <tr>
-                <th class="col" style="width:120px">№</th>
-                <th class="col" style="width:150px">Дата</th>
-                <th class="col" style="width: 100px">Статус</th>
-                <th class="col" style="min-width:100px">Тип платежа</th>
+                <th class="col" style="min-width:120px">№</th>
+                <th class="col" style="min-width:150px">Дата</th>
+                <th class="col" style="min-width: 100px">Статус</th>
+                <th class="col" style="min-min-width:100px">Тип платежа</th>
                 <th class="col" style="min-width:150px">Владелец</th>
                 <th class="col" style="min-width: 100px">Лицевой счет</th>
                 <th class="col" style="min-width: 100px">Приход/Расход</th>
                 <th class="col" style="min-width: 100px">Сумма(грн)</th>
-                <th class="col" style="width: 100px; min-width:120px"></th>
+                <th class="col" style="min-width:100px"></th>
             </tr>
             </thead>
             <tbody id="AccountTransactionList">
@@ -144,9 +144,6 @@
             </tr>
             {% endfor %}
             </tbody>
-            <tfoot>
-
-            </tfoot>
         </table>
     </div>
     <div class="box-footer clearfix">
