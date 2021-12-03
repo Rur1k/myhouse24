@@ -76,6 +76,20 @@
         <a class="btn btn-default" href="">Очистить</a>
     </div>
     <div class="grid-view">
+
+
+        <table border="0" cellspacing="5" cellpadding="5">
+            <tbody><tr>
+                <td>Minimum id:</td>
+                <td><input type="text" id="min" name="min"></td>
+            </tr>
+            <tr>
+                <td>Maximum id:</td>
+                <td><input type="text" id="max" name="max"></td>
+            </tr>
+            </tbody>
+        </table>
+
         <table id="AccountTransactionTable" class="table table-striped table-bordered table-hover table_sort"
                data-section-url="{% url 'select_section_flat' %}">
             <thead>
@@ -94,8 +108,8 @@
             <tbody id="AccountTransactionList">
             {% for obj in AccountTransaction %}
             <tr onclick="location.href='{% url 'account_transaction_info' obj.id %}'" class="table-data">
-                <td class="account-trans-number" typeof="accountTransNumber">{{ obj.number }}</td>
-                <td class="account-date-trans">{{ obj.date }}</td>
+                <td class="account-trans-number">{{ obj.number }}</td>
+                <td class="account-date-trans">{{ obj.date| date:"d.m.Y" }}</td>
                 <td class="account-status-trans">
                     {% if obj.is_complete %}
                     Проведен

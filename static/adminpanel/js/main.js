@@ -10,11 +10,66 @@ $("document").ready(function() {
 
     MultiplicationInvoice()
     // Инициализация DataTable
-    FilterBase('#AccountTransactionTable', [0,1,5], [2,3,4,6], [7,8])
-    //FilterSelect('#AccountTransactionTable')
+    //FilterBase('#AccountTransactionTable', [0,1,5], [2,3,4,6], [7,8])
 
 
+
+    var table = $('#AccountTransactionTable').DataTable();
+    FilterDate(table)
+
+    $('#min, #max').select(function () {
+        table.draw();
+    });
 });
+
+function FilterDate(table) {
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#min').datepicker("getDate");
+            var max = $('#max').datepicker("getDate");
+
+            console.log("Минимальное значение "+min)
+
+            var startDate = new Date(data[1]);
+            var endDate = new Date(data[1]);
+
+            if (min == null && max == null) { return true; }
+            if (min == null && endDate <= max) { return true; }
+            if (max == null && startDate >= min) { return true; }
+            if (startDate >= min && endDate <= max) { return true; }
+                return false;
+            }
+    );
+
+    $("#min").datepicker($.datepicker.regional["ru"]);
+    $("#min").datepicker({
+        onSelect: function () {
+            table.draw();
+        },
+        dateFormat: 'dd.mm.yy',
+        changeMonth: true,
+        changeYear: true,
+        regional: 'ru',
+        onClose: function (date, inst) {
+            //set the other dateTo the min date
+            var selectedDate = $("#min").datepicker("getDate");
+            var followingDate = new Date(selectedDate.getTime() + 86400000);
+            followingDate.toLocaleDateString();
+            $("#max").datepicker("option", "minDate", followingDate);
+        }
+    });
+    $("#max").datepicker($.datepicker.regional["ru"]);
+    $("#max").datepicker({
+        onSelect: function () {
+            table.draw();
+        },
+        dateFormat: 'dd.mm.yy',
+        changeMonth: true,
+        changeYear: true,
+        autoclose: true,
+        clearBtn: true
+    });
+}
 
 //Функция фильтрации базовая на основе таблицы.
 function FilterBase(Table, arr_input, arr_select, arr_empty) {
@@ -80,6 +135,7 @@ function FilterBase(Table, arr_input, arr_select, arr_empty) {
                         });
                 });
 
+            //Поля select
             api.columns(arr_select).every( function () {
                 var column = this;
                 var select = $('<select class="form-control"><option value=""></option></select>')
@@ -100,42 +156,7 @@ function FilterBase(Table, arr_input, arr_select, arr_empty) {
     });
 }
 
-function FilterSelect(Table) {
-    $(Table+' thead tr')
-        .clone(true)
-        .addClass('filters')
-        .appendTo(Table+' thead');
-
-    var table = $(Table).DataTable({
-        dom: 't',
-        ordering: false,
-        paging: false,
-        orderCellsTop: false,
-        fixedHeader: true,
-        initComplete : function(){
-            var api = this.api();
-
-            api.columns([2,3,4]).every( function () {
-                var column = this;
-                var select = $('<select><option value="">Выберите...</option></select>')
-                    .appendTo( $(column.header()).empty() )
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
-                column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option>'+d+'</option>' )
-                } );
-            } );
-            }
-    });
-}
-
-// Сортировка таблиц
+ //Сортировка таблиц
 //document.addEventListener('DOMContentLoaded', () => {
 //    const getSort = ({ target }) => {
 //        const order = (target.dataset.order = -(target.dataset.order || -1));
