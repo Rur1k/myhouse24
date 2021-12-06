@@ -10,16 +10,8 @@ $("document").ready(function() {
 
     MultiplicationInvoice()
     // Инициализация DataTable
-    //FilterBase('#AccountTransactionTable', [0,1,5], [2,3,4,6], [7,8])
+    FilterBase('#AccountTransactionTable', [0,5], [2,3,4,6], [7,8], [1])
 
-
-
-    var table = $('#AccountTransactionTable').DataTable();
-    FilterDate(table)
-
-    $('#min, #max').select(function () {
-        table.draw();
-    });
 });
 
 function FilterDate(table) {
@@ -41,38 +33,11 @@ function FilterDate(table) {
             }
     );
 
-    $("#min").datepicker($.datepicker.regional["ru"]);
-    $("#min").datepicker({
-        onSelect: function () {
-            table.draw();
-        },
-        dateFormat: 'dd.mm.yy',
-        changeMonth: true,
-        changeYear: true,
-        regional: 'ru',
-        onClose: function (date, inst) {
-            //set the other dateTo the min date
-            var selectedDate = $("#min").datepicker("getDate");
-            var followingDate = new Date(selectedDate.getTime() + 86400000);
-            followingDate.toLocaleDateString();
-            $("#max").datepicker("option", "minDate", followingDate);
-        }
-    });
-    $("#max").datepicker($.datepicker.regional["ru"]);
-    $("#max").datepicker({
-        onSelect: function () {
-            table.draw();
-        },
-        dateFormat: 'dd.mm.yy',
-        changeMonth: true,
-        changeYear: true,
-        autoclose: true,
-        clearBtn: true
-    });
+
 }
 
 //Функция фильтрации базовая на основе таблицы.
-function FilterBase(Table, arr_input, arr_select, arr_empty) {
+function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
     $(Table+' thead tr')
         .clone(true)
         .addClass('filters')
@@ -152,6 +117,53 @@ function FilterBase(Table, arr_input, arr_select, arr_empty) {
                     select.append( '<option>'+d+'</option>' )
                 } );
             } );
+
+            // Поле с поиском даты
+            api.columns(date).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell).html('<input class="form-control" name=datefilter>');
+
+                     $('input[name="datefilter"]').daterangepicker({
+                      autoUpdateInput: false,
+                      locale: {
+                          cancelLabel: 'Очистить',
+                          applyLabel: 'Выбрать',
+                      }
+                  });
+
+                  $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+                      $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+
+                      $.fn.dataTable.ext.search.push(
+                            function( settings, data, dataIndex ) {
+                                var min = picker.startDate.format('DD.MM.YYYY')
+                                var max = picker.endDate.format('DD.MM.YYYY')
+                                var date = data[1];
+
+                                if (
+                                    ( min === null && max === null ) ||
+                                    ( min === null && date <= max ) ||
+                                    ( min <= date   && max === null ) ||
+                                    ( min <= date   && date <= max )
+                                ) {
+
+                                    return true;
+                                }
+                                return false;
+                            }
+                        );
+
+                        table.draw();
+                  });
+
+                  $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+                      $(this).val('');
+                  });
+            });
         },
     });
 }
