@@ -10,38 +10,17 @@ $("document").ready(function() {
 
     MultiplicationInvoice()
     // Инициализация DataTable
-    FilterBase('#AccountTransactionTable', [0,5], [2,3,4,6], [7,8], [1])
+    FilterBase('#AccountTransactionTable', [0,5], [2,3,4,6], [7,8], 1, undefined )
+    FilterBase('#InvoiceTable', [1,3,4,5], [2,6,7], [0,8,9], 3, undefined )
+    FilterBase('#AccountTable', [0, 2], [1,3,4,5], [7], undefined, 6)
 
 });
 
-function FilterDate(table) {
-    $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            var max = $('#max').datepicker("getDate");
-
-            console.log("Минимальное значение "+min)
-
-            var startDate = new Date(data[1]);
-            var endDate = new Date(data[1]);
-
-            if (min == null && max == null) { return true; }
-            if (min == null && endDate <= max) { return true; }
-            if (max == null && startDate >= min) { return true; }
-            if (startDate >= min && endDate <= max) { return true; }
-                return false;
-            }
-    );
-
-
-}
-
 //Функция фильтрации базовая на основе таблицы.
-function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
-    $(Table+' thead tr')
-        .clone(true)
-        .addClass('filters')
-        .appendTo(Table+' thead');
+function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
+    if (date == undefined) date = false;
+    if (dop == undefined) dop = false;
+    $(Table+' thead tr').clone(true).addClass('filters').appendTo(Table+' thead');
 
     var table = $(Table).DataTable({
         dom: 't',
@@ -51,9 +30,9 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
         fixedHeader: true,
         initComplete: function () {
             var api = this.api();
-
             // Заполнение полей путыми значениями
-            api.columns(arr_empty).eq(0).each(function (colIdx) {
+            if (arr_empty){
+                api.columns(arr_empty).eq(0).each(function (colIdx) {
                     // Set the header cell to contain the input element
                     var cell = $('.filters th').eq(
                         $(api.column(colIdx).header()).index()
@@ -61,8 +40,10 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
                     var title = $(cell).text();
                     $(cell).html('<text></text>');
             });
+            }
             // Заполнение полей input
-            api.columns(arr_input).eq(0).each(function (colIdx) {
+            if (arr_input){
+                api.columns(arr_input).eq(0).each(function (colIdx) {
                     // Set the header cell to contain the input element
                     var cell = $('.filters th').eq(
                         $(api.column(colIdx).header()).index()
@@ -99,9 +80,10 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
                                 .setSelectionRange(cursorPosition, cursorPosition);
                         });
                 });
-
+                }
             //Поля select
-            api.columns(arr_select).every( function () {
+            if (arr_select){
+                api.columns(arr_select).every( function () {
                 var column = this;
                 var select = $('<select class="form-control"><option value=""></option></select>')
                     .appendTo( $(column.header()).empty() )
@@ -117,9 +99,10 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
                     select.append( '<option>'+d+'</option>' )
                 } );
             } );
-
-            // Поле с поиском даты
-            api.columns(date).eq(0).each(function (colIdx) {
+            }
+            // Поле с диапазаном дат
+            if (date) {
+                api.columns([date]).eq(0).each(function (colIdx) {
                     // Set the header cell to contain the input element
                     var cell = $('.filters th').eq(
                         $(api.column(colIdx).header()).index()
@@ -142,13 +125,13 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
                             function( settings, data, dataIndex ) {
                                 var min = picker.startDate.format('DD.MM.YYYY')
                                 var max = picker.endDate.format('DD.MM.YYYY')
-                                var date = data[1];
+                                var date_list = data[date];
 
                                 if (
                                     ( min === null && max === null ) ||
-                                    ( min === null && date <= max ) ||
-                                    ( min <= date   && max === null ) ||
-                                    ( min <= date   && date <= max )
+                                    ( min === null && date_list <= max ) ||
+                                    ( min <= date_list   && max === null ) ||
+                                    ( min <= date_list   && date_list <= max )
                                 ) {
 
                                     return true;
@@ -164,51 +147,42 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date) {
                       $(this).val('');
                   });
             });
+            }
+
+            //Поле для дополнительного функционала в данном случае "Поле долга"
+            if (dop){
+                api.columns([dop]).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell)
+                    .html('<select class="form-control"><option></option><option value=1>Есть долг</option><option value=0>Нет долга</option></select>');
+            });
+            };
         },
     });
 }
 
  //Сортировка таблиц
-//document.addEventListener('DOMContentLoaded', () => {
-//    const getSort = ({ target }) => {
-//        const order = (target.dataset.order = -(target.dataset.order || -1));
-//        const index = [...target.parentNode.cells].indexOf(target);
-//        const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
-//        const comparator = (index, order) => (a, b) => order * collator.compare(
-//            a.children[index].innerHTML,
-//            b.children[index].innerHTML
-//        );
-//        for(const tBody of target.closest('table').tBodies)
-//            tBody.append(...[...tBody.rows].sort(comparator(index, order)));
-//
-//        for(const cell of target.parentNode.cells)
-//            cell.classList.toggle('sorted', cell === target);
-//    };
-//    document.querySelectorAll('.table_sort thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
-//});
+document.addEventListener('DOMContentLoaded', () => {
+    const getSort = ({ target }) => {
+        const order = (target.dataset.order = -(target.dataset.order || -1));
+        const index = [...target.parentNode.cells].indexOf(target);
+        const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
+        const comparator = (index, order) => (a, b) => order * collator.compare(
+            a.children[index].innerHTML,
+            b.children[index].innerHTML
+        );
+        for(const tBody of target.closest('table').tBodies)
+            tBody.append(...[...tBody.rows].sort(comparator(index, order)));
 
-// Поиск по таблицам
-function searchTable(idSearch, idTable, classField) {
-    var input, filter, found, table, tr, td, i, j;
-    input = document.getElementById(idSearch);
-    filter = input.value.toUpperCase();
-    table = document.getElementById(idTable);
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByClassName(classField);
-        for (j = 0; j < td.length; j++) {
-            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-                found = true;
-            }
-        }
-        if (found) {
-            tr[i].style.display = "";
-            found = false;
-        } else {
-            tr[i].style.display = "none";
-        }
-    }
-}
+        for(const cell of target.parentNode.cells)
+            cell.classList.toggle('sorted', cell === target);
+    };
+    document.querySelectorAll('.table_sort thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+});
 
 
 // Добавление секций дома
@@ -341,8 +315,6 @@ $(document).on('click', '.delete-form', function(e){
     }
 });
 
-
-
 function confirmDelete(){
     if(confirm("Вы уверены, что хотите удалить этот элемент?")){
         return true;
@@ -382,31 +354,3 @@ $("#id-select-account-flat").change(function () {
       $(this).val("");
 
     });
-
-//// Фильтры для таблиц новые
-$('.table-filters input').on('input', function () {
-    filterTableInput($(this).parents('table'));
-});
-
-
-
-function filterTableInput($table) {
-    var $filters = $table.find('.table-filters td');
-    var $rows = $table.find('.table-data');
-    $rows.each(function (rowIndex) {
-        var valid = true;
-        $(this).find('td').each(function (colIndex) {
-            if ($filters.eq(colIndex).find('input').val()) {
-                if ($(this).html().toLowerCase().indexOf(
-                $filters.eq(colIndex).find('input').val().toLowerCase()) == -1) {
-                    valid = valid && false;
-                }
-            }
-        });
-        if (valid === true) {
-            $(this).css('display', '');
-        } else {
-            $(this).css('display', 'none');
-        }
-    });
-}

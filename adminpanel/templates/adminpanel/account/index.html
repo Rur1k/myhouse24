@@ -79,54 +79,14 @@
                data-section-url="{% url 'select_section_flat' %}">
             <thead>
             <tr>
-                <th class="col" style="width:120px">№</th>
-                <th class="col" style="width:150px">Статус</th>
-                <th class="col" style="width: 100px">Квартира</th>
+                <th class="col" style="min-width:100px">№</th>
+                <th class="col" style="min-width:100px">Статус</th>
+                <th class="col" style="min-width: 100px">Квартира</th>
                 <th class="col" style="min-width:100px">Дом</th>
                 <th class="col" style="min-width:150px">Секция</th>
                 <th class="col" style="min-width: 100px">Владелец</th>
                 <th class="col" style="min-width: 100px">Остаток</th>
-                <th class="col" style="width: 100px; min-width:120px"></th>
-            </tr>
-            <tr class="table-filters">
-                <td><input type="text" class="form-control"></td>
-                <td>
-                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','AccountList','account-status')">
-                        <option value=""></option>
-                        {% for obj in status %}
-                        <option value="{{ obj.id }}">{{ obj.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><input type="text" class="form-control"></td>
-                <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','AccountList','account-house')">
-                        <option value="0"></option>
-                        {% for house in houses %}
-                        <option value="{{ house.id }}">{{ house.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','AccountList','account-section')">
-                        <option>Выберите дом</option>
-                    </select>
-                </td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','AccountList','account-owner')">
-                        <option></option>
-                        {% for owner in owners %}
-                        <option value="{{ owner.id }}">{{ owner.last_name }} {{ owner.first_name }} {{ owner.patronymic }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','AccountList','account-remainder')">
-                        <option></option>
-                        <option>Есть долг</option>
-                        <option>Нет долга</option>
-                    </select>
-                </td>td>
+                <th class="col" style="min-width:120px"></th>
             </tr>
             </thead>
             <tbody id="AccountList">
@@ -135,12 +95,9 @@
                 <td>{{ account.number }}</td>
                 <td class="account-status">
                     {% if account.status.id == 1 %}
-                    <label class="label label-success">
-                        <div hidden="hidden">{{ account.status.id }}</div>{{ account.status }}
-                    </label>
+                    <label class="label label-success">{{ account.status }}</label>
                     {% else %}
-                    <label class="label label-danger">
-                        <div hidden="hidden">{{ account.status.id }}</div>{{ account.status }}
+                    <label class="label label-danger">{{ account.status }}
                     </label>
                     {% endif %}
                 </td>
@@ -153,21 +110,20 @@
                 </td>
                 <td class="account-house">
                     {% if account.flat.house %}
-                    <div hidden="hidden">{{ account.flat.house.id }}</div>{{ account.flat.house }}
+                    {{ account.flat.house }}
                     {% else %}
                         (не задано)
                     {% endif %}
                 </td>
                 <td class="account-section">
                     {% if account.flat.section %}
-                    <div hidden="hidden">{{ account.flat.section.id }}</div>{{ account.flat.section }}
+                    {{ account.flat.section }}
                     {% else %}
                         (не задано)
                     {% endif %}
                 </td>
                 <td class="account-owner">
                     {% if account.flat.owner %}
-                        <div hidden="hidden">{{ account.flat.owner.id }}</div>
                         {{ account.flat.owner }}
                     {% else %}
                         (не задано)
