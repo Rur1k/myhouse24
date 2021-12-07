@@ -33,91 +33,42 @@
                data-floor-url="{% url 'select_floor_flat' %}">
             <thead>
             <tr>
-                <th class="col" style="width:120px">№ Квартиры</th>
+                <th class="col" style="min-width:120px">№ Квартиры</th>
                 <th class="col" style="min-width:100px">Дом</th>
                 <th class="col" style="min-width: 100px">Секция</th>
                 <th class="col" style="min-width:100px">Этаж</th>
                 <th class="col" style="min-width:100px">Владелец</th>
                 <th class="col" style="min-width: 100px">Остаток</th>
-                <th class="col" style="width: 100px; min-width:120px"></th>
-            </tr>
-            <tr class="table-filters">
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-            </tr>
-            <tr>
-                <td><input id="NumberSearch" type="text" class="form-control" onkeyup="searchTable('NumberSearch','FlatList','flat-number')"></td>
-                <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','FlatList','flat-house')">
-                        <option value="0"></option>
-                        {% for house in houses %}
-                        <option value="{{ house.id }}">{{ house.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','FlatList','flat-section')">
-
-                    </select>
-                </td>
-                <td>
-                    <select id="FloorSearch" class="form-control" onchange="searchTable('FloorSearch','FlatList','flat-floor')">
-
-                    </select>
-                </td>
-                <td>
-                    <select id="OwnerSearch" class="form-control" onchange="searchTable('OwnerSearch','FlatList','flat-owner')">
-                        <option></option>
-                        {% for owner in owners %}
-                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }} {{ owner.patronymic }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select id="RemainderSearch" class="form-control" onchange="searchTable('ReminderSearch','FlatList','flat-remainder')">
-                        <option></option>
-                        <option>Есть долг</option>
-                        <option>Нет долга</option>
-                    </select>
-                </td>
-                <th></th>
+                <th class="col" style="min-width:120px"></th>
             </tr>
             </thead>
-            <tbody id="FlatList">
+            <tbody>
             {% for flat in flats %}
             <tr onclick="location.href='{% url 'flat_info' flat.id %}'" class="table-data">
-                <td class="flat-number">{{ flat.number_flat }}</td>
-                <td class="flat-house">
-                    <div hidden="hidden">{{ flat.house.id }}</div>{{ flat.house }}
-                </td>
-                <td class="flat-section">
+                <td>{{ flat.number_flat }}</td>
+                <td>{{ flat.house }}</td>
+                <td>
                     {% if flat.section %}
-                    <div hidden="hidden">{{ flat.section.id }}</div>{{ flat.section }}
+                        {{ flat.section }}
                     {% else %}
-                    (не задано)
+                        (не задано)
                     {% endif %}
                 </td>
-                <td class="flat-floor">
+                <td>
                     {% if flat.floor %}
-                    <div hidden="hidden">{{ flat.floor.id }}</div>{{ flat.floor }}
+                        {{ flat.floor }}
                     {% else %}
-                    (не задано)
+                        (не задано)
                     {% endif %}
                 </td>
-                <td class="flat-owner">
+                <td>
                     {% if flat.owner %}
-                    <div hidden="hidden">{{ flat.owner.id }}</div>{{ flat.owner }}
+                        {{ flat.owner }}
                     {% else %}
-                    (не задано)
+                        (не задано)
                     {% endif %}
                 </td>
-                <td class="flat-remainder">
+                <td>
                     {% if flat.account %}
                         {{ flat.account.saldo }}
                     {% else %}

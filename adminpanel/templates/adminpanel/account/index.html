@@ -89,11 +89,11 @@
                 <th class="col" style="min-width:120px"></th>
             </tr>
             </thead>
-            <tbody id="AccountList">
+            <tbody>
             {% for account in accounts %}
             <tr onclick="location.href='{% url 'account_info' account.id %}'" class="table-data">
                 <td>{{ account.number }}</td>
-                <td class="account-status">
+                <td>
                     {% if account.status.id == 1 %}
                     <label class="label label-success">{{ account.status }}</label>
                     {% else %}
@@ -108,28 +108,28 @@
                         (не задано)
                     {% endif %}
                 </td>
-                <td class="account-house">
+                <td>
                     {% if account.flat.house %}
                     {{ account.flat.house }}
                     {% else %}
                         (не задано)
                     {% endif %}
                 </td>
-                <td class="account-section">
+                <td>
                     {% if account.flat.section %}
                     {{ account.flat.section }}
                     {% else %}
                         (не задано)
                     {% endif %}
                 </td>
-                <td class="account-owner">
+                <td>
                     {% if account.flat.owner %}
                         {{ account.flat.owner }}
                     {% else %}
                         (не задано)
                     {% endif %}
                 </td>
-                <td class="remainder">{{ account.saldo }}</td>
+                <td>{{ account.saldo }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'account_update' account.id %}" title="Редактировать" data-toggle="tooltip">

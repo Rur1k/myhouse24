@@ -39,33 +39,14 @@
                 <th class="col" style="min-width: 100px">Ед. изм.</th>
                 <th class="col" style="width: 100px; min-width:120px"></th>
             </tr>
-<!--            <tr class="table-filters">-->
-<!--                <td>-->
-<!--                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','CounterList','flat-house')">-->
-<!--                        <option value="0"></option>-->
-
-<!--                    </select>-->
-<!--                </td>-->
-<!--                <td>-->
-<!--                    <select id="SectionSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
-
-<!--                    </select>-->
-<!--                </td>-->
-<!--                <td><input type="text" class="form-control"></td>-->
-<!--                <td>-->
-<!--                    <select id="CounterSearch" class="form-control" onchange="searchTable('SectionSearch','CounterList','flat-section')">-->
-
-<!--                    </select>-->
-<!--                </td>-->
-<!--            </tr>-->
             </thead>
-            <tbody id="CounterList">
+            <tbody>
             {% for obj in counters %}
-            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'" class="table-data">
-                <td class="counter-house">{{ obj.flat.house }}</td>
-                <td class="counter-section">{{ obj.flat.section }}</td>
+            <tr onclick="location.href='{% url 'counter_data_list' obj.flat.id %}'">
+                <td>{{ obj.flat.house }}</td>
+                <td>{{ obj.flat.section }}</td>
                 <td>{{ obj.flat }}</td>
-                <td class="counter-counter">{{ obj.counter }}</td>
+                <td>{{ obj.counter }}</td>
                 <td>{{ obj.counter_data }}</td>
                 <td>{{ obj.counter.unit }}</td>
                 <td class="text-center">

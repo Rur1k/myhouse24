@@ -48,51 +48,20 @@
                 <th class="col" style="min-width:180px">Добавлен</th>
                 <th class="col" style="min-width:100px">Статус</th>
                 <th class="col" style="min-width:100px">Есть долг</th>
-                <th class="col" style="width: 120px; min-width:120px"></th>
-            </tr>
-            <tr>
-                <td><input id="IdSearch" type="text" class="form-control" onkeyup="searchTable('IdSearch','UserList','user-id')"></td>
-                <td><input id="UserSearch" type="text" class="form-control" onkeyup="searchTable('UserSearch','UserList','user-name')"></td>
-                <td><input id="PhoneSearch" type="text" class="form-control" onkeyup="searchTable('PhoneSearch','UserList','user-phone')"></td>
-                <td><input id="EmailSearch" type="text" class="form-control" onkeyup="searchTable('EmailSearch','UserList','user-email')"></td>
-                <td>
-                    <select id="HouseSearch" class="form-control" onchange="searchTable('HouseSearch','UserList','user-house')">
-                        <option></option>
-                        {% for house in houses %}
-                        <option>{{ house.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><input id="FlatSearch" type="text" class="form-control" onkeyup="searchTable('FlatSearch','UserList','user-flat')"></td>
-                <td><input id="CreateSearch" type="text" class="form-control" onkeyup="searchTable('CreateSearch','UserList','user-date-create')"></td>
-                <td>
-                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','UserList','user-status')">
-                        <option></option>
-                        {% for obj in status %}
-                        <option>{{ obj.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select id="IsDebtSearch" class="form-control" onchange="searchTable('IsDebtSearch','UserList','user-is-debt')">
-                        <option></option>
-                        <option>Да</option>
-                    </select>
-                </td>
-                <th></th>
+                <th class="col" style="min-width:120px"></th>
             </tr>
             </thead>
-            <tbody id="UserList">
+            <tbody>
             {% for user in users %}
             <tr onclick="location.href='{% url 'apartment_owner_info' user.id %}'">
-                <td class="user-id">{{ user.id }} - {{ user.personal_id }}</td>
-                <td class="user-name">{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</td>
-                <td class="user-phone">{{ user.telephone }}</td>
-                <td class="user-email">{{ user.email }}</td>
-                <td class="user-house"></td>
-                <td class="user-flat"></td>
-                <td class="user-date-create">{{ user.date_joined }}</td>
-                <td class="user-status">
+                <td>{{ user.id }} - {{ user.personal_id }}</td>
+                <td>{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</td>
+                <td>{{ user.telephone }}</td>
+                <td>{{ user.email }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ user.date_joined|date:'d.m.Y' }}</td>
+                <td>
                     {% if user.status_id == 1 %}
                     <label class="label label-success">{{ user.status }}</label>
                     {% elif user.status_id == 2 %}
@@ -101,7 +70,7 @@
                     <label class="label label-danger">{{ user.status }}</label>
                     {% endif %}
                 </td>
-                <td class="user-is-debt">{{ user.is_debt }}</td>
+                <td>{{ user.is_debt }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="" title="Отправить пильмо" data-toggle="tooltip">

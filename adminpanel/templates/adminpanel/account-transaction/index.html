@@ -91,33 +91,33 @@
                 <th class="col" style="min-width:100px"></th>
             </tr>
             </thead>
-            <tbody id="AccountTransactionList">
+            <tbody>
             {% for obj in AccountTransaction %}
             <tr onclick="location.href='{% url 'account_transaction_info' obj.id %}'" class="table-data">
-                <td class="account-trans-number">{{ obj.number }}</td>
-                <td class="account-date-trans">{{ obj.date| date:"d.m.Y" }}</td>
-                <td class="account-status-trans">
+                <td>{{ obj.number }}</td>
+                <td>{{ obj.date| date:"d.m.Y" }}</td>
+                <td>
                     {% if obj.is_complete %}
                     Проведен
                     {% else %}
                     Не проведен
                     {% endif %}
                 </td>
-                <td class="account-type-trans">
+                <td>
                     {% if obj.transaction %}
                     {{ obj.transaction }}
                     {% else %}
                     (не задано)
                     {% endif %}
                 </td>
-                <td class="account-owner-trans">
+                <td>
                     {% if obj.owner %}
                     {{ obj.owner }}
                     {% else %}
                     (не задано)
                     {% endif %}
                 </td>
-                <td class="account-trans">
+                <td>
                     {% if obj.account %}
                     {{ obj.account }}
                     {% else %}
@@ -125,11 +125,11 @@
                     {% endif %}
                 </td>
                 {% if obj.type.id == 1 %}
-                <td class="trans text-green">{{ obj.type }}</td>
-                <td class="summ text-green">{{ obj.sum }}</td>
-                {% else %}
-                <td class="trans text-red">{{ obj.type }}</td>
-                <td class="summ text-red">{{ obj.sum }}</td>
+                    <td>{{ obj.type }}</td>
+                    <td>{{ obj.sum }}</td>
+                    {% else %}
+                    <td>{{ obj.type }}</td>
+                    <td>{{ obj.sum }}</td>
                 {% endif %}
                 <td class="text-center">
                     <div class="btn-group pull-center">

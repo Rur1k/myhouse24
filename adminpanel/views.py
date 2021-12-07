@@ -44,9 +44,10 @@ def admin(request):
 
 # Бизнес логика вкладки "Дома"
 def house(request):
+    info = House.objects.all()
     data = {
-        'list': House.objects.all(),
-        'count': House.objects.count(),
+        'list': info,
+        'count': info.count(),
     }
     return render(request, 'adminpanel/house/index.html', data)
 
@@ -491,8 +492,6 @@ def setting_transaction_delete(request, id):
 def apartment_owner(request):
     data = {
         'users': ApartmentOwner.objects.all(),
-        'status': UserStatus.objects.all(),
-        'houses': House.objects.all(),
         'count': ApartmentOwner.objects.all().count(),
     }
     return render(request, 'adminpanel/user/index.html', data)
@@ -593,8 +592,6 @@ def flat(request):
     flats = Flat.objects.all()
     data = {
         'flats': flats.order_by('-id'),
-        'houses': House.objects.all(),
-        'owners': ApartmentOwner.objects.all(),
         'count': flats.count(),
     }
     return render(request, 'adminpanel/flat/index.html', data)
@@ -696,9 +693,6 @@ def account(request):
         'account_balance': account_balance,
         'account_debt': account_debt,
         'accounts': accounts.order_by('-id'),
-        'status': StatusAccount.objects.all(),
-        'houses': House.objects.all(),
-        'owners': ApartmentOwner.objects.all(),
         'count': accounts.count()
     }
     return render(request, 'adminpanel/account/index.html', data)
@@ -806,9 +800,6 @@ def account_transaction(request):
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
         'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
         'AccountTransaction': AccountTransaction.objects.all().order_by('-id'),
-        'TypeTransaction': SettingTransactionPurpose.objects.all(),
-        'owners': ApartmentOwner.objects.all(),
-        'items': SettingPaymentItem.objects.all(),
         'sum_coming': AccountTransaction.objects.filter(type=1, is_complete=1).aggregate(Sum('sum')),
         'sum_consumption': AccountTransaction.objects.filter(type=2, is_complete=1).aggregate(Sum('sum')),
     }
@@ -908,7 +899,6 @@ def select_account_trans(request):
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
     counters = CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat', 'counter')
-    print(counters)
     data = {
         'counters': counters
     }

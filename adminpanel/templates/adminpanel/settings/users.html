@@ -37,51 +37,18 @@
                 <th class="col" style="min-width: 100px">Телефон</th>
                 <th class="col" style="min-width:100px">Email(логин)</th>
                 <th class="col" style="min-width:100px">Статус</th>
-                <th class="col" style="width: 120px; min-width:120px"></th>
-            </tr>
-            <tr class="table-filters">
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-                <td><input type="text" class="form-control"></td>
-            </tr>
-            <tr>
-                <th></th>
-                <td><input id="UserAdminSearch" type="text" class="form-control" onkeyup="searchTable('UserAdminSearch','UserAdminList','user-admin-name')"></td>
-                <td>
-                    <select id="RoleSearch" class="form-control" onchange="searchTable('RoleSearch','UserAdminList','user-admin-role')">
-                        <option></option>
-                        {% for obj in role %}
-                        <option>{{ obj.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><input id="PhoneSearch" type="text" class="form-control" onkeyup="searchTable('PhoneSearch','UserAdminList','user-admin-phone')"></td>
-                <td><input id="EmailSearch" type="text" class="form-control" onkeyup="searchTable('EmailSearch','UserAdminList','user-admin-email')"></td>
-                <td>
-                    <select id="StatusSearch" class="form-control" onchange="searchTable('StatusSearch','UserAdminList','user-admin-status')">
-                        <option></option>
-                        {% for obj in status %}
-                        <option>{{ obj.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <th></th>
+                <th class="col" style="min-width:120px"></th>
             </tr>
             </thead>
-            <tbody id="UserAdminList">
+            <tbody>
             {% for user in users %}
-            <tr onclick="location.href='{% url 'setting_user_admin_info' user.id %}'" class="table-data">
+            <tr onclick="location.href='{% url 'setting_user_admin_info' user.id %}'">
                 <td>{{ user.id }}</td>
-                <td class="user-admin-name">{{ user.first_name }} {{ user.last_name }}</td>
-                <td class="user-admin-role">{{ user.role }}</td>
-                <td class="user-admin-phone">{{ user.telephone }}</td>
-                <td class="user-admin-email">{{ user.email }}</td>
-                <td class="user-admin-status">
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.telephone }}</td>
+                <td>{{ user.email }}</td>
+                <td>
                     {% if user.status_id == 1 %}
                     <label class="label label-success">{{ user.status }}</label>
                     {% elif user.status_id == 2 %}
