@@ -139,8 +139,7 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
                                 return false;
                             }
                         );
-
-                        table.draw();
+                      table.draw();
                   });
 
                   $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -158,8 +157,34 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
                     );
                     var title = $(cell).text();
                     $(cell)
-                    .html('<select class="form-control"><option></option><option value=1>Есть долг</option><option value=0>Нет долга</option></select>');
-            });
+                    .html('<select name="is_dop" class="form-control"><option value=""></option><option value=1>Есть долг</option><option value=0>Нет долга</option></select>');
+                });
+
+                $('select[name="is_dop"]').on('change', function () {
+                    var is_duty = parseInt($(this).val(), 10);
+                    var zero = parseFloat(0)
+                    var duty = parseInt(1)
+                    var no_duty = parseInt(0)
+                    console.log('Значение '+is_duty);
+                    console.log('Ноль '+zero);
+
+                    $.fn.dataTable.ext.search.pop()
+
+                    $.fn.dataTable.ext.search.push(
+                        function( settings, data, dataIndex ) {
+                            var saldo = parseFloat(data[dop]);
+                            if ((saldo >= zero) && (is_duty == no_duty) || (saldo < zero) && (is_duty == duty))
+                                {
+                                    return true;
+                                }
+                                return false;
+                        }
+                    );
+                    if (isNaN(is_duty)== true){
+                        $.fn.dataTable.ext.search.pop()
+                    }
+                    table.draw();
+                });
             };
         },
     });
