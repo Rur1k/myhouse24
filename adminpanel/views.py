@@ -1163,6 +1163,12 @@ def master_request(request):
     }
     return render(request, 'adminpanel/master-request/index.html', data)
 
+def master_request_create(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/master-request/create.html', data)
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

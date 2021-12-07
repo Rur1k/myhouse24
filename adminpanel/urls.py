@@ -93,6 +93,7 @@ urlpatterns = [
     path('invoice/update/<int:id>', views.invoice_update, name='invoice_update'),
     # Заявки мастера
     path('master-request', views.master_request, name='master_request'),
+    path('master-request/create', views.master_request_create, name='master_request_create'),
 
 
     # Авторизация
