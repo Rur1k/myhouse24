@@ -46,9 +46,11 @@
                     <div class="col-md-12 margin-bottom-20">
                         <div class="form-group">
                             <label>Владелец квартиры</label>
+                            {% if master_request.instance.owner %}
                             <a href="{% url 'apartment_owner_info' master_request.instance.owner.id %}">
                                 <i class="fa fa-external-link"></i>
                             </a>
+                            {% endif %}
                             {{ master_request.owner }}
                         </div>
                     </div>

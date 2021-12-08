@@ -38,7 +38,15 @@ def logout_admin(request):
 # Страница с статистикой
 def admin(request):
     data = {
-        'count_house': House.objects.count()
+        'count_house': House.objects.count(),
+        'count_flat': Flat.objects.count(),
+        'count_owner': ApartmentOwner.objects.count(),
+        'count_account': Account.objects.count(),
+        'count_request_master_work': MasterRequest.objects.filter(status=2).count(),
+        'count_request_master_new': MasterRequest.objects.filter(status=1).count(),
+        'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
+        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
+        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
     }
     return render(request, 'adminpanel/statistics.html', data)
 
