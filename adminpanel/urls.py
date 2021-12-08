@@ -94,6 +94,7 @@ urlpatterns = [
     # Заявки мастера
     path('master-request', views.master_request, name='master_request'),
     path('master-request/create', views.master_request_create, name='master_request_create'),
+    path('master-request/<int:id>', views.master_request_info, name='master_request_info'),
 
 
     # Авторизация

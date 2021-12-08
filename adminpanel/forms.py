@@ -948,7 +948,137 @@ class ServiceIsInvoiceForm(forms.ModelForm):
     #         unit_id = SettingService.objects.get(id=service_id).unit.id
     #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
 
+# Формы для заявок мастера
+class MasterRequestForm(forms.ModelForm):
+    class Meta:
+        model = MasterRequest
+        fields = [
+            'id',
+            'date',
+            'time',
+            'owner',
+            'flat',
+            'type_master',
+            'status',
+            'master',
+            'description',
+            'comment'
+        ]
+        widgets = {
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+            }),
+            'time': forms.TimeInput(attrs={
+                'type': 'time',
+                'class': 'form-control',
+            }),
+            'owner': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'flat': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'type_master': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'master': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control'
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control'
+            }),
+        }
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #
+    #     if self.instance.id:
+    #         if self.initial['number'] is None:
+    #             self.initial['number'] = generationNumber()
+    #         self.initial['date'] = self.instance.date.isoformat()
+    #         self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
+    #         if self.instance.date_first:
+    #             self.initial['date_first'] = self.instance.date_first.isoformat()
+    #         else:
+    #             self.initial['date_first'] = datetime.datetime.now().date().isoformat()
+    #         if self.instance.date_last:
+    #             self.initial['date_last'] = self.instance.date_last.isoformat()
+    #         else:
+    #             self.initial['date_last'] = datetime.datetime.now().date().isoformat()
+    #
+    #         if self.data.get('flat') != self.instance.flat:
+    #             if self.data.get('house'):
+    #                 self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+    #     else:
+    #         self.initial['date'] = datetime.datetime.now().date().isoformat()
+    #         self.fields['number'].initial = generationNumber()  # Генерация номера квитанции
+    #         self.initial['date_first'] = datetime.datetime.now().date().isoformat()
+    #         self.initial['date_last'] = datetime.datetime.now().date().isoformat()
+    #
+    #         if 'flat' in self.initial:
+    #             self.fields['flat'].queryset = Flat.objects.filter(house=self.initial['flat'].house.id)
+    #         elif self.data.get('flat'):
+    #             self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
+    #         else:
+    #             if self.data.get('house'):
+    #                 self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+    #             else:
+    #                 self.fields['flat'].queryset = Flat.objects.none()
+    #
+    # def clean(self):
+    #     cd = self.cleaned_data
+    #     if self.instance.id:
+    #         if 'number' in cd:
+    #             is_invoice = Invoice.objects.filter(number=cd['number']).first()
+    #             if is_invoice is not None and is_invoice.number != self.instance.number:
+    #                 raise forms.ValidationError('Квитанция с указанным номером уже существует, укажите другой.')
+    #             if cd['date'] is None:
+    #                 raise forms.ValidationError('"Дата" - не может быть пустым')
+    #             if cd['date_first'] is None:
+    #                 raise forms.ValidationError('"Дата начала" - не может быть пустым')
+    #             if cd['date_last'] is None:
+    #                 raise forms.ValidationError('"Дата конца" - не может быть пустым')
+    #             if 'flat' in cd:
+    #                 if cd['flat'] is None:
+    #                     raise forms.ValidationError('"Квартира" - не может быть пустым')
+    #                 if 'tariff' in cd:
+    #                     if cd['tariff'] is None:
+    #                         raise forms.ValidationError('"Тариф" - не может быть пустым')
+    #                 else:
+    #                     raise forms.ValidationError('"Тариф" - не может быть пустым')
+    #             else:
+    #                 raise forms.ValidationError('"Квартира" - не может быть пустым')
+    #         else:
+    #             raise forms.ValidationError('"Номер" - не может быть пустым')
+    #     else:
+    #         if 'number' in cd:
+    #             if Invoice.objects.filter(number=cd['number']).first() is not None:
+    #                 raise forms.ValidationError('Квитанция с указанным номером уже существует, укажите другой.')
+    #             if cd['date'] is None:
+    #                 raise forms.ValidationError('"Дата" - не может быть пустым')
+    #             if cd['date_first'] is None:
+    #                 raise forms.ValidationError('"Дата начала" - не может быть пустым')
+    #             if cd['date_last'] is None:
+    #                 raise forms.ValidationError('"Дата конца" - не может быть пустым')
+    #             if 'flat' in cd:
+    #                 if cd['flat'] is None:
+    #                     raise forms.ValidationError('"Квартира" - не может быть пустым')
+    #                 if 'tariff' in cd:
+    #                     if cd['tariff'] is None:
+    #                         raise forms.ValidationError('"Тариф" - не может быть пустым')
+    #                 else:
+    #                     raise forms.ValidationError('"Тариф" - не может быть пустым')
+    #             else:
+    #                 raise forms.ValidationError('"Квартира" - не может быть пустым')
+    #         else:
+    #             raise forms.ValidationError('"Номер" - не может быть пустым')
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

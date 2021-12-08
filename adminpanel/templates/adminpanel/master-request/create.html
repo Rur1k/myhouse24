@@ -17,48 +17,72 @@
     </div>
     {% endfor %}
 {% endif %}
-<div class="box">
-    <div class="box-body">
-        <form id="RequestCreateForm" novalidate method="post"
-              action="" enctype="multipart/form-data">
-            {% csrf_token %}
+<form id="RequestCreateForm" novalidate method="post"
+      action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"> </div>
+                        {{ master_request.date }}
+                    </div>
+                </div>
+                <span class="label-mid">от</span>
+                <div class="form-group">
+                    <div class="input-group">
+                        {{ master_request.time }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body">
             <div class="row">
                 <div class="col-md-6">
                     <div class="col-md-12 margin-bottom-20">
                         <label>Владелец квартиры</label>
-
+                        {{ master_request.owner }}
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>Описание</label>
-
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <div class="col-md-12 margin-bottom-20">
-                            <label>Квартира</label>
-
-                        </div>
-                        <div class="col-md-12 margin-bottom-20">
-                            <label>Тип мастера</label>
-
-                        </div>
-                        <div class="col-md-12 margin-bottom-20">
-                            <label>Статус</label>
-
-                        </div>
-                         <div class="col-md-12 margin-bottom-20">
-                            <label>Мастер</label>
-
-                        </div>
+                        {{ master_request.description }}
                     </div>
                 </div>
-            <div class="col-md-12 text-right">
-                <div class="form-group">
-                    <a href="{% url 'master_request' %}" class="btn btn-default">Отменить</a>
-                    <button type="submit" name="save" class="btn btn-success">Сохранить</button>
-                    <button type="submit" name="save_and_new" class="btn btn-success bg-green-active">Сохранить и добавить новую</button>
+                <div class="col-md-6 form-group">
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Квартира</label>
+                        {{ master_request.flat }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Тип мастера</label>
+                        {{ master_request.type_master }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Статус</label>
+                        {{ master_request.status }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Мастер</label>
+                        {{ master_request.master }}
+                    </div>
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Комментарий</label>
+                    {{ master_request.media }}
+                    {{ master_request.comment }}
+                </div>
+                <div class="col-md-12 text-right">
+                    <div class="form-group">
+                        <a href="{% url 'master_request' %}" class="btn btn-default">Отменить</a>
+                        <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                    </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 {% endblock %}
+

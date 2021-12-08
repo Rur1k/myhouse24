@@ -1159,13 +1159,32 @@ def invoice_info(request, id):
 # Заявки на вызов мастера
 def master_request(request):
     data = {
-
+        'master_request': MasterRequest.objects.all()
     }
     return render(request, 'adminpanel/master-request/index.html', data)
 
-def master_request_create(request):
+def master_request_info(request, id):
     data = {
+        'master_request': MasterRequest.objects.get(id=id)
+    }
+    return render(request, 'adminpanel/master-request/info.html', data)
 
+def master_request_create(request):
+    if request.method == "POST":
+        form = MasterRequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Заявка мастеру успешно создана!")
+            return redirect('master_request')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+            print(form.errors)
+    else:
+        form = MasterRequestForm()
+    data = {
+        'master_request': form,
     }
     return render(request, 'adminpanel/master-request/create.html', data)
 

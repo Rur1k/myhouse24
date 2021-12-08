@@ -322,7 +322,14 @@ class StatusRequest(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField('Название статуса', max_length=64, null=True, blank=True)
 
-    def str(self):
+    def __str__(self):
+        return self.name
+
+class TypeMaster(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    name = models.CharField('Название', max_length=64, null=True, blank=True)
+
+    def __str__(self):
         return self.name
 
 class MasterRequest(models.Model):
@@ -331,7 +338,7 @@ class MasterRequest(models.Model):
     time = models.TimeField(null=True, blank=True)
     owner = models.ForeignKey(ApartmentOwner, on_delete=models.CASCADE, null=True, blank=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
-    type_master = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
+    type_master = models.ForeignKey(TypeMaster, on_delete=models.CASCADE, default=1, null=True, blank=True)
     status = models.ForeignKey(StatusRequest, on_delete=models.CASCADE, default=1, blank=True)
     master = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
