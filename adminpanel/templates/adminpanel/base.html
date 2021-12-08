@@ -122,67 +122,67 @@
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
-                        <li>
+                        <li {%block static%}{%endblock%} >
                             <a href="{% url 'admin' %}">
                                 <i class="fa fa-line-chart"></i>
                                 <span>Статистика</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block account_transaction%}{%endblock%}>
                             <a href="{% url 'account_transaction' %}">
                                 <i class="fa fa-dollar"></i>
                                 <span>Касса</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block invoice%}{%endblock%}>
                             <a href="{% url 'invoice' %}">
                                 <i class="fa fa-files-o"></i>
                                 <span>Квитанции на оплату</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block account%}{%endblock%}>
                             <a href="{% url 'account' %}">
                                 <i class="fa fa-credit-card"></i>
                                 <span>Лицевые счета</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block flat%}{%endblock%}>
                             <a href="{% url 'flat' %}">
                                 <i class="fa fa-key"></i>
                                 <span>Квартиры</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block owner%}{%endblock%}>
                             <a href="{% url 'apartment_owner' %}">
                                 <i class="fa fa-users"></i>
                                 <span>Владельцы квартир</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block house%}{%endblock%}>
                             <a href="{% url 'house' %}">
                                 <i class="fa fa-building"></i>
                                 <span>Дома</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block mymessage%}{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-envelope-o"></i>
                                 <span>Сообщения</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block master_request%}{%endblock%}>
                             <a href="{% url 'master_request' %}">
                                 <i class="fa fa-wrench"></i>
                                 <span>Заявки на вызов мастера</span>
                             </a>
                         </li>
-                        <li>
+                        <li {%block counter_data%}{%endblock%}>
                             <a href="{% url 'counter_data_counters' %}">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Показания счетчиков</span>
                             </a>
                         </li>
-                        <li class="treeview">
+                        <li {%block web%}class="treeview"{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-desktop"></i>
                                 <span>Управление сайтом</span>
@@ -191,13 +191,13 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{% url 'website_home' %}"><i class="fa fa-circle-o"></i> Главная страница</a></li>
-                                <li><a href="{% url 'website_about' %}"><i class="fa fa-circle-o"></i> О нас</a></li>
-                                <li><a href="{% url 'website_services' %}"><i class="fa fa-circle-o"></i> Услуги</a></li>
-                                <li><a href="{% url 'website_contact' %}"><i class="fa fa-circle-o"></i> Контакты</a></li>
+                                <li {%block web_main%}{%endblock%}><a href="{% url 'website_home' %}"><i class="fa fa-circle-o"></i> Главная страница</a></li>
+                                <li {%block web_about%}{%endblock%}><a href="{% url 'website_about' %}"><i class="fa fa-circle-o"></i> О нас</a></li>
+                                <li {%block web_service%}{%endblock%}><a href="{% url 'website_services' %}"><i class="fa fa-circle-o"></i> Услуги</a></li>
+                                <li {%block web_contact%}{%endblock%}><a href="{% url 'website_contact' %}"><i class="fa fa-circle-o"></i> Контакты</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
+                        <li {%block set%}class="treeview"{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-cogs"></i>
                                 <span>Настройки системы</span>
@@ -206,12 +206,12 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li class="active"><a href="{% url 'setting_service' %}"><i class="fa fa-briefcase"></i> Услуги</a></li>
-                                <li><a href="{% url 'setting_tariffs' %}"><i class="fa fa-money"></i> Тарифы</a></li>
-                                <li><a href=""><i class="fa fa-user"></i> Роли</a></li>
-                                <li><a href="{% url 'setting_user_admin' %}"><i class="fa fa-user-plus"></i> Пользователи</a></li>
-                                <li><a href="{% url 'setting_pay_company' %}"><i class="fa fa-credit-card"></i> Платежные реквизиты</a></li>
-                                <li><a href="{% url 'setting_transaction_purpose' %}"><i class="fa fa-list-ol"></i> Статьи платежей</a></li>
+                                <li {%block set_service%}{%endblock%}><a href="{% url 'setting_service' %}"><i class="fa fa-briefcase"></i> Услуги</a></li>
+                                <li {%block set_tariffs%}{%endblock%}><a href="{% url 'setting_tariffs' %}"><i class="fa fa-money"></i> Тарифы</a></li>
+                                <li {%block set_role%}{%endblock%}><a href=""><i class="fa fa-user"></i> Роли</a></li>
+                                <li {%block set_user_admin%}{%endblock%}><a href="{% url 'setting_user_admin' %}"><i class="fa fa-user-plus"></i> Пользователи</a></li>
+                                <li {%block set_pay%}{%endblock%}><a href="{% url 'setting_pay_company' %}"><i class="fa fa-credit-card"></i> Платежные реквизиты</a></li>
+                                <li {%block set_purpose%}{%endblock%}><a href="{% url 'setting_transaction_purpose' %}"><i class="fa fa-list-ol"></i> Статьи платежей</a></li>
                             </ul>
                         </li>
                     </ul>

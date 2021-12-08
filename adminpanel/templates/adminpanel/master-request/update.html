@@ -1,5 +1,6 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
+{%block master_request%}class="active"{%endblock%}
 {% block title %}Заявка №{{ master_request.instance.id }}{% endblock %}
 {% block page_name %}Заявка №{{ master_request.instance.id }}{% endblock %}
 {% block mini_page_name %}

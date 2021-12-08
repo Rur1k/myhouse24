@@ -1,5 +1,6 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
+{%block account%}class="active"{%endblock%}
 {% block title %}Лицевой счет №{{account.instance.number}}{% endblock %}
 {% block page_name %}Лицевой счет №{{account.instance.number}}{% endblock %}
 {% block mini_page_name %}

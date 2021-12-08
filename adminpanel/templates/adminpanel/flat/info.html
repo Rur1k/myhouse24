@@ -1,5 +1,6 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
+{%block flat%}class="active"{%endblock%}
 {% block title %}Квартира №{{flat.number_flat}}, {{flat.house}}{% endblock %}
 {% block page_name %}Квартира №{{flat.number_flat}}, {{flat.house}}{% endblock %}
 {% block mini_page_name %}
