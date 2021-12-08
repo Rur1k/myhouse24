@@ -974,10 +974,16 @@ class MasterRequestForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'owner': forms.Select(attrs={
-                'class': 'form-control',
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true',
+                'title': 'Выберите...',
+                'id': 'id-master-owner'
             }),
             'flat': forms.Select(attrs={
-                'class': 'form-control',
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true',
+                'title': 'Выберите...',
+                'id': 'id-master-flat'
             }),
             'type_master': forms.Select(attrs={
                 'class': 'form-control',
@@ -996,89 +1002,40 @@ class MasterRequestForm(forms.ModelForm):
             }),
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #
-    #     if self.instance.id:
-    #         if self.initial['number'] is None:
-    #             self.initial['number'] = generationNumber()
-    #         self.initial['date'] = self.instance.date.isoformat()
-    #         self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
-    #         if self.instance.date_first:
-    #             self.initial['date_first'] = self.instance.date_first.isoformat()
-    #         else:
-    #             self.initial['date_first'] = datetime.datetime.now().date().isoformat()
-    #         if self.instance.date_last:
-    #             self.initial['date_last'] = self.instance.date_last.isoformat()
-    #         else:
-    #             self.initial['date_last'] = datetime.datetime.now().date().isoformat()
-    #
-    #         if self.data.get('flat') != self.instance.flat:
-    #             if self.data.get('house'):
-    #                 self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
-    #     else:
-    #         self.initial['date'] = datetime.datetime.now().date().isoformat()
-    #         self.fields['number'].initial = generationNumber()  # Генерация номера квитанции
-    #         self.initial['date_first'] = datetime.datetime.now().date().isoformat()
-    #         self.initial['date_last'] = datetime.datetime.now().date().isoformat()
-    #
-    #         if 'flat' in self.initial:
-    #             self.fields['flat'].queryset = Flat.objects.filter(house=self.initial['flat'].house.id)
-    #         elif self.data.get('flat'):
-    #             self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
-    #         else:
-    #             if self.data.get('house'):
-    #                 self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
-    #             else:
-    #                 self.fields['flat'].queryset = Flat.objects.none()
-    #
-    # def clean(self):
-    #     cd = self.cleaned_data
-    #     if self.instance.id:
-    #         if 'number' in cd:
-    #             is_invoice = Invoice.objects.filter(number=cd['number']).first()
-    #             if is_invoice is not None and is_invoice.number != self.instance.number:
-    #                 raise forms.ValidationError('Квитанция с указанным номером уже существует, укажите другой.')
-    #             if cd['date'] is None:
-    #                 raise forms.ValidationError('"Дата" - не может быть пустым')
-    #             if cd['date_first'] is None:
-    #                 raise forms.ValidationError('"Дата начала" - не может быть пустым')
-    #             if cd['date_last'] is None:
-    #                 raise forms.ValidationError('"Дата конца" - не может быть пустым')
-    #             if 'flat' in cd:
-    #                 if cd['flat'] is None:
-    #                     raise forms.ValidationError('"Квартира" - не может быть пустым')
-    #                 if 'tariff' in cd:
-    #                     if cd['tariff'] is None:
-    #                         raise forms.ValidationError('"Тариф" - не может быть пустым')
-    #                 else:
-    #                     raise forms.ValidationError('"Тариф" - не может быть пустым')
-    #             else:
-    #                 raise forms.ValidationError('"Квартира" - не может быть пустым')
-    #         else:
-    #             raise forms.ValidationError('"Номер" - не может быть пустым')
-    #     else:
-    #         if 'number' in cd:
-    #             if Invoice.objects.filter(number=cd['number']).first() is not None:
-    #                 raise forms.ValidationError('Квитанция с указанным номером уже существует, укажите другой.')
-    #             if cd['date'] is None:
-    #                 raise forms.ValidationError('"Дата" - не может быть пустым')
-    #             if cd['date_first'] is None:
-    #                 raise forms.ValidationError('"Дата начала" - не может быть пустым')
-    #             if cd['date_last'] is None:
-    #                 raise forms.ValidationError('"Дата конца" - не может быть пустым')
-    #             if 'flat' in cd:
-    #                 if cd['flat'] is None:
-    #                     raise forms.ValidationError('"Квартира" - не может быть пустым')
-    #                 if 'tariff' in cd:
-    #                     if cd['tariff'] is None:
-    #                         raise forms.ValidationError('"Тариф" - не может быть пустым')
-    #                 else:
-    #                     raise forms.ValidationError('"Тариф" - не может быть пустым')
-    #             else:
-    #                 raise forms.ValidationError('"Квартира" - не может быть пустым')
-    #         else:
-    #             raise forms.ValidationError('"Номер" - не может быть пустым')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.id:
+            self.initial['date'] = self.instance.date.isoformat()
+
+            owner_id = self.data.get('owner')
+            if owner_id:
+                self.fields['flat'].queryset = Flat.objects.filter(owner=owner_id)
+        else:
+            self.initial['date'] = datetime.datetime.now().date().isoformat()
+            self.initial['time'] = datetime.datetime.now().strftime('%H:%M')
+
+            owner_id = self.data.get('owner')
+            if owner_id:
+                self.fields['flat'].queryset = Flat.objects.filter(owner=owner_id)
+
+
+    def clean(self):
+        cd = self.cleaned_data
+        if cd['date'] is None:
+            raise forms.ValidationError('"Дата" - не может быть пустым')
+        if cd['time'] is None:
+            raise forms.ValidationError('"Время" - не может быть пустым')
+        if (cd['description'] is None) or (cd['description'] == ''):
+            raise forms.ValidationError('"Описание" - не может быть пустым')
+        if cd['status'] is None:
+            raise forms.ValidationError('"Статус" - не может быть пустым')
+        if 'flat' in cd:
+            if cd['flat'] is None:
+                raise forms.ValidationError('"Квартира" - не может быть пустым')
+        else:
+            raise forms.ValidationError('"Квартира" - не может быть пустым')
+
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

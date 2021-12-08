@@ -309,3 +309,20 @@ $('#add_service_on_tariff').click(function() {
         alert('Тарифный план не выбран');
     }
 });
+
+// Квартиры по пользователю
+$("#id-master-owner").change(function () {
+      var url = $("#RequestCreateForm").attr("data-flat-master-url");
+      var ownerId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'owner': ownerId
+        },
+        success: function (data) {
+          $("#id-master-flat").html(data);
+          $("#id-master-flat").selectpicker("refresh");
+        }
+      });
+    });

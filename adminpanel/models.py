@@ -236,7 +236,7 @@ class Flat(models.Model):
     tariff = models.ForeignKey(SettingTariff, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.number_flat
+        return 'кв.'+str(self.number_flat)+ ', '+ str(self.house)
 
 # Модели для ЛС
 class StatusAccount(models.Model):

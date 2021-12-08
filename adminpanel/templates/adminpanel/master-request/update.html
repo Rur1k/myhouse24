@@ -1,10 +1,11 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
-{% block title %}Новая заявка{% endblock %}
-{% block page_name %}Новая заявка{% endblock %}
+{% block title %}Заявка №{{ master_request.instance.id }}{% endblock %}
+{% block page_name %}Заявка №{{ master_request.instance.id }}{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'master_request' %}">Вызов мастера</a></li>
-    <li class="active">Новая заявка</li>
+    <li><a href="{% url 'master_request_info' master_request.instance.id %}">Заявка №{{ master_request.instance.id }}</a></li>
+    <li class="active">Редактирование</li>
 {% endblock %}
 {% block content %}
 {% if messages %}
@@ -43,8 +44,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="col-md-12 margin-bottom-20">
-                        <label>Владелец квартиры</label>
-                        {{ master_request.owner }}
+                        <div class="form-group">
+                            <label>Владелец квартиры</label>
+                            <a href="{% url 'apartment_owner_info' master_request.instance.owner.id %}">
+                                <i class="fa fa-external-link"></i>
+                            </a>
+                            {{ master_request.owner }}
+                        </div>
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>Описание</label>
@@ -52,6 +58,18 @@
                     </div>
                 </div>
                 <div class="col-md-6 form-group">
+                    <div class="col-md-12 margin-bottom-20">
+                        <div class="col-md-12 margin-bottom-20">
+                            <label>Дом:</label>
+                            <a href="{% url 'info_house' master_request.instance.flat.house.id %}">{{ master_request.instance.flat.house }}</a>
+                        </div>
+                        <div class="col-md-12 margin-bottom-20">
+                            <label>Секция:</label> {{ master_request.instance.flat.section }}
+                        </div>
+                        <div class="col-md-12">
+                            <label>Этаж:</label> {{ master_request.instance.flat.floor }}
+                        </div>
+                    </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>Квартира</label>
                         {{ master_request.flat }}

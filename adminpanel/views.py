@@ -1188,6 +1188,38 @@ def master_request_create(request):
     }
     return render(request, 'adminpanel/master-request/create.html', data)
 
+def master_request_update(request, id):
+    data = MasterRequest.objects.get(id=id)
+    if request.method == "POST":
+        form = MasterRequestForm(request.POST, instance=data)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Заявка успешно отредактирована!")
+            return redirect('master_request')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+            print(form.errors)
+    else:
+        form = MasterRequestForm(instance=data)
+    data = {
+        'master_request': form,
+    }
+    return render(request, 'adminpanel/master-request/update.html', data)
+
+def master_request_delete(request, id):
+    obj = MasterRequest.objects.get(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Заявка успешно удалена")
+    return redirect('master_request')
+
+def select_flat_master(request):
+    owner_id = request.GET.get('owner')
+    flat = Flat.objects.filter(owner=owner_id)
+    return render(request, 'adminpanel/master-request/ajax/select_flat_master.html', { 'flat':flat })
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

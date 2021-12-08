@@ -39,7 +39,7 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header with-border text-right">
-                <a class="btn btn-primary btn-sm" href="">
+                <a class="btn btn-primary btn-sm" href="{% url 'master_request_update' master_request.id %}">
                     <span class="hidden-xs">Редактировать заявку</span>
                     <i class="fa fa-pencil visible-xs"></i>
                 </a>
@@ -84,7 +84,7 @@
                             <th class="col-md-6">Квартира</th>
                             <td>
                                 {% if master_request.flat %}
-                                <a href="{% url 'flat_info' master_request.flat.id %}">{{ master_request.flat }}, {{ master_request.flat.house }}</a>
+                                <a href="{% url 'flat_info' master_request.flat.id %}">{{ master_request.flat }}</a>
                                 {% else %}
                                 не указано
                                 {% endif %}
