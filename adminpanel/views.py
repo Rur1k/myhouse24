@@ -1228,6 +1228,19 @@ def select_flat_master(request):
     flat = Flat.objects.filter(owner=owner_id)
     return render(request, 'adminpanel/master-request/ajax/select_flat_master.html', { 'flat':flat })
 
+# Сообщения
+def user_message(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/message/index.html', data)
+
+def user_message_create(request):
+    data = {
+
+    }
+    return render(request, 'adminpanel/message/create.html', data)
+
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     slider = MainPageSlider.objects.all().first()

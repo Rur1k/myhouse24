@@ -98,6 +98,9 @@ urlpatterns = [
     path('master-request/update/<int:id>', views.master_request_update, name='master_request_update'),
     path('master-request/delete/<int:id>', views.master_request_delete, name='master_request_delete'),
     path('master-request/ajax/select_flat_master', views.select_flat_master, name='master_select_flat'),
+    # Сообщения
+    path('message', views.user_message, name='user_message'),
+    path('message/create', views.user_message_create, name='user_message_create'),
 
 
 

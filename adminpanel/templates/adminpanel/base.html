@@ -122,7 +122,7 @@
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
-                        <li {%block static%}{%endblock%} >
+                        <li {%block statics%}{%endblock%} >
                             <a href="{% url 'admin' %}">
                                 <i class="fa fa-line-chart"></i>
                                 <span>Статистика</span>
@@ -165,7 +165,7 @@
                             </a>
                         </li>
                         <li {%block mymessage%}{%endblock%}>
-                            <a href="#">
+                            <a href="{% url 'user_message' %}">
                                 <i class="fa fa-envelope-o"></i>
                                 <span>Сообщения</span>
                             </a>

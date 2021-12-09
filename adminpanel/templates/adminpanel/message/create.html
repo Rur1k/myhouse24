@@ -1,0 +1,56 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{%block mymessage%}class="active"{%endblock%}
+{% block title %}Сообщения{% endblock %}
+{% block page_name %}Сообщения{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'user_message' %}">Сообщения</a></li>
+    <li class="active">Новое сообщение</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="box">
+    <div class="box-body">
+        <form id="MessageCreateForm" novalidate method="post"
+              action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Тема</label>
+
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Сообщение</label>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Кому отпарвить:</h3>
+                    <label>Владельцам с задолженостями</label>
+                    <label>ЖК</label>
+                    <label>Секция</label>
+                    <label>Этаж</label>
+                    <label>Квартира</label>
+                </div>
+            </div>
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <button type="submit" name="save" class="btn btn-success">
+                        <i class="fa fa-envelope-o"> Отправить</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
