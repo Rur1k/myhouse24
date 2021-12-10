@@ -20,7 +20,29 @@ $("document").ready(function() {
     FilterBase('#CounterListTable', [0,6], [1,4,5,7], [3,8,9], 2, undefined) // Показания счетчиков - инфо по квартире
     FilterBase('#UserAdminTable', [1,3,4], [2,5], [0,6], undefined, undefined) // Пользователь - админ
     FilterBase('#RequestTable', [0,3,4,6], [2,5,7,8], [9], 1, undefined) // Заявки мастера
+
+    var TableMessage = $('#MessageTable').DataTable({
+        dom: 't',
+        ordering: false,
+        paging: false,
+        orderCellsTop: false,
+        fixedHeader: true,
+    });
+
+    $('#SearchMessage').keyup(function(){
+        TableMessage.search($(this).val()).draw();
+    });
+
 });
+
+
+function CheckedMessage(){
+    if ($('#onCheck').is(':checked')){
+        $('#MessageTable .check_message').prop('checked', 'true');
+    } else {
+        $('#MessageTable .check_message').prop('checked', 'false');
+    }
+}
 
 //Функция фильтрации базовая на основе таблицы.
 function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {

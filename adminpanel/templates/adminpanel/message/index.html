@@ -25,7 +25,16 @@
     </div>
 </div>
 <div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-left">
+        <div class="mailbox-controls">
+            <a class="btn btn-default btn-sm" onclick="CheckedMessage()" data-toggle="tooltip">
+                <input type="checkbox" style="transform: scale(1.3)">
+            </a>
+            <button type="button" class="btn btn-default btn-xm"><i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
     <div class="box-header with-border pull-right">
+        <input id="SearchMessage" type="search" class="form-control input-sm" placeholder="Поиск">
     </div>
     <div class="grid-view">
         <table id="MessageTable" class="table table-striped table-bordered table-hover table_sort">
@@ -39,15 +48,15 @@
             </thead>
             <tbody>
             {% for obj in message_list %}
-            <tr onclick="location.href=''" class="table-data">
-                <td><input type="checkbox"></td>
+            <tr>
+                <td><input type="checkbox" class="check_message"></td>
                 {% if obj.house %}
-                    <td>{{ obj.house }}, {{ obj.section }}, {{ obj.floor }}, кв.{{ obj.flat.number_flat }}</td>
+                    <td onclick="location.href=''">{{ obj.house }}, {{ obj.section }}, {{ obj.floor }}, кв.{{ obj.flat.number_flat }}</td>
                 {% else %}
-                    <td>Всем</td>
+                    <td onclick="location.href=''">Всем</td>
                 {% endif %}
-                <td>{{ obj.title }}</td>
-                <td>{{ obj.time }}</td>
+                <td onclick="location.href=''">{{ obj.title }}</td>
+                <td onclick="location.href=''">{{ obj.time }}</td>
             </tr>
             {% endfor %}
             </tbody>
