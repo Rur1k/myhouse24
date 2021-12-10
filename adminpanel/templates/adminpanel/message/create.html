@@ -20,27 +20,47 @@
 {% endif %}
 <div class="box">
     <div class="box-body">
-        <form id="MessageCreateForm" novalidate method="post"
-              action="" enctype="multipart/form-data">
+        <form id="MessageCreateForm" novalidate method="post" action="" enctype="multipart/form-data"
+              data-section-url="{% url 'select_section_message_house'%}"
+              data-floor-url="{% url 'select_floor_message_house'%}"
+              data-flat-url="{% url 'select_flat_message_house'%}"
+              data-flat-url-section="{% url 'select_flat_message_section'%}"
+              data-flat-url-floor="{% url 'select_flat_message_floor'%}">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-12 margin-bottom-20">
                         <label>Тема</label>
-
+                        {{ new_message.title }}
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>Сообщение</label>
-
+                        {{ new_message.media }}
+                        {{ new_message.text }}
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <h3>Кому отпарвить:</h3>
-                    <label>Владельцам с задолженостями</label>
-                    <label>ЖК</label>
-                    <label>Секция</label>
-                    <label>Этаж</label>
-                    <label>Квартира</label>
+                    <h4>Кому отправить:</h4>
+                    <div class="col-md-12 margin-bottom-20">
+                        {{ new_message.is_debt }}
+                        <label>Владельцам с задолженостями</label>
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>ЖК</label>
+                        {{ new_message.house }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Секция</label>
+                        {{ new_message.section }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Этаж</label>
+                        {{ new_message.floor }}
+                    </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Квартира</label>
+                        {{ new_message.flat }}
+                    </div>
                 </div>
             </div>
             <div class="col-md-12 text-right">

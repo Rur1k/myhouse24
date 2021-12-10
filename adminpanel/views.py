@@ -1231,15 +1231,53 @@ def select_flat_master(request):
 # Сообщения
 def user_message(request):
     data = {
-
+        'message_list': Message.objects.all()
     }
     return render(request, 'adminpanel/message/index.html', data)
 
 def user_message_create(request):
-    data = {
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_message')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+            print(form.errors)
+    else:
+        form = MessageForm()
 
+    data = {
+        'new_message': form,
     }
     return render(request, 'adminpanel/message/create.html', data)
+
+def select_section_message_house(request):
+    house_id = request.GET.get('house')
+    section = Section.objects.filter(house=house_id)
+    return render(request, 'adminpanel/message/ajax/select_section_message.html', { 'section':section })
+
+def select_floor_message_house(request):
+    house_id = request.GET.get('house')
+    floors = Floor.objects.filter(house=house_id)
+    return render(request, 'adminpanel/message/ajax/select_floor_message.html', { 'floors':floors })
+
+def select_flat_message_house(request):
+    house_id = request.GET.get('house')
+    flats = Flat.objects.filter(house=house_id)
+    return render(request, 'adminpanel/message/ajax/select_flat_message.html', { 'flats':flats })
+
+def select_flat_message_section(request):
+    section_id = request.GET.get('section')
+    flats = Flat.objects.filter(section=section_id)
+    return render(request, 'adminpanel/message/ajax/select_flat_message.html', { 'flats':flats })
+
+def select_flat_message_floor(request):
+    floor_id = request.GET.get('floor')
+    flats = Flat.objects.filter(floor=floor_id)
+    return render(request, 'adminpanel/message/ajax/select_flat_message.html', { 'flats':flats })
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):

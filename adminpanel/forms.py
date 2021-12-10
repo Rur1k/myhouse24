@@ -1036,6 +1036,71 @@ class MasterRequestForm(forms.ModelForm):
         else:
             raise forms.ValidationError('"Квартира" - не может быть пустым')
 
+# Форма отправки сообщений
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = [
+            'title',
+            'sender',
+            'text',
+            'is_debt',
+            'house',
+            'section',
+            'floor',
+            'flat'
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'placeholder': 'Тема сообщения',
+                'class': 'form-control',
+            }),
+            'sender': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'text': forms.Textarea(attrs={
+                'class': 'form-control'
+            }),
+            'is_debt': forms.CheckboxInput(attrs={
+                'class': ''
+            }),
+            'house': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-message-house'
+            }),
+            'section': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-message-section'
+            }),
+            'floor': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-message-floor'
+            }),
+            'flat': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id-message-flat'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        house_id = self.data.get('house')
+        if house_id:
+            self.fields['section'].queryset = Section.objects.filter(house=house_id)
+            self.fields['floor'].queryset = Floor.objects.filter(house=house_id)
+            self.fields['flat'].queryset = Flat.objects.filter(house=house_id)
+        else:
+            self.fields['section'].queryset = Section.objects.none()
+            self.fields['floor'].queryset = Floor.objects.none()
+            self.fields['flat'].queryset = Flat.objects.none()
+
+    def clean(self):
+        cd = self.cleaned_data
+        if cd['title'] is None:
+            raise forms.ValidationError('"Тема" - не может быть пустым')
+        if (cd['text'] is None) or (cd['text'] == ''):
+            raise forms.ValidationError('"Текст сообщения" - не может быть пустым')
 
 # Формы для настройки сайта
 class MainPageSliderForm(forms.ModelForm):

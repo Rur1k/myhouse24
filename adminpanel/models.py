@@ -343,3 +343,18 @@ class MasterRequest(models.Model):
     master = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     comment = RichTextField(null=True, blank=True)
+
+# Модели для сообщений
+class Message(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    title = models.CharField(max_length=128, null=True, blank=True)
+    sender = models.ForeignKey(UserAdmin, related_name="sender", on_delete=models.CASCADE, null=True, blank=True)
+    text = RichTextField(null=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True)
+    is_debt = models.BooleanField(null=True, blank=True, default=False)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, null=True, blank=True)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
+
+

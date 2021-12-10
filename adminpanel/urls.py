@@ -101,8 +101,11 @@ urlpatterns = [
     # Сообщения
     path('message', views.user_message, name='user_message'),
     path('message/create', views.user_message_create, name='user_message_create'),
-
-
+    path('message/create/ajax/select_section', views.select_section_message_house, name='select_section_message_house'),
+    path('message/create/ajax/select_floot', views.select_floor_message_house, name='select_floor_message_house'),
+    path('message/create/ajax/select_flat', views.select_flat_message_house, name='select_flat_message_house'),
+    path('message/create/ajax/select_flat_section', views.select_flat_message_section, name='select_flat_message_section'),
+    path('message/create/ajax/select_flat_floor', views.select_flat_message_floor, name='select_flat_message_floor'),
 
     # Авторизация
     path('login', views.login_admin, name='login_admin'),

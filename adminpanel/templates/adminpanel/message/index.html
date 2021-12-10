@@ -31,21 +31,25 @@
         <table id="MessageTable" class="table table-striped table-bordered table-hover table_sort">
             <thead>
             <tr>
-                <th class="col" style="min-width:30px"></th>
+                <th class="col" style="min-width:10px"></th>
                 <th class="col" style="min-width:100px">Получатели</th>
-                <th class="col" style="min-width: 100px">Текст</th>
+                <th class="col" style="min-width: 100px">Тема</th>
                 <th class="col" style="min-width:100px">Дата</th>
             </tr>
             </thead>
             <tbody>
-
+            {% for obj in message_list %}
             <tr onclick="location.href=''" class="table-data">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td><input type="checkbox"></td>
+                {% if obj.house %}
+                    <td>{{ obj.house }}, {{ obj.section }}, {{ obj.floor }}, кв.{{ obj.flat.number_flat }}</td>
+                {% else %}
+                    <td>Всем</td>
+                {% endif %}
+                <td>{{ obj.title }}</td>
+                <td>{{ obj.time }}</td>
             </tr>
-
+            {% endfor %}
             </tbody>
         </table>
     </div>

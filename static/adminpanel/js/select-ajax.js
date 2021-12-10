@@ -326,3 +326,70 @@ $("#id-master-owner").change(function () {
         }
       });
     });
+
+// Отбор пользователей для отправки сообщений
+// Отбор по дому всего
+$("#id-message-house").change(function () {
+      var url_section = $("#MessageCreateForm").attr("data-section-url");
+      var url_floor = $("#MessageCreateForm").attr("data-floor-url");
+      var url_flat = $("#MessageCreateForm").attr("data-flat-url");
+      var houseId = $(this).val();
+
+      $.ajax({
+        url: url_section,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-message-section").html(data);
+        }
+      });
+      $.ajax({
+        url: url_floor,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-message-floor").html(data);
+        }
+      });
+      $.ajax({
+        url: url_flat,
+        data: {
+          'house': houseId
+        },
+        success: function (data) {
+          $("#id-message-flat").html(data);
+        }
+      });
+    });
+
+$("#id-message-section").change(function () {
+      var url_flat = $("#MessageCreateForm").attr("data-flat-url-section");
+      var sectionId = $(this).val();
+
+      $.ajax({
+        url: url_flat,
+        data: {
+          'section': sectionId
+        },
+        success: function (data) {
+          $("#id-message-flat").html(data);
+        }
+      });
+    });
+
+$("#id-message-floor").change(function () {
+      var url_flat = $("#MessageCreateForm").attr("data-flat-url-floor");
+      var floorId = $(this).val();
+
+      $.ajax({
+        url: url_flat,
+        data: {
+          'floor': floorId
+        },
+        success: function (data) {
+          $("#id-message-flat").html(data);
+        }
+      });
+    });
