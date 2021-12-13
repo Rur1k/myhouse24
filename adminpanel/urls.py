@@ -7,6 +7,7 @@ urlpatterns = [
     path('house', views.house, name='house'),
     path('house/create', views.create_house, name='create_house'),
     path('house/<int:id>', views.info_house, name='info_house'),
+    path('house/select_role', views.select_personal_role, name='select_personal_role'),
     path('house/update/<int:id>', views.update_house, name='update_house'),
     path('house/delete/<int:id>', views.delete_house, name='delete_house'),
     # Управление сайтом

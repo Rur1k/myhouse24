@@ -9,10 +9,12 @@
 {% endblock %}
 {% block content %}
 <div class="box">
-    <form method="post" action="" enctype="multipart/form-data">
+    <form id="HouseCreateForm" method="post" action="" enctype="multipart/form-data"
+          url-personal-role="{% url 'select_personal_role'%}">
         {% csrf_token %}
         {{ SectionFormSet.management_form }}
         {{ FloorFormSet.management_form }}
+        {{ PersonalFormSet.management_form }}
         <div class="box-body">
             <div class="col-md-4 row">
                 <div class="col-md-12 margin-bottom-20">
@@ -140,22 +142,54 @@
                             <input id="add_floor" class="btn btn-success pull-right" type="button" value="Добавить">
                         </div>
                         <div class="tab-panel clearfix" id="tab-houseuseradmin">
-                            <div>Список персонала</div>
                             <div id="form_set_personal" class="row">
+                                {% for formset in PersonalFormSet %}
+                                <div id='id_form_personal_' class="col-md-12 margin-bottom-20 form-personal">
+                                    <div class="col-xs-12 col-sm-7">
+                                        <label>ФИО</label>
+                                        {{ formset.person }}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5">
+                                        <div class="form-group">
+                                            <label>Роль</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger delete-form">
+                                                        <i class="fa fa-trash">
+                                                            <div class="hidden">
+                                                            {{ formset.DELETE }}
+                                                        </div>
+                                                        </i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
                                 <div id="empty_form_personal" style="display:none">
                                     <div id='id_form_personal_' class="col-md-12 margin-bottom-20 form-personal">
-                                        <label>Название</label>
-                                        <div class="input-group">
-                                            {{ FloorFormSet.empty_form.name }}
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-danger delete-form">
-                                                    <i class="fa fa-trash">
-                                                        <div class="hidden">
-                                                            {{ FloorFormSet.empty_form.DELETE }}
+                                        <div class="col-xs-12 col-sm-7">
+                                            <label>ФИО</label>
+                                            {{ PersonalFormSet.empty_form.person }}
+                                        </div>
+                                        <div class="col-xs-12 col-sm-5">
+                                            <div class="form-group">
+                                                <label>Роль</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger delete-form">
+                                                        <i class="fa fa-trash">
+                                                            <div class="hidden">
+                                                            {{ PersonalFormSet.empty_form.DELETE }}
                                                         </div>
-                                                    </i>
-                                                </button>
-                                            </span>
+                                                        </i>
+                                                    </button>
+                                                </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

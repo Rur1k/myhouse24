@@ -110,6 +110,16 @@ class FloorForm(forms.ModelForm):
             }),
         }
 
+class PersonalForm(forms.ModelForm):
+    class Meta:
+        model = Personal
+        fields = ['id','person']
+        widgets = {
+            'person': forms.Select(attrs={
+                'class': 'form-control select_personal_role',
+            }),
+        }
+
 # Формы для настройки системы
 class ServiceUnitForm(forms.ModelForm):
     class Meta:

@@ -314,6 +314,16 @@ $('#add_floor').click(function() {
         $('#form_set_floor').find('div#id_form_floor_').attr('id', 'id_form_floor_'+ parseInt(form_idx));
     });
 
+// Добавление персонала дома
+$('#add_personal').click(function() {
+        var form_idx = $('#id_personal-TOTAL_FORMS').val();
+        $('#form_set_personal').append($('#empty_form_personal').html().replace(/prefix/g, form_idx));
+        $('#id_personal-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        $('#form_set_personal').find('#id_personal-__'+parseInt(form_idx)+'__-person').attr('name', 'personal-'+parseInt(form_idx)+'-person');
+        $('#form_set_personal').find('#id_personal-__'+parseInt(form_idx)+'__-DELETE').attr('name', 'personal-'+parseInt(form_idx)+'-DELETE');
+        $('#form_set_personal').find('div#id_form_personal_').attr('id', 'id_form_personal_'+ parseInt(form_idx));
+    });
+
 // Добавление новых документов
 $('#add_document').click(function() {
         var form_idx = $('#id_document-TOTAL_FORMS').val();

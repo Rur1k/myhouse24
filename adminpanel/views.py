@@ -63,12 +63,14 @@ def create_house(request):
     form = HouseForm()
     SectionFormSet = modelformset_factory(Section, form=SectionForm, fields=['name'], extra=0, can_delete=True)
     FloorFormSet = modelformset_factory(Floor, form=FloorForm, fields=['name'], extra=0, can_delete=True)
+    PersonalFormSet = modelformset_factory(Personal, form=PersonalForm, fields=['person'], extra=0, can_delete=True)
 
     if request.method == 'POST':
         print(request.POST)
         form = HouseForm(request.POST, request.FILES)
         form_section = SectionFormSet(request.POST, prefix='section')
         form_floor = FloorFormSet(request.POST, prefix='floor')
+        form_personal = PersonalFormSet(request.POST, prefix='personal')
         if form.is_valid():
             form.save() # Сохранение дома
             # Сохранение секций дома
@@ -99,6 +101,21 @@ def create_house(request):
                         obj.save()
             else:
                 print(form_floor.errors)
+            # Сохранение персонала
+            if form_personal.is_valid():
+                for subform in form_personal:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = form.save(commit=False)
+                            obj.save()
+                    else:
+                        obj = subform.save(commit=False)
+                        obj.house = form.save(commit=False)
+                        obj.save()
+            else:
+                print(form_personal.errors)
+            messages.success(request, "Дом успешно создан")
             return redirect('house')
         else:
             print(form.errors)
@@ -107,6 +124,7 @@ def create_house(request):
         'form': form,
         'SectionFormSet': SectionFormSet(prefix='section', queryset=Section.objects.none()),
         'FloorFormSet': FloorFormSet(prefix='floor', queryset=Floor.objects.none()),
+        'PersonalFormSet': PersonalFormSet(prefix='personal', queryset=UserAdmin.objects.none()),
     }
     return render(request, "adminpanel/house/create.html", data)
 
@@ -188,6 +206,15 @@ def info_house(request, id):
         'floors': count_floor,
     }
     return render(request, "adminpanel/house/info.html", data)
+
+def select_personal_role(request):
+    id = request.GET.get('user')
+    userAdmin = UserAdmin.objects.filter(id=id).first()
+    if userAdmin.role:
+        role = userAdmin.role
+        return HttpResponse(role)
+    else:
+        return None
 
 # Настройки системы
 def setting_service(request):

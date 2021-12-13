@@ -393,3 +393,20 @@ $("#id-message-floor").change(function () {
         }
       });
     });
+
+// Вытягивание Роли по пользователю
+$(".select_personal_role").change(function () {
+      console.log("Работает")
+      var url = $("#HouseCreateForm").attr("url-personal-role");
+      var userId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'user': userId
+        },
+        success: function (data) {
+          console.log(data);
+        }
+      });
+    });
