@@ -35,14 +35,70 @@ $("document").ready(function() {
 
 });
 
+$(document).on('change', 'input[type=checkbox]', function () {
+  var $this = $(this), $chks = $(document.getElementsByName(this.name)), $all = $chks.filter(".chk-all");
 
-function CheckedMessage(){
-    if ($('#onCheck').is(':checked')){
-        $('#MessageTable .check_message').prop('checked', 'true');
-    } else {
-        $('#MessageTable .check_message').prop('checked', 'false');
+  if ($this.hasClass('chk-all')) {
+    $chks.prop('checked', $this.prop('checked'));
+  } else switch ($chks.filter(":checked").length) {
+    case +$all.prop('checked'):
+      $all.prop('checked', false).prop('indeterminate', false);
+      break;
+    case $chks.length - !!$this.prop('checked'):
+      $all.prop('checked', true).prop('indeterminate', false);
+      break;
+    default:
+      $all.prop('indeterminate', true);
+  }
+});
+
+//Получение токена для AJAX запросов
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
+    return cookieValue;
 }
+
+//Удаление сообщений
+$('#DeleteMessage').click(function() {
+    if(confirm("Данные будут удалены. Продолжить?") == true){
+        console.log('Удалено')
+
+        const csrftoken = getCookie('csrftoken');
+        var url = $("#DeleteMessage").attr("url-delete-message");
+        var checkedValues = $('.check_message:checked').map(function() {
+            return this.value;
+        }).get();
+
+        $.ajax({
+            url: url,
+            type: "post",
+            headers: {'X-CSRFToken': csrftoken},
+            data: {
+                'check_list': checkedValues,
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                console.log('Ошибка')
+            }
+        });
+
+    } else {
+        console.log('Отмена удаления')
+    }
+});
 
 //Функция фильтрации базовая на основе таблицы.
 function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {

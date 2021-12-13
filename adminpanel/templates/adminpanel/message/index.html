@@ -6,6 +6,7 @@
 {% block mini_page_name %}
     <li class="active">Сообщения</li>
 {% endblock %}
+{% csrf_token %}
 {% block content %}
 {% if messages %}
     {% for message in messages %}
@@ -27,10 +28,12 @@
 <div class="box" style="overflow-x: auto">
     <div class="box-header with-border pull-left">
         <div class="mailbox-controls">
-            <a class="btn btn-default btn-sm" onclick="CheckedMessage()" data-toggle="tooltip">
-                <input type="checkbox" style="transform: scale(1.3)">
-            </a>
-            <button type="button" class="btn btn-default btn-xm"><i class="fa fa-trash-o"></i></button>
+            <button type="button" class="btn btn-default btn-xm">
+                <input type="checkbox" name="check_message" class="chk-all" style="transform: scale(1.3)">
+            </button>
+            <button id="DeleteMessage" type="button" class="btn btn-default btn-xm" url-delete-message="{% url 'user_message_delete' %}">
+                <i class="fa fa-trash-o"></i>
+            </button>
         </div>
     </div>
     <div class="box-header with-border pull-right">
@@ -49,7 +52,7 @@
             <tbody>
             {% for obj in message_list %}
             <tr>
-                <td><input type="checkbox" class="check_message"></td>
+                <td><input type="checkbox" name="check_message" class="check_message" value="{{ obj.id }}"></td>
                 {% if obj.house %}
                     <td onclick="location.href=''">{{ obj.house }}, {{ obj.section }}, {{ obj.floor }}, кв.{{ obj.flat.number_flat }}</td>
                 {% else %}

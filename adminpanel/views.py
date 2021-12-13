@@ -988,14 +988,12 @@ def counter_data_list(request, id, counter_id=None):
     }
     return render(request, 'adminpanel/counter-data/counter-list.html', data)
 
-
 def counter_data_info(request, id):
     counter = CounterData.objects.get(id=id)
     data = {
         'counter': counter,
     }
     return render(request, 'adminpanel/counter-data/info.html', data)
-
 
 def counter_data_delete(request, id, flat_id):
     obj = CounterData.objects.filter(id=id)
@@ -1254,6 +1252,16 @@ def user_message_create(request):
     }
     return render(request, 'adminpanel/message/create.html', data)
 
+def user_message_delete(request):
+    print('Зашли в удаление')
+    print(request.POST)
+    list = request.POST.getlist('check_list[]')
+    for id in list:
+        obj = Message.objects.get(id=int(id))
+        if obj:
+            obj.delete()
+    return redirect('user_message')
+
 def select_section_message_house(request):
     house_id = request.GET.get('house')
     section = Section.objects.filter(house=house_id)
@@ -1278,6 +1286,7 @@ def select_flat_message_floor(request):
     floor_id = request.GET.get('floor')
     flats = Flat.objects.filter(floor=floor_id)
     return render(request, 'adminpanel/message/ajax/select_flat_message.html', { 'flats':flats })
+
 
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
