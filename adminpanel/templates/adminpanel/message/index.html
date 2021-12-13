@@ -54,12 +54,17 @@
             <tr>
                 <td><input type="checkbox" name="check_message" class="check_message" value="{{ obj.id }}"></td>
                 {% if obj.house %}
-                    <td onclick="location.href=''">{{ obj.house }}, {{ obj.section }}, {{ obj.floor }}, кв.{{ obj.flat.number_flat }}</td>
+                    <td onclick="location.href='{% url 'user_message_info' obj.id %}'">
+                        {{ obj.house }}
+                        {% if obj.section %}, {{ obj.section }} {% endif %}
+                        {% if obj.floor %}, {{ obj.floor }} {% endif %}
+                        {% if obj.flat %}, кв.{{ obj.flat.number_flat }} {% endif %}
+                    </td>
                 {% else %}
-                    <td onclick="location.href=''">Всем</td>
+                    <td onclick="location.href='{% url 'user_message_info' obj.id %}'">Всем</td>
                 {% endif %}
-                <td onclick="location.href=''">{{ obj.title }}</td>
-                <td onclick="location.href=''">{{ obj.time }}</td>
+                <td onclick="location.href='{% url 'user_message_info' obj.id %}'">{{ obj.title }}</td>
+                <td onclick="location.href='{% url 'user_message_info' obj.id %}'">{{ obj.time }}</td>
             </tr>
             {% endfor %}
             </tbody>

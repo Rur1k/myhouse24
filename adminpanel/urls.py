@@ -100,8 +100,10 @@ urlpatterns = [
     path('master-request/ajax/select_flat_master', views.select_flat_master, name='master_select_flat'),
     # Сообщения
     path('message', views.user_message, name='user_message'),
+    path('message/<int:id>', views.user_message_info, name='user_message_info'),
     path('message/create', views.user_message_create, name='user_message_create'),
     path('message/delete', views.user_message_delete, name='user_message_delete'),
+    path('message/delete/one_msg=<int:id>', views.user_message_delete, name='user_message_one_delete'),
     path('message/create/ajax/select_section', views.select_section_message_house, name='select_section_message_house'),
     path('message/create/ajax/select_floot', views.select_floor_message_house, name='select_floor_message_house'),
     path('message/create/ajax/select_flat', views.select_flat_message_house, name='select_flat_message_house'),

@@ -357,4 +357,9 @@ class Message(models.Model):
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, null=True, blank=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, null=True, blank=True)
 
+class Personal(models.Model):
+    id = models.AutoField(unique=True, primary_key=True)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, null=True, blank=True)
+    person = models.ForeignKey(UserAdmin, on_delete=models.CASCADE, null=True, blank=True)
+
 

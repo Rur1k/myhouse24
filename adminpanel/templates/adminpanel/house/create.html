@@ -71,18 +71,18 @@
             <div class="col-md-9">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="tablinks">
-                            <a href="#tab-sections" onclick="openContent(event, 'tab-sections')" data-toggle="tab">Секции</a>
+                        <li class="tablinks active">
+                            <a href="#tab-sections" data-toggle="tab">Секции</a>
                         </li>
                         <li class="tablinks">
-                            <a href="#tab-floors" onclick="openContent(event, 'tab-floors')" data-toggle="tab">Этажи</a>
+                            <a href="#tab-floors" data-toggle="tab">Этажи</a>
                         </li>
                         <li class="tablinks">
-                            <a href="#tab-houseuseradmin" onclick="openContent(event, 'tab-houseuseradmin')" data-toggle="tab">Пользователи</a>
+                            <a href="#tab-houseuseradmin" data-toggle="tab">Пользователи</a>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-panel clearfix" id="tab-sections">
+                        <div class="tab-panel clearfix active" id="tab-sections">
                             <div id="form_set_section" class="row">
                                 {% for formset in SectionFormSet %}
                                 <div class="col-md-12 margin-bottom-20">
@@ -141,7 +141,26 @@
                         </div>
                         <div class="tab-panel clearfix" id="tab-houseuseradmin">
                             <div>Список персонала</div>
-                            <button class="btn btn-success pull-right" type="button">Добавить</button>
+                            <div id="form_set_personal" class="row">
+                                <div id="empty_form_personal" style="display:none">
+                                    <div id='id_form_personal_' class="col-md-12 margin-bottom-20 form-personal">
+                                        <label>Название</label>
+                                        <div class="input-group">
+                                            {{ FloorFormSet.empty_form.name }}
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger delete-form">
+                                                    <i class="fa fa-trash">
+                                                        <div class="hidden">
+                                                            {{ FloorFormSet.empty_form.DELETE }}
+                                                        </div>
+                                                    </i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="add_personal" class="btn btn-success pull-right" type="button" value="Добавить">
                         </div>
                     </div>
                 </div>

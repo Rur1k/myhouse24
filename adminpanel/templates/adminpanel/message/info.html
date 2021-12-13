@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{%block mymessage%}class="active"{%endblock%}
+{% block title %}Сообщения{% endblock %}
+{% block page_name %}Сообщения{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'user_message' %}">Сообщения</a></li>
+    <li class="active">Сообщение</li>
+{% endblock %}
+{% csrf_token %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="box">
+    <div class="box-body no-padding">
+        <div class="mailbox-read-info">
+            <h3>{{ user_message.title }}</h3>
+            <h5>От: {{ user_message.sender }}<span class="mailbox-read-time pull-right">{{ user_message.time }}</span>
+            </h5>
+        </div>
+        <div class="mailbox-read-message">
+            {{ user_message.text | safe}}
+        </div>
+    </div>
+    <div class="box-footer">
+        <a href="{% url 'user_message_one_delete' user_message.id %}" onclick="return confirmDelete()" data-confirm="Удалить?" data-method="post">
+            <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i> Удалить</button>
+        </a>
+    </div>
+</div>
 
-</body>
-</html>
+{% endblock %}

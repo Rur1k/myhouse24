@@ -1233,11 +1233,19 @@ def user_message(request):
     }
     return render(request, 'adminpanel/message/index.html', data)
 
+def user_message_info(request, id):
+    data = {
+        'user_message': Message.objects.get(id=id)
+    }
+    return render(request, 'adminpanel/message/info.html', data)
+
 def user_message_create(request):
     if request.method == "POST":
         form = MessageForm(request.POST)
         if form.is_valid():
-            form.save()
+            sender_save = form.save(commit=False)
+            sender_save.sender = UserAdmin.objects.get(id=request.user.id)
+            sender_save.save()
             return redirect('user_message')
         else:
             for error in form.non_field_errors():
@@ -1252,14 +1260,18 @@ def user_message_create(request):
     }
     return render(request, 'adminpanel/message/create.html', data)
 
-def user_message_delete(request):
-    print('Зашли в удаление')
-    print(request.POST)
-    list = request.POST.getlist('check_list[]')
-    for id in list:
-        obj = Message.objects.get(id=int(id))
+def user_message_delete(request, id=None):
+    if id:
+        obj = Message.objects.get(id=id)
         if obj:
             obj.delete()
+    else:
+        list = request.POST.getlist('check_list[]')
+        for id in list:
+            obj = Message.objects.get(id=int(id))
+            if obj:
+                obj.delete()
+    messages.success(request, f"Сообщение успешно удалено")
     return redirect('user_message')
 
 def select_section_message_house(request):
