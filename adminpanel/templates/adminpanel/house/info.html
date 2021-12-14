@@ -8,6 +8,16 @@
     <li class="active">{{ house.name }}</li>
 {% endblock %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
 <div class="box col-md-12">
     <div class="box-header with-border text-right">
         <a href="{% url 'update_house' house.id %}" class="btn btn-primary">Редактировать дом</a>
@@ -42,7 +52,11 @@
                     </tr>
                     <tr>
                         <th>Пользователи</th>
-                        <td>Не назначены</td>
+                        <td>
+                        {% for obj in personal %}
+                            <label>{{ obj.person.role }}: </label><a href="{% url 'setting_user_admin_info' obj.person.id %}"> {{ obj.person.first_name }} {{ obj.person.last_name }}</a><br>
+                        {% endfor %}
+                        </td>
                     </tr>
                 </tbody>
             </table>

@@ -1,11 +1,11 @@
 {% extends 'adminpanel/base.html' %}
 {% load static %}
 {%block counter_data%}class="active"{%endblock%}
-{% block title %}Показания счетчиков, кв.{{ counter.flat.number_flat }} {% endblock %}
-{% block page_name %}Показания счетчиков, кв.{{ counter.flat.number_flat}} {% endblock %}
+{% block title %}Показания счетчиков, кв.{{ flat.number_flat }} {% endblock %}
+{% block page_name %}Показания счетчиков, кв.{{ flat.number_flat}} {% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'counter_data_counters' %}">Счетчики</a></li>
-    <li class="active">Показания счетчиков, кв.{{ counter.flat.number_flat }}</li>
+    <li class="active">Показания счетчиков, кв.{{ flat.number_flat }}</li>
 {% endblock %}
 {% block content %}
 {% if messages %}
@@ -21,7 +21,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group pull-right margin-bottom">
-            <a class="btn btn-success" href="{% url 'counter_data_create_flat_service' counter.flat.id 0 %}" >Добавить показание</a>
+            <a class="btn btn-success" href="{% url 'counter_data_create_flat_service' flat.id 0 %}" >Добавить показание</a>
         </div>
     </div>
 </div>
@@ -77,7 +77,7 @@
                         <a class="btn btn-default btn-sm" href="{% url 'counter_data_update' obj.id %}" title="Редактировать" data-toggle="tooltip">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_delete' obj.id counter.flat.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'counter_data_delete' obj.id flat.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

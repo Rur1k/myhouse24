@@ -147,6 +147,7 @@
                                 <div id='id_form_personal_' class="col-md-12 margin-bottom-20 form-personal">
                                     <div class="col-xs-12 col-sm-7">
                                         <label>ФИО</label>
+                                        {{ formset.id }}
                                         {{ formset.person }}
                                     </div>
                                     <div class="col-xs-12 col-sm-5">
@@ -178,7 +179,7 @@
                                             <div class="form-group">
                                                 <label>Роль</label>
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control">
+                                                    <input type="text" class="form-control" readonly>
                                                     <span class="input-group-btn">
                                                     <button type="button" class="btn btn-danger delete-form">
                                                         <i class="fa fa-trash">

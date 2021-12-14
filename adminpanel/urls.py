@@ -63,8 +63,11 @@ urlpatterns = [
     path('account/ajax/select_phone_account', views.select_phone_account, name='select_phone_account'),
     # Касса
     path('account-transaction', views.account_transaction, name='account_transaction'),
+    path('account-transaction/account_id=<int:account_id>', views.account_transaction, name='account_transaction_to_account'),
     path('account-transaction/<int:id>', views.account_transaction_info, name='account_transaction_info'),
     path('account-transaction/create&type=<int:type>', views.account_transaction_create, name='account_transaction_create'),
+    path('account-transaction/create&type=<int:type>&account_id=<int:account_id>', views.account_transaction_create,
+         name='account_transaction_create_to_account'),
     path('account-transaction/create&type=<int:type>/copy=<int:id>', views.account_transaction_create,
          name='account_transaction_copy'),
     path('account-transaction/update/<int:id>', views.account_transaction_update, name='account_transaction_update'),
@@ -84,8 +87,10 @@ urlpatterns = [
     path('counter-data/ajax/order_flat_account', views.order_flat_counter, name='order_flat_counter'),
     # Квитанции на оплату
     path('invoice', views.invoice, name='invoice'),
+    path('invoice/flat_id=<int:flat_id>', views.invoice, name='invoice_to_flat'),
     path('invoice/<int:id>', views.invoice_info, name='invoice_info'),
     path('invoice/create', views.invoice_create, name='invoice_create'),
+    path('invoice/create&flat_id=<int:flat_id>', views.invoice_create, name='invoice_create_to_flat'),
     path('invoice/create&copy=<int:invoice_id>', views.invoice_create, name='invoice_copy'),
     path('invoice/ajax/select_account', views.select_account_invoice, name='select_account_invoice'),
     path('invoice/ajax/select_data_is_tariff', views.select_data_is_tariff, name='select_data_is_tariff'),

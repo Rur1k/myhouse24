@@ -395,18 +395,17 @@ $("#id-message-floor").change(function () {
     });
 
 // Вытягивание Роли по пользователю
-$(".select_personal_role").change(function () {
-      console.log("Работает")
-      var url = $("#HouseCreateForm").attr("url-personal-role");
-      var userId = $(this).val();
+function SelectPersonalRole(select){
+    var url = $("#HouseCreateForm").attr("url-personal-role");
+        var userId = $(select).val();
 
-      $.ajax({
-        url: url,
-        data: {
-          'user': userId
-        },
-        success: function (data) {
-          console.log(data);
-        }
-      });
-    });
+        $.ajax({
+          url: url,
+          data: {
+            'user': userId
+          },
+          success: function (data) {
+            $(select).closest(".form-personal").find("input[type='text']").val(data);
+          }
+        });
+};

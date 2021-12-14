@@ -69,7 +69,7 @@
                     <select id="id-house-invoice" name="house" class="form-control" title="Выберите...">
                         <option value="">Выберите...</option>
                         {% for obj in house %}
-                            {% if obj == invoice.instance.flat.house %}
+                            {% if obj == invoice.instance.flat.house or obj == flat.house %}
                             <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
                             {% else %}
                             <option value="{{ obj.id }}">{{ obj.name }}</option>
@@ -83,7 +83,7 @@
                          <option value="">Выберите...</option>
                         {% if section %}
                             {% for obj in section %}
-                                {% if obj == invoice.instance.flat.section %}
+                                {% if obj == invoice.instance.flat.section or obj == flat.section %}
                                 <option value="{{ obj.id }}" selected>{{ obj.name }}</option>
                                 {% else %}
                                 <option value="{{ obj.id }}">{{ obj.name }}</option>
@@ -126,6 +126,9 @@
                 {% if invoice.instance.flat.account %}
                 <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account"
                        value="{{ invoice.instance.flat.account.number }}">
+                {% elif flat.account %}
+                <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account"
+                       value="{{ flat.account.number }}">
                 {% else %}
                 <input id="id-account-invoice" class="form-control margin-bottom-15" type="text" name="account">
                 {% endif %}
@@ -139,9 +142,17 @@
                                 {{ invoice.instance.flat.owner.patronymic }}
                             </a>
                         </span>
-                        {% else %}
+                    {% elif flat.owner %}
+                        <span id="user-fullname">
+                            <a href = "{% url 'apartment_owner_info' flat.owner.id %}">
+                                {{ flat.owner.last_name }}
+                                {{ flat.owner.first_name }}
+                                {{ flat.owner.patronymic }}
+                            </a>
+                        </span>
+                    {% else %}
                         <span id="user-fullname">не выбран</span>
-                        {% endif %}
+                    {% endif %}
                 </p>
                 <p>
                     <b>Телефон:</b>
@@ -149,9 +160,13 @@
                         <span id="user-phone">
                             <a href="#">{{ invoice.instance.flat.owner.telephone }}</a>
                         </span>
-                        {% else %}
+                    {% elif flat.owner %}
+                        <span id="user-phone">
+                            <a href="#">{{ flat.owner.telephone }}</a>
+                        </span>
+                    {% else %}
                         <span id="user-phone">не выбран</span>
-                        {% endif %}
+                    {% endif %}
                 </p>
             </div>
             <div class="col-md-12 margin-bottom-20">

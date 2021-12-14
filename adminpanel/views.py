@@ -132,14 +132,17 @@ def update_house(request, id):
     house_data = get_object_or_404(House, id=id)
     sections = Section.objects.filter(house=id)
     floors = Floor.objects.filter(house=id)
+    personal = Personal.objects.filter(house=id)
     SectionFormSet = modelformset_factory(Section, form=SectionForm, extra=0, can_delete=True)
     FloorFormSet = modelformset_factory(Floor, form=FloorForm, extra=0, can_delete=True)
+    PersonalFormSet = modelformset_factory(Personal, form=PersonalForm, extra=0, can_delete=True)
 
     if request.method == "POST":
         print(request.POST)
         house_form = HouseForm(request.POST, request.FILES, instance=house_data)
         section_formset = SectionFormSet(request.POST, prefix='section', queryset=sections)
         floor_formset = FloorFormSet(request.POST, prefix='floor', queryset=floors)
+        form_personal = PersonalFormSet(request.POST, prefix='personal', queryset=personal)
 
         if house_form.is_valid():
             house_form.save()
@@ -175,16 +178,35 @@ def update_house(request, id):
                         obj = subform.save(commit=False)
                         obj.house = house_form.save(commit=False)
                         obj.save()
+            # Сохранение персонала
+            if form_personal.is_valid():
+                for subform in form_personal:
+                    if 'DELETE' in subform.cleaned_data:
+                        if not subform.cleaned_data['DELETE']:
+                            obj = subform.save(commit=False)
+                            obj.house = house_form.save(commit=False)
+                            obj.save()
+                        else:
+                            if subform.cleaned_data['id'] in personal:
+                                obj = subform.save(commit=False)
+                                Personal.objects.filter(id=obj.id).delete()
+                    else:
+                        obj = subform.save(commit=False)
+                        obj.house = house_form.save(commit=False)
+                        obj.save()
+        messages.success(request, "Изменения усрешно сохранены")
         return redirect('info_house', id=id)
     else:
         house_form = HouseForm(instance=house_data)
         sections_form = SectionFormSet(prefix='section', queryset=sections)
         floors_form = FloorFormSet(prefix='floor', queryset=floors)
+        form_personal = PersonalFormSet(prefix='personal', queryset=personal)
 
     data = {
         'house': house_form,
         'sections': sections_form,
         'floors': floors_form,
+        'personal': form_personal,
     }
     return render(request, 'adminpanel/house/update.html', data)
 
@@ -192,18 +214,21 @@ def delete_house(request, id):
     obj = House.objects.filter(id=id)
     if obj:
         obj.delete()
+    messages.success(request, "Удаление прошло успешно.")
     return redirect('house')
 
 def info_house(request, id):
     house = House.objects.get(id=id)
     sections = Section.objects.filter(house=house)
     floors = Floor.objects.filter(house=house)
+    personal = Personal.objects.filter(house=house)
     count_section = sections.count()
     count_floor = floors.count()
     data = {
         'house': house,
         'sections': count_section,
         'floors': count_floor,
+        'personal': personal,
     }
     return render(request, "adminpanel/house/info.html", data)
 
@@ -828,13 +853,17 @@ def select_phone_account(request):
     return render(request, 'adminpanel/account/ajax/select-phone.html', { 'user':flat.owner })
 
 # Бизнес логика "Касса"
-def account_transaction(request):
+def account_transaction(request, account_id=None):
+    if account_id:
+        AccountTransactionList = AccountTransaction.objects.filter(account=account_id).order_by('-id')
+    else:
+        AccountTransactionList = AccountTransaction.objects.all().order_by('-id')
 
     data = {
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
         'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
-        'AccountTransaction': AccountTransaction.objects.all().order_by('-id'),
+        'AccountTransaction': AccountTransactionList,
         'sum_coming': AccountTransaction.objects.filter(type=1, is_complete=1).aggregate(Sum('sum')),
         'sum_consumption': AccountTransaction.objects.filter(type=2, is_complete=1).aggregate(Sum('sum')),
     }
@@ -847,13 +876,19 @@ def account_transaction_info(request, id):
     }
     return render(request, 'adminpanel/account-transaction/info.html', data)
 
-def account_transaction_create(request, type=None, id=None):
+def account_transaction_create(request, type=None, id=None, account_id=None):
     if type:
         TransactionType = SettingPaymentItem.objects.get(id=type)
     else:
         TransactionType = None
     if id is not None:
         account_transaction_info = AccountTransaction.objects.get(id=id)
+    else:
+        account_transaction_info = None
+    if account_id is not None:
+        owner = Flat.objects.filter(account=account_id).first().owner
+    else:
+        owner = None
 
     if request.method == 'POST':
         form = AccountTransactionForm(request.POST, initial={'type': TransactionType})
@@ -876,6 +911,8 @@ def account_transaction_create(request, type=None, id=None):
     else:
         if id is not None:
             form = AccountTransactionForm(instance=account_transaction_info, initial={'number': None})
+        elif account_id is not None:
+            form = AccountTransactionForm(initial={'type': TransactionType, 'account':account_id, 'owner':owner, 'manager':request.user.id })
         else:
             form = AccountTransactionForm(initial={'type': TransactionType})
     data = {
@@ -1006,8 +1043,8 @@ def counter_data_update(request, id):
 def counter_data_list(request, id, counter_id=None):
     counters = CounterData.objects.filter(flat=id).order_by('-id')
     data = {
+        'flat': Flat.objects.filter(id=id).first(),
         'counters': counters,
-        'counter': counters.first(),
         'house': House.objects.all(),
         'status': StatusCounter.objects.all(),
         'counter_unit': SettingService.objects.all(),
@@ -1045,10 +1082,14 @@ def order_flat_counter(request):
     return render(request, 'adminpanel/account/ajax/order_flat.html', { 'flats':flats })
 
 # бизнес логика вкладки "Квитанции на оплату"
-def invoice(request):
+def invoice(request, flat_id=None):
+    if flat_id:
+        invoices = Invoice.objects.filter(flat=flat_id).order_by('-id')
+    else:
+        invoices = Invoice.objects.all().order_by('-id')
     data = {
         'status': StatusInvoice.objects.all(),
-        'invoices': Invoice.objects.all().order_by('-id'),
+        'invoices': invoices,
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
         'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
         'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
@@ -1076,14 +1117,18 @@ def select_data_counter_is_flat(request):
     data = CounterData.objects.filter(flat=flat_id).order_by('-id')
     return  render(request, 'adminpanel/invoice/ajax/select_data_counter_is_flat.html', {'data': data})
 
-def invoice_create(request, invoice_id=None):
+def invoice_create(request, invoice_id=None, flat_id=None):
     if invoice_id:
         data_invoice = Invoice.objects.get(id=invoice_id)
         data_service = ServiceIsInvoice.objects.filter(invoice=invoice_id)
         section = Section.objects.filter(house=data_invoice.flat.house)
     else:
         section = None
-
+    if flat_id:
+        flat_info = Flat.objects.get(id=flat_id)
+        section = Section.objects.filter(house=flat_info.house)
+    else:
+        flat_info = None
 
     serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
 
@@ -1111,6 +1156,9 @@ def invoice_create(request, invoice_id=None):
         if invoice_id:
             form = InvoiceForm(instance=data_invoice, initial={'number': None})
             form_service = serviceFormSet(prefix='service_invoice', queryset=data_service)
+        elif flat_id:
+            form = InvoiceForm(initial={'flat': flat_info, 'tariff': flat_info.tariff})
+            form_service = serviceFormSet(prefix='service_invoice', queryset=ServiceIsInvoice.objects.none())
         else:
             form = InvoiceForm()
             form_service = serviceFormSet(prefix='service_invoice', queryset=ServiceIsInvoice.objects.none())
@@ -1121,6 +1169,7 @@ def invoice_create(request, invoice_id=None):
         'service': form_service,
         'invoice': form,
         'house': House.objects.all(),
+        'flat': flat_info,
         'section': section
     }
     return render(request, 'adminpanel/invoice/create.html', data)

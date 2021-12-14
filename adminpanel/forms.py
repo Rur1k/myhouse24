@@ -116,7 +116,8 @@ class PersonalForm(forms.ModelForm):
         fields = ['id','person']
         widgets = {
             'person': forms.Select(attrs={
-                'class': 'form-control select_personal_role',
+                'class': 'form-control',
+                'onchange': 'SelectPersonalRole(this)'
             }),
         }
 
@@ -665,6 +666,7 @@ class AccountTransactionForm(forms.ModelForm):
                 self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=self.instance.type.id)
         else:
             type = self.initial['type']
+
             self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.fields['number'].initial = generationTransactionNumber()
             if type.id == 1:
