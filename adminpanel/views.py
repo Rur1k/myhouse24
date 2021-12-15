@@ -18,8 +18,10 @@ def RecalculateBalance(account_id=None):
             invoice_sum = 0
             for obj in account.accounttransaction_set.all():
                 transaction_sum += obj.sum
-            for obj in account.flat.invoice_set.all():
-                invoice_sum += obj.sum
+            if account.flat.invoice_set:
+                for obj in account.flat.invoice_set.all():
+                    invoice_sum += obj.sum
+
             total_sum = transaction_sum - invoice_sum
             Account.objects.filter(id=account_id).update(saldo=total_sum)
 
@@ -922,8 +924,8 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
             if type == 2 and form.cleaned_data['sum'] > 0:
                 obj.sum = form.cleaned_data['sum'] * -1
 
-            RecalculateBalance(obj.account.id)
             obj.save()
+            RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция добавлена!")
             return redirect('account_transaction')
         else:
@@ -961,6 +963,7 @@ def account_transaction_update(request, id):
                 obj.sum = form.cleaned_data['sum'] * -1
 
             obj.save()
+            RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция обновлена!")
             return redirect('account_transaction_info', id)
         else:
@@ -978,9 +981,10 @@ def account_transaction_update(request, id):
     return render(request, 'adminpanel/account-transaction/update.html', data)
 
 def account_transaction_delete(request, id):
-    obj = AccountTransaction.objects.filter(id=id)
+    obj = AccountTransaction.objects.filter(id=id).first()
     if obj:
         obj.delete()
+        RecalculateBalance(obj.account.id)
     messages.success(request, f"Транзакция успешно удалена")
     return redirect('account_transaction')
 
@@ -1174,6 +1178,7 @@ def invoice_create(request, invoice_id=None, flat_id=None):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
+            RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:
@@ -1241,6 +1246,7 @@ def invoice_update(request, id):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
+            RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:

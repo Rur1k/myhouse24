@@ -80,8 +80,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% for flat_info in user.flat_set.all %}
-                        {{ flat_info }}
+                    {% for obj in user.flat_set.all %}
+                        {{ obj.account.saldo }}<br>
                     {% endfor %}
                 </td>
                 <td class="text-center">
