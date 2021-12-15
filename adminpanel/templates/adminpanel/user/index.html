@@ -59,8 +59,16 @@
                 <td>{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</td>
                 <td>{{ user.telephone }}</td>
                 <td>{{ user.email }}</td>
-                <td></td>
-                <td></td>
+                <td>
+                    {% for flat_info in user.flat_set.all %}
+                        <a href="{% url 'info_house' flat_info.house.id %}">{{ flat_info.house }}</a>,<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for flat_info in user.flat_set.all %}
+                    <a href="{% url 'flat_info' flat_info.id %}">{{ flat_info }}</a><br>
+                    {% endfor %}
+                </td>
                 <td>{{ user.date_joined|date:'d.m.Y' }}</td>
                 <td>
                     {% if user.status_id == 1 %}

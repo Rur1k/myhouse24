@@ -550,8 +550,9 @@ def setting_transaction_delete(request, id):
 
 # Бизнес логика "Владельцы квартир"
 def apartment_owner(request):
+    users = ApartmentOwner.objects.all()
     data = {
-        'users': ApartmentOwner.objects.all(),
+        'users': users,
         'count': ApartmentOwner.objects.all().count(),
     }
     return render(request, 'adminpanel/user/index.html', data)

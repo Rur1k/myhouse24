@@ -14,7 +14,7 @@ $("document").ready(function() {
     FilterBase('#InvoiceTable', [1,3,4,5], [2,6,7], [0,8,9], 3, undefined ) // Квитанции на оплату
     FilterBase('#AccountTable', [0, 2], [1,3,4,5], [7], undefined, 6) // Лицевые счета
     FilterBase('#FlatTable', [0], [1,2,3,4], [6], undefined, 5) // Квартиры
-    FilterBase('#UserTable', [0,1,2,3,5,6], [4,7,8], [9], undefined, undefined) // Владельцы квартир
+    FilterUser('#UserTable', [0,1,2,3,5,6], [4,7,8], [9], undefined, undefined) // Владельцы квартир
     FilterBase('#HouseTable', [1,2], [], [0,3], undefined, undefined) // Дома
     FilterBase('#CounterTable', [2], [0,1,3], [4,5,6], undefined, undefined) // Показания счетчиков
     FilterBase('#CounterListTable', [0,6], [1,4,5,7], [3,8,9], 2, undefined) // Показания счетчиков - инфо по квартире
@@ -180,6 +180,180 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
                             .draw();
                     } );
                 column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option>'+d+'</option>' )
+                } );
+            } );
+            }
+            // Поле с диапазаном дат
+            if (date) {
+                api.columns([date]).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell).html('<input class="form-control" name=datefilter>');
+
+                     $('input[name="datefilter"]').daterangepicker({
+                      autoUpdateInput: false,
+                      locale: {
+                          cancelLabel: 'Очистить',
+                          applyLabel: 'Выбрать',
+                      }
+                  });
+
+                  $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+                      $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+
+                      $.fn.dataTable.ext.search.push(
+                            function( settings, data, dataIndex ) {
+                                var min = picker.startDate.format('DD.MM.YYYY')
+                                var max = picker.endDate.format('DD.MM.YYYY')
+                                var date_list = data[date];
+
+                                if (
+                                    ( min === null && max === null ) ||
+                                    ( min === null && date_list <= max ) ||
+                                    ( min <= date_list   && max === null ) ||
+                                    ( min <= date_list   && date_list <= max )
+                                ) {
+
+                                    return true;
+                                }
+                                return false;
+                            }
+                        );
+                      table.draw();
+                  });
+
+                  $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+                      $(this).val('');
+                  });
+            });
+            }
+
+            //Поле для дополнительного функционала в данном случае "Поле долга"
+            if (dop){
+                api.columns([dop]).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell)
+                    .html('<select name="is_dop" class="form-control"><option value=""></option><option value=1>Есть долг</option><option value=0>Нет долга</option></select>');
+                });
+
+                $('select[name="is_dop"]').on('change', function () {
+                    var is_duty = parseInt($(this).val(), 10);
+                    var zero = parseFloat(0)
+                    var duty = parseInt(1)
+                    var no_duty = parseInt(0)
+                    console.log('Значение '+is_duty);
+                    console.log('Ноль '+zero);
+
+                    $.fn.dataTable.ext.search.pop()
+
+                    $.fn.dataTable.ext.search.push(
+                        function( settings, data, dataIndex ) {
+                            var saldo = parseFloat(data[dop]);
+                            if ((saldo >= zero) && (is_duty == no_duty) || (saldo < zero) && (is_duty == duty))
+                                {
+                                    return true;
+                                }
+                                return false;
+                        }
+                    );
+                    if (isNaN(is_duty)== true){
+                        $.fn.dataTable.ext.search.pop()
+                    }
+                    table.draw();
+                });
+            };
+        },
+    });
+}
+
+function FilterUser(Table, arr_input, arr_select, arr_empty, date, dop) {
+    if (date == undefined) date = false;
+    if (dop == undefined) dop = false;
+    $(Table+' thead tr').clone(true).addClass('filters').appendTo(Table+' thead');
+
+    var table = $(Table).DataTable({
+        dom: 't',
+        ordering: false,
+        paging: false,
+        orderCellsTop: false,
+        fixedHeader: true,
+        initComplete: function () {
+            var api = this.api();
+            // Заполнение полей путыми значениями
+            if (arr_empty){
+                api.columns(arr_empty).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell).html('<text></text>');
+            });
+            }
+            // Заполнение полей input
+            if (arr_input){
+                api.columns(arr_input).eq(0).each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell).html('<input type="text" class="form-control">');
+                    // On every keypress in this input
+                    $(
+                        'input',
+                        $('.filters th').eq($(api.column(colIdx).header()).index())
+                    )
+                        .off('keyup change')
+                        .on('keyup change', function (e) {
+                            e.stopPropagation();
+
+                            // Get the search value
+                            $(this).attr('title', $(this).val());
+                            var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                            var cursorPosition = this.selectionStart;
+                            // Search the column for that value
+                            api
+                                .column(colIdx)
+                                .search(
+                                    this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '',
+                                    this.value != '',
+                                    this.value == ''
+                                )
+                                .draw();
+                            $(this)
+                                .focus()[0]
+                                .setSelectionRange(cursorPosition, cursorPosition);
+                        });
+                });
+                }
+            //Поля select
+            if (arr_select){
+                api.columns(arr_select).every( function () {
+                var column = this;
+                var select = $('<select class="form-control"><option value=""></option></select>')
+                    .appendTo( $(column.header()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search( val ? val : '', true, false )
+                            .draw();
+                    } );
+                column.data().unique().sort().each( function ( d, j ) {
+                    d = d.split(',')[0];
                     select.append( '<option>'+d+'</option>' )
                 } );
             } );
