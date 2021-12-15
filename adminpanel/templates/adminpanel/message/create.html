@@ -39,6 +39,15 @@
                         {{ new_message.text }}
                     </div>
                 </div>
+                {% if new_message.initial.user %}
+                <div class="col-md-6">
+                    <h4>Кому отправить:</h4>
+                    <div class="col-md-12 margin-bottom-20">
+                        <label>Владелец квартир</label>
+                        {{ new_message.user }}
+                    </div>
+                </div>
+                {% else %}
                 <div class="col-md-6">
                     <h4>Кому отправить:</h4>
                     <div class="col-md-12 margin-bottom-20">
@@ -62,6 +71,7 @@
                         {{ new_message.flat }}
                     </div>
                 </div>
+                {% endif %}
             </div>
             <div class="col-md-12 text-right">
                 <div class="form-group">

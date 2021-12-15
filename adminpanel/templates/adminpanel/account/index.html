@@ -130,7 +130,9 @@
                         (не задано)
                     {% endif %}
                 </td>
-                <td>{{ account.saldo }}</td>
+                <td>
+                    {{ account.saldo }}
+                </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'account_update' account.id %}" title="Редактировать" data-toggle="tooltip">

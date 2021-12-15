@@ -117,7 +117,7 @@
                     <label class="label label-success">Непроведена</label>
                     {% endif %}
                 </td>
-                <td class=""></td>
+                <td>{{ obj.sum }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'invoice_copy' obj.id %}" title="Копировать" data-toggle="tooltip">

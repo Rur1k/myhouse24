@@ -39,6 +39,7 @@ urlpatterns = [
     # Владельцы квартир
     path('users', views.apartment_owner, name='apartment_owner'),
     path('user/create', views.apartment_owner_create, name='apartment_owner_create'),
+    path('user/invite', views.apartment_owner_invite, name='apartment_owner_invite'),
     path('user/<int:id>', views.apartment_owner_info, name='apartment_owner_info'),
     path('user/update/<int:id>', views.apartment_owner_update, name='apartment_owner_update'),
     path('user/delete/<int:id>', views.apartment_owner_delete, name='apartment_owner_delete'),
@@ -108,6 +109,8 @@ urlpatterns = [
     path('message', views.user_message, name='user_message'),
     path('message/<int:id>', views.user_message_info, name='user_message_info'),
     path('message/create', views.user_message_create, name='user_message_create'),
+    path('message/create&is_debt=<int:is_debt>', views.user_message_create, name='user_message_create_is_debt'),
+    path('message/create&user_id=<int:user_id>', views.user_message_create, name='user_message_create_to_user'),
     path('message/delete', views.user_message_delete, name='user_message_delete'),
     path('message/delete/one_msg=<int:id>', views.user_message_delete, name='user_message_one_delete'),
     path('message/create/ajax/select_section', views.select_section_message_house, name='select_section_message_house'),

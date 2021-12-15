@@ -676,6 +676,7 @@ class AccountTransactionForm(forms.ModelForm):
 
     def clean(self):
         cd = self.cleaned_data
+
         if self.instance.id:
             if 'number' in cd:
                 is_transaction = AccountTransaction.objects.filter(number=cd['number']).first()
@@ -1060,7 +1061,8 @@ class MessageForm(forms.ModelForm):
             'house',
             'section',
             'floor',
-            'flat'
+            'flat',
+            'user'
         ]
         widgets = {
             'title': forms.TextInput(attrs={
@@ -1091,6 +1093,10 @@ class MessageForm(forms.ModelForm):
             'flat': forms.Select(attrs={
                 'class': 'form-control',
                 'id': 'id-message-flat'
+            }),
+            'user': forms.Select(attrs={
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true',
             }),
         }
 

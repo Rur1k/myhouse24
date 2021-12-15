@@ -26,8 +26,8 @@
             </button>
             <ul class="dropdown-menu">
                 <li><a href="{% url 'apartment_owner_create' %}">Добавить владельца квартиры</a></li>
-                <li><a href="">Отправить сообщение должникам</a></li>
-                <li><a href="">Отправить приглашение</a></li>
+                <li><a href="{% url 'user_message_create_is_debt' 1 %}">Отправить сообщение должникам</a></li>
+                <li><a href="{% url 'apartment_owner_invite' %}">Отправить приглашение</a></li>
             </ul>
         </div>
     </div>
@@ -79,10 +79,14 @@
                     <label class="label label-danger">{{ user.status }}</label>
                     {% endif %}
                 </td>
-                <td>{{ user.is_debt }}</td>
+                <td>
+                    {% for flat_info in user.flat_set.all %}
+                        {{ flat_info }}
+                    {% endfor %}
+                </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" title="Отправить пильмо" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'user_message_create_to_user' user.id %}" title="Отправить пильмо" data-toggle="tooltip">
                             <i class="fa fa-envelope"></i>
                         </a>
                         <a class="btn btn-default btn-sm" href="{% url 'apartment_owner_update' user.id %}" title="Редактировать" data-toggle="tooltip">

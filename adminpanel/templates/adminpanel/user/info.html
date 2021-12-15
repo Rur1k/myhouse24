@@ -62,7 +62,7 @@
                     <td>{{ user.birthday }}</td>
                 </tr>
                 <tr>
-                    <th class="col-md-6">О владельцу (заметки)</th>
+                    <th class="col-md-6">О владельце (заметки)</th>
                     <td>{{ user.about_owner }}</td>
                 </tr>
                 <tr>
@@ -99,15 +99,15 @@
                 </tr>
                 </thead>
                 <tbody>
-<!--                {%  for service in services %}-->
-<!--                <tr>-->
-<!--                    <td></td>-->
-<!--                    <td>{{ service.service.name }}</td>-->
-<!--                    <td>{{ service.unit_service.unit }}</td>-->
-<!--                    <td>{{ service.price }}</td>-->
-<!--                    <td>{{ service.currency }}</td>-->
-<!--                </tr>-->
-<!--                {% endfor %}-->
+                {%  for obj in user.flat_set.all %}
+                <tr>
+                    <td>{{ obj.id }}</td>
+                    <td><a href="{% url 'info_house' obj.house.id %}">{{ obj.house }}</a></td>
+                    <td>{{ obj.section }}</td>
+                    <td><a href="{% url 'flat_info' obj.id %}">{{ obj.number_flat }}</a></td>
+                    <td><a href="">{{ obj.account }}</a></td>
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

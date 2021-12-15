@@ -53,7 +53,11 @@
             {% for obj in message_list %}
             <tr>
                 <td><input type="checkbox" name="check_message" class="check_message" value="{{ obj.id }}"></td>
-                {% if obj.house %}
+                {% if obj.user %}
+                    <td onclick="location.href='{% url 'user_message_info' obj.id %}'">
+                        {{ obj.user }}
+                    </td>
+                {% elif obj.house %}
                     <td onclick="location.href='{% url 'user_message_info' obj.id %}'">
                         {{ obj.house }}
                         {% if obj.section %}, {{ obj.section }} {% endif %}

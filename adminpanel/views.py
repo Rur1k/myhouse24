@@ -9,6 +9,20 @@ from django.db.models import Max, Sum
 from .forms import *
 from .models import *
 
+# Функция для подстеча состояния сальдо абонента
+def RecalculateBalance(account_id=None):
+    if account_id:
+        account = Account.objects.filter(id=account_id).first()
+        if account:
+            transaction_sum = 0
+            invoice_sum = 0
+            for obj in account.accounttransaction_set.all():
+                transaction_sum += obj.sum
+            for obj in account.flat.invoice_set.all():
+                invoice_sum += obj.sum
+            total_sum = transaction_sum - invoice_sum
+            Account.objects.filter(id=account_id).update(saldo=total_sum)
+
 # Логика входа в админку
 def login_admin(request):
     if request.method == 'POST':
@@ -557,6 +571,9 @@ def apartment_owner(request):
     }
     return render(request, 'adminpanel/user/index.html', data)
 
+def apartment_owner_invite(request):
+    return render(request, 'adminpanel/user/invite.html')
+
 def apartment_owner_info(request, id):
     data = {
         'user': ApartmentOwner.objects.get(id=id),
@@ -883,9 +900,9 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
     else:
         TransactionType = None
     if id is not None:
-        account_transaction_info = AccountTransaction.objects.get(id=id)
+        acc_transaction = AccountTransaction.objects.get(id=id)
     else:
-        account_transaction_info = None
+        acc_transaction = None
     if account_id is not None:
         owner = Flat.objects.filter(account=account_id).first().owner
     else:
@@ -895,12 +912,17 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
         form = AccountTransactionForm(request.POST, initial={'type': TransactionType})
         if form.is_valid():
             obj = form.save(commit=False)
-            flat = Flat.objects.filter(account=form.cleaned_data['account']).first()
-            if flat:
-                if flat.owner is not None:
-                    obj.owner = flat.owner
+
+            if form.cleaned_data['account'] is not None:
+                flat = Flat.objects.filter(account=form.cleaned_data['account']).first()
+                if flat:
+                    if flat.owner is not None:
+                        obj.owner = flat.owner
+
             if type == 2 and form.cleaned_data['sum'] > 0:
                 obj.sum = form.cleaned_data['sum'] * -1
+
+            RecalculateBalance(obj.account.id)
             obj.save()
             messages.success(request, "Транзакция добавлена!")
             return redirect('account_transaction')
@@ -911,11 +933,11 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
             messages.error(request, message)
     else:
         if id is not None:
-            form = AccountTransactionForm(instance=account_transaction_info, initial={'number': None})
+            form = AccountTransactionForm(instance=acc_transaction, initial={'number': None})
         elif account_id is not None:
             form = AccountTransactionForm(initial={'type': TransactionType, 'account':account_id, 'owner':owner, 'manager':request.user.id })
         else:
-            form = AccountTransactionForm(initial={'type': TransactionType})
+            form = AccountTransactionForm(initial={'type': TransactionType, 'owner':None, 'manager':request.user.id})
     data = {
         'transaction': form,
         'type': type
@@ -929,10 +951,12 @@ def account_transaction_update(request, id):
         form = AccountTransactionForm(request.POST, instance=account_transaction_info)
         if form.is_valid():
             obj = form.save(commit=False)
+
             flat = Flat.objects.filter(account=form.cleaned_data['account']).first()
             if flat:
                 if flat.owner is not None:
                     obj.owner = flat.owner
+
             if type == 2 and form.cleaned_data['sum'] > 0:
                 obj.sum = form.cleaned_data['sum'] * -1
 
@@ -1136,6 +1160,7 @@ def invoice_create(request, invoice_id=None, flat_id=None):
     if request.method == "POST":
         form = InvoiceForm(request.POST)
         form_service = serviceFormSet(request.POST, prefix='service_invoice')
+        sum = 0
         if form.is_valid():
             form.save()
             if form_service.is_valid():
@@ -1145,6 +1170,10 @@ def invoice_create(request, invoice_id=None, flat_id=None):
                             obj = subform.save(commit=False)
                             obj.invoice = form.save(commit=False)
                             obj.save()
+                            sum += obj.sum
+            sum_save = form.save(commit=False)
+            sum_save.sum = sum
+            sum_save.save()
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:
@@ -1188,6 +1217,7 @@ def invoice_update(request, id):
         print(request.POST)
         form = InvoiceForm(request.POST, instance=data_invoice)
         form_service = serviceFormSet(request.POST, prefix='service_invoice', queryset=data_service)
+        sum = 0
         if form.is_valid():
             form.save()
             if form_service.is_valid():
@@ -1197,6 +1227,7 @@ def invoice_update(request, id):
                             obj = subform.save(commit=False)
                             obj.invoice = form.save(commit=False)
                             obj.save()
+                            sum += obj.sum
                         else:
                             if subform.cleaned_data['id'] in data_service:
                                 obj = subform.save(commit=False)
@@ -1205,6 +1236,11 @@ def invoice_update(request, id):
                         obj = subform.save(commit=False)
                         obj.house = form.save(commit=False)
                         obj.save()
+                        sum += obj.sum
+
+            sum_save = form.save(commit=False)
+            sum_save.sum = sum
+            sum_save.save()
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:
@@ -1316,7 +1352,7 @@ def user_message_info(request, id):
     }
     return render(request, 'adminpanel/message/info.html', data)
 
-def user_message_create(request):
+def user_message_create(request, is_debt=None, user_id=None):
     if request.method == "POST":
         form = MessageForm(request.POST)
         if form.is_valid():
@@ -1330,7 +1366,12 @@ def user_message_create(request):
             messages.error(request, message)
             print(form.errors)
     else:
-        form = MessageForm()
+        if is_debt:
+            form = MessageForm(initial={'is_debt': True})
+        elif user_id:
+            form = MessageForm(initial={'user': user_id})
+        else:
+            form = MessageForm()
 
     data = {
         'new_message': form,

@@ -35,14 +35,21 @@
         <div class="box">
             <div class="box-header with-border text-right">
                 <h3 class="pull-left">Просмотр лицевого счета</h3>
-                <a href="" class="btn btn-default">
+                <a href="{% url 'account_transaction_create_to_account' 1 account.id %}" class="btn btn-default">
                     <i class="fa fa-dollar"></i>
                     Принять платеж
                 </a>
-                <a href="" class="btn btn-default">
+                {% if account.flat %}
+                <a href="{% url 'invoice_create_to_flat' account.flat.id %}" class="btn btn-default">
                     <i class="fa fa-files-o"></i>
                     Оформить квитанцию
                 </a>
+                {% else %}
+                <a href="" class="btn btn-default disabled">
+                    <i class="fa fa-files-o"></i>
+                    Оформить квитанцию
+                </a>
+                {% endif %}
                 <a href="{% url 'account_update' account.id %}" class="btn btn-primary">Редактировать счет</a>
             </div>
             <div class="box-body row">
@@ -109,9 +116,17 @@
                     </table>
                 </div>
                 <div class="col-md-12">
-                    <a href="">Посмотреть показания счетчиков</a><br>
-                    <a href="">Посмотреть приходы</a><br>
-                    <a href="">Посмотреть квитанции</a><br>
+                    {% if account.flat %}
+                    <a href="{% url 'counter_data_list' account.flat.id %}">Посмотреть показания счетчиков</a><br>
+                    {% else %}
+                    <a href="{% url 'counter_data_counters' %}">Посмотреть показания счетчиков</a><br>
+                    {% endif %}
+                    <a href="{% url 'account_transaction_to_account' account.id %}">Посмотреть приходы</a><br>
+                    {% if account.flat %}
+                    <a href="{% url 'invoice_to_flat' account.flat.id %}">Посмотреть квитанции</a><br>
+                    {% else %}
+                    <a href="{% url 'invoice' %}">Посмотреть квитанции</a><br>
+                    {% endif %}
                 </div>
             </div>
         </div>
