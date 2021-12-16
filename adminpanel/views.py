@@ -11,21 +11,25 @@ from decimal import Decimal
 from .forms import *
 from .models import *
 
-# Функция для подстеча состояния сальдо абонента
-def RecalculateBalance(account_id=None):
-    if account_id:
-        account = Account.objects.filter(id=account_id).first()
-        if account:
-            transaction_sum = 0
-            invoice_sum = 0
-            for obj in account.accounttransaction_set.all():
-                transaction_sum += obj.sum
-            if account.flat.invoice_set:
-                for obj in account.flat.invoice_set.all():
-                    invoice_sum += obj.sum
-
-            total_sum = transaction_sum - invoice_sum
-            Account.objects.filter(id=account_id).update(saldo=total_sum)
+def AccountBalance(type=None):
+    total_sum = 0
+    accounts = Account.objects.all()
+    for account in accounts:
+        transaction_sum = 0
+        invoice_sum = 0
+        for obj in account.accounttransaction_set.all():
+            transaction_sum += obj.sum
+        if account.flat.invoice_set:
+            for obj in account.flat.invoice_set.all():
+                invoice_sum += obj.sum
+        sum = transaction_sum - invoice_sum
+        if sum > 0 and type == 1:
+            total_sum+=sum
+        elif sum < 0 and type == 2:
+            total_sum+=sum
+    if type == 2:
+        total_sum *= -1
+    return total_sum
 
 # Логика входа в админку
 def login_admin(request):
@@ -63,8 +67,8 @@ def admin(request):
         'count_request_master_work': MasterRequest.objects.filter(status=2).count(),
         'count_request_master_new': MasterRequest.objects.filter(status=1).count(),
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
-        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
-        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
+        'account_balance': AccountBalance(1),
+        'account_debt': AccountBalance(2),
     }
     return render(request, 'adminpanel/statistics.html', data)
 
@@ -568,7 +572,11 @@ def setting_transaction_delete(request, id):
 
 # Бизнес логика "Владельцы квартир"
 def apartment_owner(request):
-    users = ApartmentOwner.objects.all()
+    users = ApartmentOwner.objects.all().annotate(
+        saldo=Coalesce(Sum('flat__account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
+    balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
+    print(users)
+
     data = {
         'users': users,
         'count': ApartmentOwner.objects.all().count(),
@@ -671,7 +679,8 @@ def apartment_owner_delete(request, id):
 
 # Бизнес логика "Квартиры"
 def flat(request):
-    flats = Flat.objects.all()
+    flats = Flat.objects.all().annotate(
+        saldo=Coalesce(Sum('account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('invoice__sum'),Decimal(0)))
     data = {
         'flats': flats.order_by('-id'),
         'count': flats.count(),
@@ -767,14 +776,14 @@ def select_floor_flat(request):
 # Лицевые счета
 def account(request):
     accounts = Account.objects.all().annotate(
-        saldo_new=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
+        saldo=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
     balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
-    account_balance = Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo'))
-    account_debt = Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo'))
+    account_balance = AccountBalance(1),
+    account_debt = AccountBalance(2)
     data = {
         'balance': balance,
-        'account_balance': account_balance,
-        'account_debt': account_debt,
+        # 'account_balance': account_balance,
+        # 'account_debt': account_debt,
         'accounts': accounts.order_by('-id'),
         'count': accounts.count()
     }
@@ -884,8 +893,8 @@ def account_transaction(request, account_id=None):
 
     data = {
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
-        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
-        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
+        'account_balance': AccountBalance(1),
+        'account_debt': AccountBalance(2),
         'AccountTransaction': AccountTransactionList,
         'sum_coming': AccountTransaction.objects.filter(type=1, is_complete=1).aggregate(Sum('sum')),
         'sum_consumption': AccountTransaction.objects.filter(type=2, is_complete=1).aggregate(Sum('sum')),
@@ -932,7 +941,6 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
                 obj.sum = form.cleaned_data['sum'] * -1
 
             obj.save()
-            # RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция добавлена!")
             return redirect('account_transaction')
         else:
@@ -970,7 +978,6 @@ def account_transaction_update(request, id):
                 obj.sum = form.cleaned_data['sum'] * -1
 
             obj.save()
-            # RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция обновлена!")
             return redirect('account_transaction_info', id)
         else:
@@ -991,7 +998,6 @@ def account_transaction_delete(request, id):
     obj = AccountTransaction.objects.filter(id=id).first()
     if obj:
         obj.delete()
-        # RecalculateBalance(obj.account.id)
     messages.success(request, f"Транзакция успешно удалена")
     return redirect('account_transaction')
 
@@ -1127,8 +1133,8 @@ def invoice(request, flat_id=None):
         'status': StatusInvoice.objects.all(),
         'invoices': invoices,
         'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
-        'account_balance': Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo')),
-        'account_debt': Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo')),
+        'account_balance': AccountBalance(1),
+        'account_debt': AccountBalance(2),
     }
     return render(request, 'adminpanel/invoice/index.html', data)
 
@@ -1185,7 +1191,6 @@ def invoice_create(request, invoice_id=None, flat_id=None):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
-            # RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:
@@ -1253,7 +1258,6 @@ def invoice_update(request, id):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
-            # RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:

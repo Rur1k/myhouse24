@@ -80,9 +80,11 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% for obj in user.flat_set.all %}
-                        {{ obj.account.saldo }}<br>
-                    {% endfor %}
+                    {% if user.saldo < 0 %}
+                        Да
+                    {% else %}
+
+                    {% endif %}
                 </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">

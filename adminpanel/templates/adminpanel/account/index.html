@@ -35,7 +35,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-blue overflow-hidden">
                         <div class="inner">
-                            <h3>{{ account_balance.saldo__sum }} грн</h3>
+                            <h3>{{ account_balance }} грн</h3>
                             <p>Баланс по счетам</p>
                         </div>
                         <div class="icon">
@@ -46,7 +46,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-red overflow-hidden">
                         <div class="inner">
-                            <h3>{{ account_debt.saldo__sum }} грн</h3>
+                            <h3>{{ account_debt }} грн</h3>
                             <p>Задолженность по счетам</p>
                         </div>
                         <div class="icon">
@@ -131,7 +131,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    {{ account.saldo_new }}
+                    {{ account.saldo }}
                 </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
