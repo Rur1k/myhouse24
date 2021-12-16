@@ -6,6 +6,8 @@ from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from django.db.models import Max, Sum
+from django.db.models.functions import Coalesce
+from decimal import Decimal
 from .forms import *
 from .models import *
 
@@ -764,7 +766,8 @@ def select_floor_flat(request):
 
 # Лицевые счета
 def account(request):
-    accounts = Account.objects.all()
+    accounts = Account.objects.all().annotate(
+        saldo_new=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
     balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
     account_balance = Account.objects.extra(where=["saldo >= 0"]).aggregate(Sum('saldo'))
     account_debt = Account.objects.extra(where=["saldo < 0"]).aggregate(Sum('saldo'))
@@ -906,9 +909,13 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
     else:
         acc_transaction = None
     if account_id is not None:
-        owner = Flat.objects.filter(account=account_id).first().owner
+        flat = Flat.objects.filter(account=account_id).first()
+        if flat:
+            flat_owner = flat.owner
+        else:
+            flat_owner = None
     else:
-        owner = None
+        flat_owner = None
 
     if request.method == 'POST':
         form = AccountTransactionForm(request.POST, initial={'type': TransactionType})
@@ -925,7 +932,7 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
                 obj.sum = form.cleaned_data['sum'] * -1
 
             obj.save()
-            RecalculateBalance(obj.account.id)
+            # RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция добавлена!")
             return redirect('account_transaction')
         else:
@@ -937,7 +944,7 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
         if id is not None:
             form = AccountTransactionForm(instance=acc_transaction, initial={'number': None})
         elif account_id is not None:
-            form = AccountTransactionForm(initial={'type': TransactionType, 'account':account_id, 'owner':owner, 'manager':request.user.id })
+            form = AccountTransactionForm(initial={'type': TransactionType, 'account':account_id, 'owner':flat_owner, 'manager':request.user.id })
         else:
             form = AccountTransactionForm(initial={'type': TransactionType, 'owner':None, 'manager':request.user.id})
     data = {
@@ -963,7 +970,7 @@ def account_transaction_update(request, id):
                 obj.sum = form.cleaned_data['sum'] * -1
 
             obj.save()
-            RecalculateBalance(obj.account.id)
+            # RecalculateBalance(obj.account.id)
             messages.success(request, "Транзакция обновлена!")
             return redirect('account_transaction_info', id)
         else:
@@ -984,7 +991,7 @@ def account_transaction_delete(request, id):
     obj = AccountTransaction.objects.filter(id=id).first()
     if obj:
         obj.delete()
-        RecalculateBalance(obj.account.id)
+        # RecalculateBalance(obj.account.id)
     messages.success(request, f"Транзакция успешно удалена")
     return redirect('account_transaction')
 
@@ -1178,7 +1185,7 @@ def invoice_create(request, invoice_id=None, flat_id=None):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
-            RecalculateBalance(sum_save.flat.account.id)
+            # RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:
@@ -1246,7 +1253,7 @@ def invoice_update(request, id):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
-            RecalculateBalance(sum_save.flat.account.id)
+            # RecalculateBalance(sum_save.flat.account.id)
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:
