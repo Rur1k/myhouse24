@@ -1,41 +1,30 @@
 from django.contrib.auth.models import User
 from django import forms
 from ckeditor.widgets import CKEditorWidget
+from django.db.models import Max
 from .models import *
 import random
 import datetime
 import re
 
 
-def generationAccountNumber():
-    today_date = datetime.datetime.now().date()
-    today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
-    genNumber = str(today_date) + "000000"
-    while True:
-        genAccountNumber = int(genNumber) + random.randrange(9999)
-        if Account.objects.filter(number=genAccountNumber).first() is None:
-            break
-    return genAccountNumber
-
-def generationTransactionNumber():
+def generationNumber(Model):
     today_date = datetime.datetime.now().date()
     today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
     genNumber = str(today_date) + "000000"
     while True:
         genNumber = int(genNumber) + random.randrange(9999)
-        if AccountTransaction.objects.filter(number=genNumber).first() is None:
+        if Model.objects.filter(number=genNumber).first() is None:
             break
     return genNumber
 
-def generationNumber():
-    today_date = datetime.datetime.now().date()
-    today_date = re.sub(r'[^0-9.]+', r'', str(today_date))
-    genNumber = str(today_date) + "000000"
-    while True:
-        genNumber = int(genNumber) + random.randrange(9999)
-        if CounterData.objects.filter(number=genNumber).first() is None:
-            break
-    return genNumber
+def generationPersonalId():
+    new_id = 0
+    max_id = ApartmentOwner.objects.aggregate(Max('personal_id'))
+    obj = ApartmentOwner.objects.filter(max_id).first()
+    print(obj)
+
+    return new_id
 
 # Формы авторизации
 class LoginForm(forms.Form):
@@ -418,6 +407,12 @@ class ApartmentOwnerForm(forms.ModelForm):
             }),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.id is None:
+            self.fields['personal_id'].initial = generationPersonalId()
+
+
     def clean(self):
         cd = self.cleaned_data
 
@@ -555,7 +550,7 @@ class AccountForm(forms.ModelForm):
                 if flat:
                     self.fields['flat'].queryset = Flat.objects.filter(id=self.data.get('flat'))
         else:
-            self.fields['number'].initial = generationAccountNumber() # Генерация ЛС
+            self.fields['number'].initial = generationNumber(Account)
 
             if self.data.get('flat'):
                 self.fields['flat'].queryset = Flat.objects.none()
@@ -650,7 +645,7 @@ class AccountTransactionForm(forms.ModelForm):
 
         if self.instance.id:
             if self.initial['number'] is None:
-                self.initial['number'] = generationTransactionNumber()
+                self.initial['number'] = generationNumber(AccountTransaction)
             self.initial['date'] = self.instance.date.isoformat()
             if self.instance.type.id == 1:
                 self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=self.instance.type.id)
@@ -668,7 +663,7 @@ class AccountTransactionForm(forms.ModelForm):
             type = self.initial['type']
 
             self.initial['date'] = datetime.datetime.now().date().isoformat()
-            self.fields['number'].initial = generationTransactionNumber()
+            self.fields['number'].initial = generationNumber(AccountTransaction)
             if type.id == 1:
                 self.fields['transaction'].queryset = SettingTransactionPurpose.objects.filter(item=type.id)
             else:
@@ -752,7 +747,7 @@ class CounterDataForm(forms.ModelForm):
                     self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
         else:
             self.initial['date'] = datetime.datetime.now().date().isoformat()
-            self.fields['number'].initial = generationNumber()  # Генерация номер показания
+            self.fields['number'].initial = generationNumber(CounterData)  # Генерация номер показания
 
             if 'flat' in self.initial:
                 self.fields['flat'].queryset = Flat.objects.filter(house=self.initial['flat'].house.id)
@@ -851,7 +846,7 @@ class InvoiceForm(forms.ModelForm):
 
         if self.instance.id:
             if self.initial['number'] is None:
-                self.initial['number'] = generationNumber()
+                self.initial['number'] = generationNumber(Invoice)
             self.initial['date'] = self.instance.date.isoformat()
             self.fields['flat'].queryset = Flat.objects.filter(house=self.instance.flat.house.id)
             if self.instance.date_first:
@@ -868,7 +863,7 @@ class InvoiceForm(forms.ModelForm):
                     self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
         else:
             self.initial['date'] = datetime.datetime.now().date().isoformat()
-            self.fields['number'].initial = generationNumber()  # Генерация номера квитанции
+            self.fields['number'].initial = generationNumber(Invoice)
             self.initial['date_first'] = datetime.datetime.now().date().isoformat()
             self.initial['date_last'] = datetime.datetime.now().date().isoformat()
 

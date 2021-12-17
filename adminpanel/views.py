@@ -19,7 +19,7 @@ def AccountBalance(type=None):
         invoice_sum = 0
         for obj in account.accounttransaction_set.all():
             transaction_sum += obj.sum
-        if account.flat.invoice_set:
+        if account.flat:
             for obj in account.flat.invoice_set.all():
                 invoice_sum += obj.sum
         sum = transaction_sum - invoice_sum
@@ -778,12 +778,12 @@ def account(request):
     accounts = Account.objects.all().annotate(
         saldo=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
     balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
-    account_balance = AccountBalance(1),
+    account_balance = AccountBalance(1)
     account_debt = AccountBalance(2)
     data = {
         'balance': balance,
-        # 'account_balance': account_balance,
-        # 'account_debt': account_debt,
+        'account_balance': account_balance,
+        'account_debt': account_debt,
         'accounts': accounts.order_by('-id'),
         'count': accounts.count()
     }
@@ -1283,13 +1283,13 @@ def invoice_delete(request, id=None):
         obj = Invoice.objects.get(id=id)
         if obj:
             obj.delete()
+            messages.success(request, f"Квитанция успешно удалена")
     else:
         list = request.POST.getlist('check_list[]')
         for id in list:
             obj = Invoice.objects.get(id=int(id))
             if obj:
                 obj.delete()
-    messages.success(request, f"Квитанция успешно удалена")
     return redirect('invoice')
 
 def invoice_info(request, id):
