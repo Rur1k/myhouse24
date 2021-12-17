@@ -97,6 +97,7 @@ urlpatterns = [
     path('invoice/ajax/select_data_is_tariff', views.select_data_is_tariff, name='select_data_is_tariff'),
     path('invoice/ajax/select_data_counter_is_flat', views.select_data_counter_is_flat, name='select_data_counter_is_flat'),
     path('invoice/delete/<int:id>', views.invoice_delete, name='invoice_delete'),
+    path('invoice/delete/all', views.invoice_delete, name='invoice_delete_all'),
     path('invoice/update/<int:id>', views.invoice_update, name='invoice_update'),
     # Заявки мастера
     path('master-request', views.master_request, name='master_request'),

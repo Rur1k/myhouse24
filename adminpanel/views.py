@@ -1278,10 +1278,17 @@ def invoice_update(request, id):
     }
     return render(request, 'adminpanel/invoice/update.html', data)
 
-def invoice_delete(request, id):
-    obj = Invoice.objects.get(id=id)
-    if obj:
-        obj.delete()
+def invoice_delete(request, id=None):
+    if id:
+        obj = Invoice.objects.get(id=id)
+        if obj:
+            obj.delete()
+    else:
+        list = request.POST.getlist('check_list[]')
+        for id in list:
+            obj = Invoice.objects.get(id=int(id))
+            if obj:
+                obj.delete()
     messages.success(request, f"Квитанция успешно удалена")
     return redirect('invoice')
 

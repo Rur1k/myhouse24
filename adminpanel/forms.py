@@ -944,7 +944,8 @@ class ServiceIsInvoiceForm(forms.ModelForm):
                 'onkeyup': 'MultiplicationInvoice()'
             }),
             'sum': forms.TextInput(attrs={
-                'class': 'form-control'
+                'class': 'form-control',
+                'readonly': 'readonly'
             }),
             'consumption': forms.TextInput(attrs={
                 'class': 'form-control',

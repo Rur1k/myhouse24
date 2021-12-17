@@ -24,7 +24,7 @@
             <div class="box-header with-border text-right">
                 <h3 class="pull-left">Просмотр квартиры</h3>
                 {% if flat.account%}
-                <a href="{% url 'account_transaction_create_to_account' 1 flat.account.number %}" class="btn btn-default">
+                <a href="{% url 'account_transaction_create_to_account' 1 flat.account.id %}" class="btn btn-default">
                     <i class="fa fa-dollar"></i>
                     Принять платеж
                 </a>

@@ -100,6 +100,37 @@ $('#DeleteMessage').click(function() {
     }
 });
 
+//Удаление квитанций
+$('.DeleteInvoice').click(function() {
+    if(confirm("Данные будут удалены. Продолжить?") == true){
+        console.log('Удалено')
+
+        const csrftoken = getCookie('csrftoken');
+        var url = $("#InvoiceTable").attr("data-delete-invoice-url");
+        var checkedValues = $('.check_invoice:checked').map(function() {
+            return this.value;
+        }).get();
+
+        $.ajax({
+            url: url,
+            type: "post",
+            headers: {'X-CSRFToken': csrftoken},
+            data: {
+                'check_list': checkedValues,
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                console.log('Ошибка')
+            }
+        });
+
+    } else {
+        console.log('Отмена удаления')
+    }
+});
+
 //Функция фильтрации базовая на основе таблицы.
 function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
     if (date == undefined) date = false;
@@ -349,7 +380,7 @@ function FilterUser(Table, arr_input, arr_select, arr_empty, date, dop) {
                             $(this).val()
                         );
                         column
-                            .search( val ? val : '', true, false )
+                            .search(val ? $(this).val() : val, true, false)
                             .draw();
                     } );
                 column.data().unique().sort().each( function ( d, j ) {
@@ -592,8 +623,10 @@ function MultiplicationInvoice(){
     var form_idx = $('#id_service_invoice-TOTAL_FORMS').val();
     var TotalSum = 0
     for (var i = 0; i < form_idx; i++){
-        var result = $('#id_service_invoice-'+i+'-consumption').val() * $('#id_service_invoice-'+i+'-price').val();
-        $('#id_service_invoice-'+i+'-sum').val(result);
+        if ($('#id_service_invoice-'+i+'-consumption').length && $('#id_service_invoice-'+i+'-price').length) {
+            var result = $('#id_service_invoice-'+i+'-consumption').val() * $('#id_service_invoice-'+i+'-price').val();
+            $('#id_service_invoice-'+i+'-sum').val(result);
+        }
         TotalSum = TotalSum + result;
     }
     $('#invoice-total-sum').html(TotalSum);
@@ -604,7 +637,8 @@ $(document).on('click', '.delete-form', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service, .form-setting_tariff_service, .form-service-invoice, .form-personal').hide();
+//        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service, .form-setting_tariff_service, .form-service-invoice, .form-personal').hide();
+        $(this).parents('.form-section, .form-floor, .form-document, .form-service, .form-image, .form-serviceunit, .form-setting-service, .form-setting_tariff_service, .form-service-invoice, .form-personal').remove();
     }
 });
 

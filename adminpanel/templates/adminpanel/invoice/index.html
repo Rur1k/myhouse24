@@ -64,7 +64,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'invoice_create' %}">Создать общую квитанцию</a></li>
-                    <li><a href="">Удалить</a></li>
+                    <li><a href="" class="DeleteInvoice">Удалить</a></li>
                 </ul>
             </div>
         </div>
@@ -77,10 +77,11 @@
     </div>
     <div class="grid-view">
         <table id="InvoiceTable" class="table table-striped table-bordered table-hover table_sort"
-               data-section-url="{% url 'select_section_flat' %}">
+               data-section-url="{% url 'select_section_flat' %}"
+               data-delete-invoice-url="{% url 'invoice_delete_all' %}">
             <thead>
             <tr>
-                <th class="col" style="width:20px"><input type="checkbox"></th>
+                <th class="col" style="width:20px"><input type="checkbox" name="check_invoice" class="chk-all"></th>
                 <th class="col" style="min-width:100px">№ квитанции</th>
                 <th class="col" style="min-width:100px">Статус</th>
                 <th class="col" style="min-width: 100px">Дата</th>
@@ -94,10 +95,10 @@
             </thead>
             <tbody>
             {% for obj in invoices %}
-            <tr onclick="location.href='{% url 'invoice_info' obj.id %}'" class="table-data">
-                <td><input type="checkbox"></td>
-                <td >{{ obj.number }}</td>
-                <td class="">
+            <tr class="table-data">
+                <td><input type="checkbox" name="check_invoice" class="check_invoice" value="{{ obj.id }}"></td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">{{ obj.number }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">
                     {% if obj.status.id == 1 %}
                     <label class="label label-danger">{{ obj.status }}</label>
                     {% elif invoice.status.id == 2 %}
@@ -106,18 +107,18 @@
                     <label class="label label-success">{{ obj.status }}</label>
                     {% endif %}
                 </td>
-                <td>{{ obj.date | date:'d.m.Y' }}</td>
-                <td>{{ obj.date | date:'F Y' }}</td>
-                <td>{{ obj.flat }}, {{ obj.flat.house }}</td>
-                <td>{{ obj.flat.owner }}</td>
-                <td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">{{ obj.date | date:'d.m.Y' }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">{{ obj.date | date:'F Y' }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">{{ obj.flat }}, {{ obj.flat.house }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'"> {{ obj.flat.owner }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">
                     {% if obj.is_carried == 1 %}
                     <label class="label label-success">Проведена</label>
                     {% else %}
                     <label class="label label-success">Непроведена</label>
                     {% endif %}
                 </td>
-                <td>{{ obj.sum }}</td>
+                <td onclick="location.href='{% url 'invoice_info' obj.id %}'">{{ obj.sum }}</td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
                         <a class="btn btn-default btn-sm" href="{% url 'invoice_copy' obj.id %}" title="Копировать" data-toggle="tooltip">
