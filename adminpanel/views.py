@@ -1159,6 +1159,12 @@ def select_data_counter_is_flat(request):
     data = CounterData.objects.filter(flat=flat_id).order_by('-id')
     return  render(request, 'adminpanel/invoice/ajax/select_data_counter_is_flat.html', {'data': data})
 
+def select_counter_data_inv(request):
+    counter_id = request.GET.get('counter')
+    flat_id = request.GET.get('flat')
+    counter_data = CounterData.objects.filter(flat=flat_id, counter=counter_id, status=1).first()
+    return HttpResponse(counter_data.counter_data)
+
 def invoice_create(request, invoice_id=None, flat_id=None):
     if invoice_id:
         data_invoice = Invoice.objects.get(id=invoice_id)

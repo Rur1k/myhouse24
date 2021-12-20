@@ -310,6 +310,30 @@ $('#add_service_on_tariff').click(function() {
     }
 });
 
+$('#add_counter_data_inv').click(function() {
+    var url = $("#InvoiceCreateForm").attr("data-counter-inv-url");
+    var flat = $("#id-flat-invoice").val();
+    var counter_count = $('#id_service_invoice-TOTAL_FORMS').val();
+
+    for (var i=0; i<counter_count; i++){
+        var service = $('#id_service_invoice-'+i+'-service').val()
+        console.log(service)
+        console.log(i);
+        $.ajax({
+            url: url,
+            data: {
+                'counter': service,
+                'flat': flat
+            },
+            success: function(data){
+                console.log(data);
+                console.log(i);
+                $('#id_service_invoice-'+i+'-consumption').val(data);
+            }
+        });
+    }
+});
+
 // Квартиры по пользователю
 $("#id-master-owner").change(function () {
       var url = $("#RequestCreateForm").attr("data-flat-master-url");

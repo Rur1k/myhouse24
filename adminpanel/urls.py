@@ -95,6 +95,7 @@ urlpatterns = [
     path('invoice/create&copy=<int:invoice_id>', views.invoice_create, name='invoice_copy'),
     path('invoice/ajax/select_account', views.select_account_invoice, name='select_account_invoice'),
     path('invoice/ajax/select_data_is_tariff', views.select_data_is_tariff, name='select_data_is_tariff'),
+    path('invoice/ajax/select_counter_data', views.select_counter_data_inv, name='select_counter_data_inv'),
     path('invoice/ajax/select_data_counter_is_flat', views.select_data_counter_is_flat, name='select_data_counter_is_flat'),
     path('invoice/delete/<int:id>', views.invoice_delete, name='invoice_delete'),
     path('invoice/delete/all', views.invoice_delete, name='invoice_delete_all'),
