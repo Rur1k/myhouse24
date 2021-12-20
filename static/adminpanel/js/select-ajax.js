@@ -317,18 +317,15 @@ $('#add_counter_data_inv').click(function() {
 
     for (var i=0; i<counter_count; i++){
         var service = $('#id_service_invoice-'+i+'-service').val()
-        console.log(service)
-        console.log(i);
         $.ajax({
             url: url,
             data: {
                 'counter': service,
-                'flat': flat
+                'flat': flat,
             },
             success: function(data){
-                console.log(data);
-                console.log(i);
-                $('#id_service_invoice-'+i+'-consumption').val(data);
+                $('#id_service_invoice-'+(i-1)+'-consumption').val(data);
+                MultiplicationInvoice()
             }
         });
     }
