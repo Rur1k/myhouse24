@@ -647,7 +647,9 @@ $(document).on('click', '.delete-form-invoice', function(e){
     if (confirm('Удалить?')) {
         e.preventDefault();
         $(this).parent().find('input[type=checkbox]').attr('checked','checked');
-        $(this).parents('.form-service-invoice').remove();
+        $(this).parents('.form-service-invoice').hide();
+        $(this).parents('.form-service-invoice').find('input[type=text]').val(0)
+        MultiplicationInvoice()
     }
 });
 
