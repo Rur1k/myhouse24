@@ -1143,6 +1143,7 @@ def select_account_invoice(request):
     flat = Flat.objects.filter(id=flat_id).first()
     if flat.account:
         account = flat.account.number
+
         return HttpResponse(account)
     else:
         return None
@@ -1165,6 +1166,12 @@ def select_counter_data_inv(request):
     counter_data = CounterData.objects.filter(flat=flat_id, counter=counter_id, status=1).first()
     return HttpResponse(counter_data.counter_data)
 
+def select_counter_id_inv(request):
+    counter_id = request.GET.get('counter')
+    flat_id = request.GET.get('flat')
+    counter_data = CounterData.objects.filter(flat=flat_id, counter=counter_id, status=1).first()
+    return HttpResponse(counter_data.id)
+
 def invoice_create(request, invoice_id=None, flat_id=None):
     if invoice_id:
         data_invoice = Invoice.objects.get(id=invoice_id)
@@ -1183,6 +1190,9 @@ def invoice_create(request, invoice_id=None, flat_id=None):
     if request.method == "POST":
         form = InvoiceForm(request.POST)
         form_service = serviceFormSet(request.POST, prefix='service_invoice')
+        counter_list_id = request.POST.get('list_counter_id')
+
+
         sum = 0
         if form.is_valid():
             form.save()
@@ -1197,6 +1207,8 @@ def invoice_create(request, invoice_id=None, flat_id=None):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
+            if sum_save.
+
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
         else:

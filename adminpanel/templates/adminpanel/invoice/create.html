@@ -29,7 +29,8 @@
       data-unit-url="{% url 'select_service_unit' %}"
       data-tariff-url="{% url 'select_data_is_tariff' %}"
       data-counters-url="{% url 'select_data_counter_is_flat'%}"
-      data-counter-inv-url="{% url 'select_counter_data_inv' %}">
+      data-counter-inv-url="{% url 'select_counter_data_inv' %}"
+      data-counter-id-url="{% url 'select_counter_id_inv' %}">
     {% csrf_token %}
     {{ service.management_form }}
     <div class="row">
@@ -224,6 +225,7 @@
                         </tr>
                         <tr>
                             <td colspan="4">
+                                <div><input id="list_counter_id" name="list_counter_id"></div>
                                 <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
                                 <button id="add_service_on_tariff" type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
                                 <button id="add_counter_data_inv" type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>

@@ -311,24 +311,39 @@ $('#add_service_on_tariff').click(function() {
 });
 
 $('#add_counter_data_inv').click(function() {
-    var url = $("#InvoiceCreateForm").attr("data-counter-inv-url");
+    var url_counter = $("#InvoiceCreateForm").attr("data-counter-inv-url");
+    var url_id_counter = $("#InvoiceCreateForm").attr("data-counter-id-url");
     var flat = $("#id-flat-invoice").val();
     var counter_count = $('#id_service_invoice-TOTAL_FORMS').val();
+    var array = []
 
     for (var i=0; i<counter_count; i++){
         var service = $('#id_service_invoice-'+i+'-service').val()
         $.ajax({
-            url: url,
+            url: url_counter,
+            async: false,
             data: {
                 'counter': service,
                 'flat': flat,
             },
             success: function(data){
-                $('#id_service_invoice-'+(i-1)+'-consumption').val(data);
+                $('#id_service_invoice-'+(i)+'-consumption').val(data);
                 MultiplicationInvoice()
             }
         });
+        $.ajax({
+            url: url_id_counter,
+            async: false,
+            data: {
+                'counter': service,
+                'flat': flat,
+            },
+            success: function(data){
+                array.push(data);
+            }
+        });
     }
+    $('#list_counter_id').val(array);
 });
 
 // Квартиры по пользователю
