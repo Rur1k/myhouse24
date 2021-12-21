@@ -642,6 +642,15 @@ $(document).on('click', '.delete-form', function(e){
     }
 });
 
+// Удаление блока услуги внутри квитанции
+$(document).on('click', '.delete-form-invoice', function(e){
+    if (confirm('Удалить?')) {
+        e.preventDefault();
+        $(this).parent().find('input[type=checkbox]').attr('checked','checked');
+        $(this).parents('.form-service-invoice').remove();
+    }
+});
+
 function confirmDelete(){
     if(confirm("Вы уверены, что хотите удалить этот элемент?")){
         return true;

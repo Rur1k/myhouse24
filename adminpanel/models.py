@@ -307,6 +307,7 @@ class Invoice(models.Model):
     date_first = models.DateField(null=True, blank=True)
     date_last = models.DateField(null=True, blank=True)
     sum = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, blank=True)
+    counters_id = models.TextField(null=True, blank=True)
 
 class ServiceIsInvoice(models.Model):
     id = models.AutoField(unique=True, primary_key=True)

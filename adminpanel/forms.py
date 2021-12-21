@@ -809,10 +809,15 @@ class InvoiceForm(forms.ModelForm):
             'tariff',
             'date_first',
             'date_last',
+            'counters_id',
         ]
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control'
+            }),
+            'counters_id': forms.TextInput(attrs={
+                'id': 'list_counter_id',
+                'class': 'form-control',
             }),
             'date': forms.DateInput(attrs={
                 'type': 'date',
@@ -845,6 +850,7 @@ class InvoiceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.instance.id:
+
             if self.initial['number'] is None:
                 self.initial['number'] = generationNumber(Invoice)
             self.initial['date'] = self.instance.date.isoformat()
@@ -861,6 +867,8 @@ class InvoiceForm(forms.ModelForm):
             if self.data.get('flat') != self.instance.flat:
                 if self.data.get('house'):
                     self.fields['flat'].queryset = Flat.objects.filter(house=self.data.get('house'))
+
+
         else:
             self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.fields['number'].initial = generationNumber(Invoice)

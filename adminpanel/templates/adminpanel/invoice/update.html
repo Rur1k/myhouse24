@@ -180,7 +180,7 @@
                             <td scope="row">{{ obj.price }}</td>
                             <td scope="row">{{ obj.sum }}</td>
                             <td scope="row">
-                                <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
+                                <button type="button" class="btn btn-default btn-sm delete-form-invoice" title="Удалить">
                                     <i class="fa fa-trash">
                                         <div hidden="hidden">
                                             {{ obj.DELETE }}
@@ -199,7 +199,7 @@
                             <td scope="row">{{ service.empty_form.price }}</td>
                             <td scope="row">{{ service.empty_form.sum }}</td>
                             <td scope="row">
-                                <button type="button" class="btn btn-default btn-sm delete-form" title="Удалить">
+                                <button type="button" class="btn btn-default btn-sm delete-form-invoice" title="Удалить">
                                     <i class="fa fa-trash">
                                         <div class="hidden">
                                             {{ service.empty_form.DELETE }}
@@ -210,6 +210,7 @@
                         </tr>
                         <tr>
                             <td colspan="4">
+                                <div hidden="hidden">{{ invoice.counters_id }}</div>
                                 <button id="add_service_is_invoice" type="button" class="btn btn-default btn-hover-change">Добавить услугу</button>
                                 <button id="add_service_on_tariff" type="button" class="btn btn-default btn-hover-change">Установить все услуги согласно тарифу</button>
                                 <button type="button" class="btn btn-default btn-hover-change">Добавить показания счетчиков</button>

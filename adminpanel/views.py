@@ -1190,12 +1190,12 @@ def invoice_create(request, invoice_id=None, flat_id=None):
     if request.method == "POST":
         form = InvoiceForm(request.POST)
         form_service = serviceFormSet(request.POST, prefix='service_invoice')
-        counter_list_id = request.POST.get('list_counter_id')
-
-
+        counter_list_id = form.cleaned_data['counters_id']
         sum = 0
+
         if form.is_valid():
             form.save()
+            counter_list_id = form.cleaned_data['counters_id']
             if form_service.is_valid():
                 for subform in form_service:
                     if 'DELETE' in subform.cleaned_data:
@@ -1207,7 +1207,16 @@ def invoice_create(request, invoice_id=None, flat_id=None):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
-            if sum_save.
+            print(sum_save.status.id)
+            if sum_save.status.id == 1:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=1)
+            elif sum_save.status.id == 2:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=2)
+            elif sum_save.status.id == 3:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=3)
 
             messages.success(request, f"Квитанция успешно создана.")
             return redirect('invoice')
@@ -1242,6 +1251,7 @@ def invoice_create(request, invoice_id=None, flat_id=None):
 def invoice_update(request, id):
     data_invoice = Invoice.objects.get(id=id)
     data_service = ServiceIsInvoice.objects.filter(invoice=id)
+
     serviceFormSet = modelformset_factory(ServiceIsInvoice, form=ServiceIsInvoiceForm, extra=0, can_delete=True)
     if data_invoice.flat:
         section = Section.objects.filter(house=data_invoice.flat.house)
@@ -1253,8 +1263,10 @@ def invoice_update(request, id):
         form = InvoiceForm(request.POST, instance=data_invoice)
         form_service = serviceFormSet(request.POST, prefix='service_invoice', queryset=data_service)
         sum = 0
+
         if form.is_valid():
             form.save()
+            counter_list_id = form.cleaned_data['counters_id']
             if form_service.is_valid():
                 for subform in form_service:
                     if 'DELETE' in subform.cleaned_data:
@@ -1276,6 +1288,16 @@ def invoice_update(request, id):
             sum_save = form.save(commit=False)
             sum_save.sum = sum
             sum_save.save()
+            if sum_save.status.id == 1:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=1)
+            elif sum_save.status.id == 2:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=2)
+            elif sum_save.status.id == 3:
+                for obj in counter_list_id.split(','):
+                    CounterData.objects.filter(id=obj).update(status=3)
+
             messages.success(request, f"Квитанция успешно отредактирована.")
             return redirect('invoice_info', id)
         else:
