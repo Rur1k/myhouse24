@@ -5,7 +5,7 @@
 {% block page_name %}Печатная форма документа{% endblock %}
 {% block mini_page_name %}
     <li><a href="{% url 'invoice' %}">Квитанции</a></li>
-    <li><a href="{% url 'invoice_info' invoice.id %}">Квитанция №{{ invoice.instance.number }}</a></li>
+    <li><a href="{% url 'invoice_info' invoice.id %}">Квитанция №{{ invoice.number }}</a></li>
     <li class="active">Печатная форма документа</li>
 {% endblock %}
 {% block content %}
@@ -24,7 +24,7 @@
     <div class="box">
         <div class="box-header with-border text-right">
                 <h4 class="pull-left">Список шаблонов</h4>
-                <a  href="" class="btn btn-default btn-sm">
+                <a  href="{% url 'invoice_template' %}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Настройка шаблонов</span>
                     <i class="fa fa-copy visible-xs" aria-hidden="true"></i>
                 </a>

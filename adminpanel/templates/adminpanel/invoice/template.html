@@ -1,0 +1,61 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+{%block invoice%}class="active"{%endblock%}
+{% block title %}Настройка шаблонов{% endblock %}
+{% block page_name %}Настройка шаблонов{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'invoice' %}">Квитанции</a></li>
+    <li class="active">Настройка шаблонов</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box">
+        <div class="box-header with-border text-right">
+            <h4 class="pull-left">Список шаблонов</h4>
+        </div>
+        <div class="box-body">
+            <div class="col-md-12 margin-bottom-20">
+                {% for obj in templates %}
+                <div class="template col-md-7">
+                    <p>{{ obj.name }} <span class="text-bold">(по-умолчанию)</span></p>
+                    <a href="{{ obj.document.url }}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
+                    <a href="" class="text-success">• Назначить шаблоном по умоланию</a>
+                    <a href="" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                </div>
+                {% endfor %}
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="col-md-12 margin-bottom-15">
+                            <label>Загрузить пользовательский шаблон</label>
+                            {{ template.document }}
+                        </div>
+                        <div class="col-md-12 margin-bottom-20">
+                            <label>Название</label>
+                            {{ template.name }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="form-group">
+                        <a href="" class="btn btn-default">Отменить</a>
+                        <button type="submit" name="save" class="btn btn-success">Сохранить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</form>
+{% endblock %}

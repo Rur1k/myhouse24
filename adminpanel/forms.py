@@ -965,6 +965,24 @@ class ServiceIsInvoiceForm(forms.ModelForm):
     #         unit_id = SettingService.objects.get(id=service_id).unit.id
     #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
 
+class TemplatePrintInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = TemplatePrintInvoice
+        fields = [
+            'id',
+            'name',
+            'document',
+            'is_default',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'document': forms.FileInput(attrs={}),
+            'is_default': forms.CheckboxInput(attrs={
+            }),
+        }
+
 # Формы для заявок мастера
 class MasterRequestForm(forms.ModelForm):
     class Meta:

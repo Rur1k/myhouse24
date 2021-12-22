@@ -1371,6 +1371,23 @@ def invoice_print(request, id):
     }
     return render(request, 'adminpanel/invoice/print.html', data)
 
+def invoice_template(request):
+    templates = TemplatePrintInvoice.objects.all()
+
+    if request.method == "POST":
+        form = TemplatePrintInvoiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return  redirect('invoice_template')
+    else:
+        form = TemplatePrintInvoiceForm()
+
+    data = {
+        'template': form,
+        'templates': templates
+    }
+    return render(request, 'adminpanel/invoice/template.html', data)
+
 # Заявки на вызов мастера
 def master_request(request):
     data = {

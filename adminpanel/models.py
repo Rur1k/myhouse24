@@ -317,7 +317,7 @@ class ServiceIsInvoice(models.Model):
     sum = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
     consumption = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, blank=True)
 
-class PatternPrintInvoice(models.Model):
+class TemplatePrintInvoice(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField(default='', max_length=64, null=True, blank=True)
     document = models.FileField(upload_to='static/adminpanel/doc/invoice', null=True, blank=True)
