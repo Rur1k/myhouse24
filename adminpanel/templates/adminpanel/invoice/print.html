@@ -31,9 +31,15 @@
         </div>
         <div class="box-body">
             <div class="col-md-12">
+                {% for obj in templates %}
                 <div class="radio">
-                    <label><input type="radio" name="optradio" checked>первый (по-умолчанию)</label>
+                    {% if  obj.is_default == 1 %}
+                    <label><input type="radio" name="optradio" value="{{ obj.id }}" checked>{{ obj.name }} (по-умолчанию)</label>
+                    {% else %}
+                    <label><input type="radio" name="optradio" value="{{ obj.id }}">{{ obj.name }}</label>
+                    {% endif %}
                 </div>
+                {% endfor %}
             </div>
             <div class="col-md-12 text-right">
                 <div class="form-group">

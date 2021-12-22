@@ -1360,7 +1360,7 @@ def invoice_info(request, id):
     return render(request, 'adminpanel/invoice/info.html', data)
 
 def invoice_print(request, id):
-
+    templates = TemplatePrintInvoice.objects.all()
     if request.method == "POST":
         pass
     else:
@@ -1368,6 +1368,7 @@ def invoice_print(request, id):
 
     data = {
         'invoice': Invoice.objects.get(id=id),
+        'templates': templates
     }
     return render(request, 'adminpanel/invoice/print.html', data)
 
