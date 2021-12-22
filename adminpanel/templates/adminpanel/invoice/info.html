@@ -41,7 +41,7 @@
         <div class="box">
             <div class="box-header with-border text-right">
                 <h3 class="pull-left">Просмотр квитанции</h3>
-                <a  href="" class="btn btn-default btn-sm">
+                <a  href="{% url 'invoice_print' invoice.id %}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Печать</span>
                     <i class="fa fa-copy visible-xs" aria-hidden="true"></i>
                 </a>

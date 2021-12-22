@@ -1,3 +1,6 @@
+import csv
+import time
+
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -884,6 +887,24 @@ def select_phone_account(request):
     flat = Flat.objects.filter(id=flat_id).first()
     return render(request, 'adminpanel/account/ajax/select-phone.html', { 'user':flat.owner })
 
+def export_account_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    timestamp = int(time.time())
+    response['Content-Disposition'] = f'attachment; filename="account_{timestamp}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Лицевой счет', 'Статус', 'Дома', 'Секция', 'Квартира', 'Владелец', 'Остаток'])
+
+    accounts = Account.objects.all().annotate(
+        saldo=Coalesce(Sum('accounttransaction__sum'), Decimal(0)) - Coalesce(Sum('flat__invoice__sum'), Decimal(0)))
+    for obj in accounts:
+        if obj.flat:
+            writer.writerow([obj.number, obj.status, obj.flat.house, obj.flat.section, obj.flat.number_flat, obj.flat.owner, obj.saldo])
+        else:
+            writer.writerow(
+                [obj.number, obj.status, '', '', '', '', obj.saldo])
+    return response
+
 # Бизнес логика "Касса"
 def account_transaction(request, account_id=None):
     if account_id:
@@ -1259,7 +1280,6 @@ def invoice_update(request, id):
         section = None
 
     if request.method == "POST":
-        print(request.POST)
         form = InvoiceForm(request.POST, instance=data_invoice)
         form_service = serviceFormSet(request.POST, prefix='service_invoice', queryset=data_service)
         sum = 0
@@ -1338,6 +1358,18 @@ def invoice_info(request, id):
         'services': ServiceIsInvoice.objects.filter(invoice=id)
     }
     return render(request, 'adminpanel/invoice/info.html', data)
+
+def invoice_print(request, id):
+
+    if request.method == "POST":
+        pass
+    else:
+        pass
+
+    data = {
+        'invoice': Invoice.objects.get(id=id),
+    }
+    return render(request, 'adminpanel/invoice/print.html', data)
 
 # Заявки на вызов мастера
 def master_request(request):

@@ -62,6 +62,7 @@ urlpatterns = [
     path('account/ajax/order_flat_account', views.order_flat_account, name='order_flat_account'),
     path('account/ajax/select_username_account', views.select_username_account, name='select_username_account'),
     path('account/ajax/select_phone_account', views.select_phone_account, name='select_phone_account'),
+    path('account/export/csv', views.export_account_csv, name='export_account_csv'),
     # Касса
     path('account-transaction', views.account_transaction, name='account_transaction'),
     path('account-transaction/account_id=<int:account_id>', views.account_transaction, name='account_transaction_to_account'),
@@ -101,6 +102,7 @@ urlpatterns = [
     path('invoice/delete/<int:id>', views.invoice_delete, name='invoice_delete'),
     path('invoice/delete/all', views.invoice_delete, name='invoice_delete_all'),
     path('invoice/update/<int:id>', views.invoice_update, name='invoice_update'),
+    path('invoice/print/<int:id>', views.invoice_print, name='invoice_print'),
     # Заявки мастера
     path('master-request', views.master_request, name='master_request'),
     path('master-request/create', views.master_request_create, name='master_request_create'),
