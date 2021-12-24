@@ -30,23 +30,25 @@
                 </a>
         </div>
         <div class="box-body">
-            <div class="col-md-12">
-                {% for obj in templates %}
-                <div class="radio">
-                    {% if  obj.is_default == 1 %}
-                    <label><input type="radio" name="optradio" value="{{ obj.id }}" checked>{{ obj.name }} (по-умолчанию)</label>
-                    {% else %}
-                    <label><input type="radio" name="optradio" value="{{ obj.id }}">{{ obj.name }}</label>
-                    {% endif %}
+            <form method="post">
+                <div class="col-md-12">
+                    {% for obj in templates %}
+                    <div class="radio">
+                        {% if  obj.is_default == 1 %}
+                        <label><input type="radio" name="template" value="{{ obj.id }}" checked>{{ obj.name }} (по-умолчанию)</label>
+                        {% else %}
+                        <label><input type="radio" name="template" value="{{ obj.id }}">{{ obj.name }}</label>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            <div class="col-md-12 text-right">
-                <div class="form-group">
-                    <button type="submit" name="save" class="btn btn-success">Скачать</button>
-                    <a href="" class="btn btn-default">Отправить на e-mail</a>
+                <div class="col-md-12 text-right">
+                    <div class="form-group">
+                        <button type="submit" name="save" class="btn btn-success">Скачать</button>
+                        <a href="" class="btn btn-default">Отправить на e-mail</a>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </form>

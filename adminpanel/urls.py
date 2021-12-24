@@ -31,6 +31,7 @@ urlpatterns = [
     path('setting/user-admin/create', views.setting_user_admin_create, name='setting_user_create'),
     path('setting/user-admin/update/<int:id>', views.setting_user_admin_update, name='setting_user_update'),
     path('setting/user-admin/delete/<int:id>', views.setting_user_admin_delete, name='setting_user_delete'),
+    path('setting/user-admin/role', views.setting_role, name='setting_role'),
     path('setting/pay-company', views.setting_pay_company, name='setting_pay_company'),
     path('setting/transaction-purpose', views.setting_transaction_purpose, name='setting_transaction_purpose'),
     path('setting/transaction/create', views.setting_transaction_create, name='setting_transaction_create'),

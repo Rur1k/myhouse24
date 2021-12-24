@@ -1,5 +1,8 @@
 import csv
 import time
+import xlsxwriter
+import io
+import xlrd
 
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -572,6 +575,13 @@ def setting_transaction_delete(request, id):
     if obj:
         obj.delete()
     return redirect('setting_transaction_purpose')
+
+def setting_role(request):
+    data = {
+        'role': UserRole.objects.all()
+    }
+    return render(request, 'adminpanel/settings/role.html', data)
+
 
 # Бизнес логика "Владельцы квартир"
 def apartment_owner(request):
@@ -1211,7 +1221,6 @@ def invoice_create(request, invoice_id=None, flat_id=None):
     if request.method == "POST":
         form = InvoiceForm(request.POST)
         form_service = serviceFormSet(request.POST, prefix='service_invoice')
-        counter_list_id = form.cleaned_data['counters_id']
         sum = 0
 
         if form.is_valid():
@@ -1359,10 +1368,48 @@ def invoice_info(request, id):
     }
     return render(request, 'adminpanel/invoice/info.html', data)
 
+def get_simple_table_data():
+    # Simulate a more complex table read.
+    return [[1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]]
+
 def invoice_print(request, id):
     templates = TemplatePrintInvoice.objects.all()
     if request.method == "POST":
-        pass
+        temp_id = request.POST.get('template')
+        if temp_id:
+            temp = TemplatePrintInvoice.objects.get(id=temp_id)
+
+            input_excel = temp.document
+
+
+            print(input_excel.read())
+
+            # output = io.BytesIO()
+            #
+            # workbook = xlsxwriter.Workbook(temp.document.path)
+            # worksheet = workbook.add_worksheet()
+            #
+            # data = get_simple_table_data()
+            #
+            # for row_num, columns in enumerate(data):
+            #     for col_num, cell_data in enumerate(columns):
+            #         worksheet.write(row_num, col_num, cell_data)
+            #
+            # workbook.close()
+            #
+            # output.seek(0)
+            #
+            # filename = 'django_simple.xlsx'
+            # response = HttpResponse(
+            #     output,
+            #     content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            # )
+            # response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            #
+            # return response
+
     else:
         pass
 

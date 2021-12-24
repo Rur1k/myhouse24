@@ -208,7 +208,7 @@
                             <ul class="treeview-menu">
                                 <li {%block set_service%}{%endblock%}><a href="{% url 'setting_service' %}"><i class="fa fa-briefcase"></i> Услуги</a></li>
                                 <li {%block set_tariffs%}{%endblock%}><a href="{% url 'setting_tariffs' %}"><i class="fa fa-money"></i> Тарифы</a></li>
-                                <li {%block set_role%}{%endblock%}><a href=""><i class="fa fa-user"></i> Роли</a></li>
+                                <li {%block set_role%}{%endblock%}><a href="{% url 'setting_role' %}"><i class="fa fa-user"></i> Роли</a></li>
                                 <li {%block set_user_admin%}{%endblock%}><a href="{% url 'setting_user_admin' %}"><i class="fa fa-user-plus"></i> Пользователи</a></li>
                                 <li {%block set_pay%}{%endblock%}><a href="{% url 'setting_pay_company' %}"><i class="fa fa-credit-card"></i> Платежные реквизиты</a></li>
                                 <li {%block set_purpose%}{%endblock%}><a href="{% url 'setting_transaction_purpose' %}"><i class="fa fa-list-ol"></i> Статьи платежей</a></li>
