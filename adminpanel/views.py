@@ -577,9 +577,29 @@ def setting_transaction_delete(request, id):
     return redirect('setting_transaction_purpose')
 
 def setting_role(request):
+    role = UserRole.objects.all().order_by('id')
+    formset = modelformset_factory(UserRole, form=UserRoleForm, extra=0)
+
+    if request.method == "POST":
+        form = formset(request.POST, queryset=role)
+        if form.is_valid():
+            for subform in form:
+                subform.save()
+                # is_admin = subform.save(commit=False)
+                # if is_admin.id == 1:
+                #     continue
+                # else:
+                #     is_admin.save()
+            messages.success(request, 'Уровнь доступа обновлен', extra_tags='alert')
+        else:
+            print(form.errors)
+        return redirect('setting_role')
+    else:
+        form = formset(queryset=role)
     data = {
-        'role': UserRole.objects.all()
+        'role': form,
     }
+
     return render(request, 'adminpanel/settings/role.html', data)
 
 
@@ -1630,7 +1650,6 @@ def website_about(request):
     document_from = modelformset_factory(Document, form=DocumentForm, extra=0, can_delete=True)
 
     if request.method == "POST":
-        print(request.POST)
         main_info_form = AboutPageInfoForm(request.POST, request.FILES, instance=main_info)
         dop_info_form = AboutPageDopInfoForm(request.POST, request.FILES, instance=dop_info)
         gallery_from = PhotoGalleryForm(request.POST, request.FILES)

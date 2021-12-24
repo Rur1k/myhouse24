@@ -122,66 +122,87 @@
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
+                        {% if request.user.useradmin.role.statistics == 1%}
                         <li {%block statics%}{%endblock%} >
                             <a href="{% url 'admin' %}">
                                 <i class="fa fa-line-chart"></i>
                                 <span>Статистика</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.account_transaction == 1%}
                         <li {%block account_transaction%}{%endblock%}>
                             <a href="{% url 'account_transaction' %}">
                                 <i class="fa fa-dollar"></i>
                                 <span>Касса</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.invoice == 1%}
                         <li {%block invoice%}{%endblock%}>
                             <a href="{% url 'invoice' %}">
                                 <i class="fa fa-files-o"></i>
                                 <span>Квитанции на оплату</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.account == 1%}
                         <li {%block account%}{%endblock%}>
                             <a href="{% url 'account' %}">
                                 <i class="fa fa-credit-card"></i>
                                 <span>Лицевые счета</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.flat == 1%}
                         <li {%block flat%}{%endblock%}>
                             <a href="{% url 'flat' %}">
                                 <i class="fa fa-key"></i>
                                 <span>Квартиры</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.owner == 1%}
                         <li {%block owner%}{%endblock%}>
                             <a href="{% url 'apartment_owner' %}">
                                 <i class="fa fa-users"></i>
                                 <span>Владельцы квартир</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.house == 1%}
                         <li {%block house%}{%endblock%}>
                             <a href="{% url 'house' %}">
                                 <i class="fa fa-building"></i>
                                 <span>Дома</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.message == 1%}
                         <li {%block mymessage%}{%endblock%}>
                             <a href="{% url 'user_message' %}">
                                 <i class="fa fa-envelope-o"></i>
                                 <span>Сообщения</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.master_request == 1%}
                         <li {%block master_request%}{%endblock%}>
                             <a href="{% url 'master_request' %}">
                                 <i class="fa fa-wrench"></i>
                                 <span>Заявки на вызов мастера</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.counter_data == 1%}
                         <li {%block counter_data%}{%endblock%}>
                             <a href="{% url 'counter_data_counters' %}">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Показания счетчиков</span>
                             </a>
                         </li>
+                        {% endif %}
+                        {% if request.user.useradmin.role.site_management == 1%}
                         <li {%block web%}class="treeview"{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-desktop"></i>
@@ -197,6 +218,7 @@
                                 <li {%block web_contact%}{%endblock%}><a href="{% url 'website_contact' %}"><i class="fa fa-circle-o"></i> Контакты</a></li>
                             </ul>
                         </li>
+                        {% endif %}
                         <li {%block set%}class="treeview"{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-cogs"></i>
@@ -206,12 +228,24 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
+                                {% if request.user.useradmin.role.service == 1%}
                                 <li {%block set_service%}{%endblock%}><a href="{% url 'setting_service' %}"><i class="fa fa-briefcase"></i> Услуги</a></li>
+                                {% endif %}
+                                {% if request.user.useradmin.role.tariff == 1%}
                                 <li {%block set_tariffs%}{%endblock%}><a href="{% url 'setting_tariffs' %}"><i class="fa fa-money"></i> Тарифы</a></li>
+                                {% endif %}
+                                {% if request.user.useradmin.role.role == 1%}
                                 <li {%block set_role%}{%endblock%}><a href="{% url 'setting_role' %}"><i class="fa fa-user"></i> Роли</a></li>
+                                {% endif %}
+                                {% if request.user.useradmin.role.user_admin == 1%}
                                 <li {%block set_user_admin%}{%endblock%}><a href="{% url 'setting_user_admin' %}"><i class="fa fa-user-plus"></i> Пользователи</a></li>
+                                {% endif %}
+                                {% if request.user.useradmin.role.pay_company == 1%}
                                 <li {%block set_pay%}{%endblock%}><a href="{% url 'setting_pay_company' %}"><i class="fa fa-credit-card"></i> Платежные реквизиты</a></li>
+                                {% endif %}
+                                {% if request.user.useradmin.role.transaction_purpose == 1%}
                                 <li {%block set_purpose%}{%endblock%}><a href="{% url 'setting_transaction_purpose' %}"><i class="fa fa-list-ol"></i> Статьи платежей</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>

@@ -20,6 +20,8 @@
 {% endif %}
 <div class="box" style="overflow-x: auto">
     <form method="post">
+        {% csrf_token %}
+        {{ role.management_form }}
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr>
@@ -40,28 +42,30 @@
                 <th class="text-center">Роли</th>
                 <th class="text-center">Пользователи</th>
                 <th class="text-center">Платежные реквизиты</th>
+                <th class="text-center">Статьи платежей</th>
             </tr>
             </thead>
             <tbody>
             {% for obj in role %}
             <tr>
-                <td>{{ obj.name }}</td>
-                <td class="text-center"><input type="checkbox" name="site[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="accountTransaction[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="invoice[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="account[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="flat[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="user[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="house[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="message[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="masterRequest[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="counterData[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="website[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="service[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="tariff[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="role[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="userAdmin[admin]" value=""></td>
-                <td class="text-center"><input type="checkbox" name="payCompany[admin]" value=""></td>
+                <td><div hidden="hidden>">{{ obj.name }} {{ obj.id }}</div>{{ obj.instance.name }}</td>
+                <td class="text-center">{{ obj.statistics }}</td>
+                <td class="text-center">{{ obj.account_transaction }}</td>
+                <td class="text-center">{{ obj.invoice }}</td>
+                <td class="text-center">{{ obj.account }}</td>
+                <td class="text-center">{{ obj.flat }}</td>
+                <td class="text-center">{{ obj.owner }}</td>
+                <td class="text-center">{{ obj.house }}</td>
+                <td class="text-center">{{ obj.message }}</td>
+                <td class="text-center">{{ obj.master_request }}</td>
+                <td class="text-center">{{ obj.counter_data }}</td>
+                <td class="text-center">{{ obj.site_management }}</td>
+                <td class="text-center">{{ obj.service }}</td>
+                <td class="text-center">{{ obj.tariff }}</td>
+                <td class="text-center">{{ obj.role }}</td>
+                <td class="text-center">{{ obj.user_admin }}</td>
+                <td class="text-center">{{ obj.pay_company }}</td>
+                <td class="text-center">{{ obj.transaction_purpose }}</td>
             </tr>
             {% endfor %}
             </tbody>

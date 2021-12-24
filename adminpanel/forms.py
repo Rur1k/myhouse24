@@ -178,7 +178,6 @@ class SettingServiceIsTariffForm(forms.ModelForm):
     #         unit_id = SettingService.objects.get(id=service_id).unit.id
     #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
 
-
 class UserAdminForm(forms.ModelForm):
     password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
@@ -287,7 +286,6 @@ class UserAdminForm(forms.ModelForm):
                 raise forms.ValidationError('Поле "Пароль" не может быть пустым')
         return self.cleaned_data
 
-
 class SettingPayCompanyForm(forms.ModelForm):
     class Meta:
         model = SettingPayCompany
@@ -302,7 +300,6 @@ class SettingPayCompanyForm(forms.ModelForm):
             })
         }
 
-
 class SettingTransactionPurposeForm(forms.ModelForm):
     class Meta:
         model = SettingTransactionPurpose
@@ -315,6 +312,36 @@ class SettingTransactionPurposeForm(forms.ModelForm):
                 'class': 'form-control',
             })
         }
+
+class UserRoleForm(forms.ModelForm):
+    class Meta:
+        model = UserRole
+        fields = [ 'id', 'name', 'statistics', 'account_transaction', 'invoice',
+                   'account', 'flat', 'owner', 'house', 'message', 'master_request', 'counter_data',
+                   'site_management', 'service', 'tariff', 'role', 'user_admin', 'pay_company', 'transaction_purpose']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'statistics': forms.CheckboxInput(attrs={}),
+            'account_transaction': forms.CheckboxInput(attrs={}),
+            'invoice': forms.CheckboxInput(attrs={}),
+            'account': forms.CheckboxInput(attrs={}),
+            'flat': forms.CheckboxInput(attrs={}),
+            'owner': forms.CheckboxInput(attrs={}),
+            'house': forms.CheckboxInput(attrs={}),
+            'message': forms.CheckboxInput(attrs={}),
+            'master_request': forms.CheckboxInput(attrs={}),
+            'counter_data': forms.CheckboxInput(attrs={}),
+            'site_management': forms.CheckboxInput(attrs={}),
+            'service': forms.CheckboxInput(attrs={}),
+            'tariff': forms.CheckboxInput(attrs={}),
+            'role': forms.CheckboxInput(attrs={}),
+            'user_admin': forms.CheckboxInput(attrs={}),
+            'pay_company': forms.CheckboxInput(attrs={}),
+            'transaction_purpose': forms.CheckboxInput(attrs={}),
+        }
+
 
 # Формы для владельцев квартир
 class ApartmentOwnerForm(forms.ModelForm):

@@ -104,7 +104,23 @@ class SettingTransactionPurpose(models.Model):
 class UserRole(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
     name = models.CharField(max_length=64, null=True, blank=True)
-    access_lvl = models.CharField(max_length=64, null=True, blank=True)
+    statistics = models.BooleanField(null=True, blank=True, default=False)
+    account_transaction = models.BooleanField(null=True, blank=True, default=False)
+    invoice = models.BooleanField(null=True, blank=True, default=False)
+    account = models.BooleanField(null=True, blank=True, default=False)
+    flat = models.BooleanField(null=True, blank=True, default=False)
+    owner = models.BooleanField(null=True, blank=True, default=False)
+    house = models.BooleanField(null=True, blank=True, default=False)
+    message = models.BooleanField(null=True, blank=True, default=False)
+    master_request = models.BooleanField(null=True, blank=True, default=False)
+    counter_data = models.BooleanField(null=True, blank=True, default=False)
+    site_management = models.BooleanField(null=True, blank=True, default=False)
+    service = models.BooleanField(null=True, blank=True, default=False)
+    tariff = models.BooleanField(null=True, blank=True, default=False)
+    role = models.BooleanField(null=True, blank=True, default=False)
+    user_admin = models.BooleanField(null=True, blank=True, default=False)
+    pay_company = models.BooleanField(null=True, blank=True, default=False)
+    transaction_purpose = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
         return self.name
