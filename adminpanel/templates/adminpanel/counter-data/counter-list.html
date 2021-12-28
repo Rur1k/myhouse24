@@ -52,17 +52,16 @@
                 <td>{{ obj.number }}</td>
                 <td>
                     {% if obj.status %}
-                    {% if obj.status.id == 1 %}
-                    <small class="label label-warning">
+                        {% if obj.status.id == 1 %}
+                            <label class="label label-warning">{{ obj.status }}</label>
                         {% elif obj.status.id == 2 or  obj.status.id == 3%}
-                        <small class="label label-success">
-                            {% else %}
-                            <small class="label label-primary">
-                                {% endif %}
-                                {{ obj.status }}</small>
-                            {% else %}
-                            не задано
-                            {% endif %}
+                            <label class="label label-success">{{ obj.status }}</label>
+                        {% else %}
+                            <label class="label label-primary">{{ obj.status }}</label>
+                        {% endif %}
+                    {% else %}
+                         не задано
+                    {% endif %}
                 </td>
                 <td>{{ obj.date | date:'d.m.Y' }}</td>
                 <td>{{ obj.date | date:'F Y'}}</td>

@@ -1187,6 +1187,35 @@ def select_account_trans(request):
             account.append(obj.account)
     return render(request, 'adminpanel/account-transaction/ajax/select_account.html', { 'account':account })
 
+def export_account_transaction_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    timestamp = int(time.time())
+    response['Content-Disposition'] = f'attachment; filename="account_transaction_{timestamp}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['#', 'Дата', 'Приход/Расход', 'Статус', 'Статья', 'Квитанция', 'Услуга', 'Сумма', 'Валюта', 'Владелец квартиры', 'Лицевой счет'])
+
+    AccountTransactionList = AccountTransaction.objects.all().order_by('-id')
+    for obj in AccountTransactionList:
+        if obj.is_complete == 1:
+            is_complete = 'Проведен'
+        else:
+            is_complete = 'Непроведен'
+        if obj.owner is None:
+            owner = ''
+        else:
+            owner = obj.owner
+        if obj.transaction is None:
+            transaction = ''
+        else:
+            transaction = obj.transaction
+        if obj.account is None:
+            account = ''
+        else:
+            account = obj.account
+        writer.writerow([obj.number, obj.date, obj.type, is_complete, transaction, '', '', obj.sum, 'UAN', owner, account])
+    return response
+
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
     if request.user.useradmin.role.counter_data == 1:
