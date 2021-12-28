@@ -1,0 +1,89 @@
+{% extends 'personalarea/base.html' %}
+{% load static %}
+{%block summary%}class="active"{%endblock%}
+{% block title %}Сводка - {{ flat }} {% endblock %}
+{% block page_name %}Сводка - {{ flat }}{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Сводка - {{ flat }}</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    {% if flat.saldo < 0 %}
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ flat.saldo }} грн</h3>
+                            <p>Баланс по квартире</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-money"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3>{{ flat.saldo }} грн</h3>
+                            <p>Баланс по квартире</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-money"></i>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            {% if flat.account %}
+                            <h3>{{ flat.account.number }}</h3>
+                            {% else %}
+                            <h3>Нет счета</h3>
+                            {% endif %}
+                            <p>Лицевой счет</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-yellow overflow-hidden">
+                        <div class="inner">
+                            <h3>0</h3>
+                            <p>Средний расход за месяц</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-pie-chart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box" style="overflow-x: auto">
+    <div class="col-md-12">
+        <h4>Диаграмма расходов</h4>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="col-md-12">
+        <h4>Диаграмма расходов по месяцам за год</h4>
+    </div>
+</div>
+
+{% endblock %}

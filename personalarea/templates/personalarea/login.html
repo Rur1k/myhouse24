@@ -43,8 +43,8 @@
             </div>
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs nav-justified">
-                    <li class="nav-item"><a href="{% url 'login_user' %}">Для жильца</a></li>
-                    <li class="nav-item active"><a href="{% url 'login_admin' %}">Для администрации</a></li>
+                    <li class="nav-item active"><a href="">Для жильца</a></li>
+                    <li class="nav-item"><a href="{% url 'login_admin' %}">Для администрации</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -52,7 +52,7 @@
 
                             <div id="preloader"></div>
 
-                            <p class="login-box-msg">Вход в панель управления</p>
+                            <p class="login-box-msg">Вход в кабинет пользователя</p>
 
                             <form id="login-form" action="" method="post">
                                 {% csrf_token %}
