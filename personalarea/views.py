@@ -63,5 +63,5 @@ def cabinet_invoices(request):
         'invoices': invoices,
         'flats': Flat.objects.filter(owner=request.user.id)
     }
-    return render(request, 'personalarea/summary.html', data)
+    return render(request, 'personalarea/invoices.html', data)
 

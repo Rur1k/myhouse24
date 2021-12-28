@@ -145,7 +145,7 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href=""><i class="fa fa-files-o"></i> Все квитанции</a></li>
+                                <li><a href="{% url 'cabinet_invoices' %}"><i class="fa fa-files-o"></i> Все квитанции</a></li>
                                 {% for obj in flats %}
                                 <li><a href=""><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
                                 {% endfor %}
