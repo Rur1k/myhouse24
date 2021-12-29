@@ -7,6 +7,7 @@ urlpatterns = [
     path('invoices', views.cabinet_invoices, name='cabinet_invoices'),
     path('invoices/flat_id=<int:flat_id>', views.cabinet_invoices, name='cabinet_invoices_to_flat'),
     path('invoice/<int:id>', views.cabinet_invoice_info, name='cabinet_invoice_info'),
+    path('tariff/flat_id=<int:flat_id>', views.cabinet_tariff, name='cabinet_tariff'),
 
 # Авторизация
     path('login', views.login_user, name='login_user'),

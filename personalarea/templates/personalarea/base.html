@@ -161,7 +161,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 {% for obj in flats %}
-                                <li><a href=""><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
+                                <li><a href="{% url 'cabinet_tariff' obj.id %}"><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
                                 {% endfor %}
                             </ul>
                         </li>
