@@ -126,3 +126,10 @@ def cabinet_message_info(request, id):
     }
     return render(request, 'personalarea/message_info.html', data)
 
+def cabinet_master_request(request):
+    data = {
+        'master_request': MasterRequest.objects.filter(owner=request.user.id),
+        'flats': Flat.objects.filter(owner=request.user.id)
+    }
+    return render(request, 'personalarea/master_request.html', data)
+

@@ -10,6 +10,7 @@ urlpatterns = [
     path('tariff/flat_id=<int:flat_id>', views.cabinet_tariff, name='cabinet_tariff'),
     path('message', views.cabinet_messages, name='cabinet_messages'),
     path('message/<int:id>', views.cabinet_message_info, name='cabinet_message_info'),
+    path('master-request', views.cabinet_master_request, name='cabinet_master_request'),
 
 # Авторизация
     path('login', views.login_user, name='login_user'),

@@ -1,0 +1,70 @@
+{% extends 'personalarea/base.html' %}
+{% load static %}
+{%block cabinet_master_request%}class="active"{%endblock%}
+{% block title %}Вызов мастера{% endblock %}
+{% block page_name %}Вызов мастера{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Вызов мастера</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group pull-right margin-bottom">
+            <a class="btn btn-success" href="" >Создать заявку</a>
+        </div>
+    </div>
+</div>
+<div class="box" style="overflow-x: auto">
+    <div class="grid-view">
+        <table id="CabinetRequestTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:70px">№ заявки</th>
+                <th class="col" style="min-width: 100px">Тип мастера</th>
+                <th class="col" style="min-width:200px">Описание</th>
+                <th class="col" style="min-width:100px">Удобное время</th>
+                <th class="col" style="min-width: 100px">Статус</th>
+                <th class="col" style="min-width:50px"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in master_request %}
+            <tr>
+                <td>{{ obj.id }}</td>
+                <td>{{ obj.type_master }}</td>
+                <td>{{ obj.description }}</td>
+                <td>{{ obj.date|date:'d.m.Y' }} - {{ obj.time }}</td>
+                <td>
+                    {% if obj.status.id == 1 %}
+                    <label class="label label-primary">{{ obj.status }}</label>
+                    {% elif obj.status.id == 2 %}
+                    <label class="label label-warning">{{ obj.status }}</label>
+                    {% else %}
+                    <label class="label label-success">{{ obj.status }}</label>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group pull-center">
+                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
