@@ -1,10 +1,10 @@
-{% extends 'adminpanel/base.html' %}
+{% extends 'personalarea/base.html' %}
 {% load static %}
 {%block mymessage%}class="active"{%endblock%}
 {% block title %}Сообщение{% endblock %}
 {% block page_name %}Сообщение{% endblock %}
 {% block mini_page_name %}
-    <li><a href="{% url 'user_message' %}">Сообщения</a></li>
+    <li><a href="{% url 'cabinet_messages' %}">Сообщения</a></li>
     <li class="active">Сообщение</li>
 {% endblock %}
 {% csrf_token %}
@@ -29,11 +29,6 @@
         <div class="mailbox-read-message">
             {{ user_message.text | safe}}
         </div>
-    </div>
-    <div class="box-footer">
-        <a href="{% url 'user_message_one_delete' user_message.id %}" onclick="return confirmDelete()" data-confirm="Удалить?" data-method="post">
-            <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i> Удалить</button>
-        </a>
     </div>
 </div>
 

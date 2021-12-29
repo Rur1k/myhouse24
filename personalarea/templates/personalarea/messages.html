@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'personalarea/base.html' %}
+{% load static %}
+{%block cabinet_message%}class="active"{%endblock%}
+{% block title %}Сообщения{% endblock %}
+{% block page_name %}Сообщения{% endblock %}
+{% block mini_page_name %}
+    <li class="active">Сообщения</li>
+{% endblock %}
+{% csrf_token %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <input id="SearchMessage" type="search" class="form-control input-sm" placeholder="Поиск">
+    </div>
+    <div class="grid-view">
+        <table id="MessageTable" class="table table-striped table-bordered table-hover table_sort">
+            <thead>
+            <tr>
+                <th class="col" style="min-width:100px">От кого</th>
+                <th class="col" style="min-width: 100px">Тема</th>
+                <th class="col" style="min-width:100px">Дата</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in message_list %}
+            <tr>
+                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.sender }}</td>
+                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.title }}</td>
+                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.time }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-</body>
-</html>
+{% endblock %}

@@ -89,3 +89,40 @@ def cabinet_tariff(request, flat_id):
     }
     return render(request, 'personalarea/tariff.html', data)
 
+def cabinet_messages(request):
+    flats = Flat.objects.filter(owner=request.user.id)
+    flat_id = flats.values_list('id', flat=True)
+    flat_section = flats.values_list('section', flat=True)
+    flat_house = flats.values_list('house', flat=True)
+
+    message_list = []
+    all_message = Message.objects.filter(house=None, section=None, flat=None)
+    user_message = Message.objects.filter(user=request.user.id)
+    house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None)
+    section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None)
+    flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]))
+
+    for i in all_message:
+        message_list.append(i)
+    for i in user_message:
+        message_list.append(i)
+    for i in flat_message:
+        message_list.append(i)
+    for i in section_message:
+        message_list.append(i)
+    for i in house_message:
+        message_list.append(i)
+
+    data = {
+        'message_list': set(message_list),
+        'flats': flats
+    }
+    return render(request, 'personalarea/messages.html', data)
+
+def cabinet_message_info(request, id):
+    data = {
+        'user_message': Message.objects.get(id=id),
+        'flats': Flat.objects.filter(owner=request.user.id)
+    }
+    return render(request, 'personalarea/message_info.html', data)
+
