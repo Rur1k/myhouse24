@@ -21,6 +21,9 @@ $("document").ready(function() {
     FilterBase('#UserAdminTable', [1,3,4], [2,5], [0,6], undefined, undefined) // Пользователь - админ
     FilterBase('#RequestTable', [0,3,4,6], [2,5,7,8], [9], 1, undefined) // Заявки мастера
 
+    // Фильтры личного кабинета
+    FilterBase('#InvoiceUserCabinet', [], [2], [0,3], 1, undefined) // Заявки мастера
+
     var TableMessage = $('#MessageTable').DataTable({
         dom: 't',
         ordering: false,

@@ -10,11 +10,13 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
-from django.db.models import Max, Sum
+from django.db.models import Max, Sum, Q
 from django.db.models.functions import Coalesce
 from decimal import Decimal
 from .forms import LoginForm
 from adminpanel.models import *
+from operator import or_
+from functools import reduce
 
 
 # Логика входа в ЛК
@@ -56,12 +58,24 @@ def cabinet_summary(request, id):
     }
     return render(request, 'personalarea/summary.html', data)
 
-def cabinet_invoices(request):
-    invoices = Invoice.objects.filter()
-
+def cabinet_invoices(request, flat_id=None):
+    flats = Flat.objects.filter(owner=request.user.id)
+    if flat_id:
+        invoices = Invoice.objects.filter(flat=flat_id)
+    else:
+        flat_list = flats.values_list('id', flat=True)
+        invoices = Invoice.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_list)]))
     data = {
         'invoices': invoices,
-        'flats': Flat.objects.filter(owner=request.user.id)
+        'flats': flats
     }
     return render(request, 'personalarea/invoices.html', data)
+
+def cabinet_invoice_info(request, id):
+    data = {
+        'invoice': Invoice.objects.get(id=id),
+        'services': ServiceIsInvoice.objects.filter(invoice=id),
+        'flats': flats
+    }
+    return render(request, 'personalarea/invoice_info.html', data)
 

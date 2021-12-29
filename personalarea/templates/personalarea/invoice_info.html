@@ -1,0 +1,64 @@
+{% extends 'personalarea/base.html' %}
+{% load static %}
+{%block cabinet_invoice%}class="active"{%endblock%}
+{% block title %}Просмотр квитанции: #{{ invoice.number }} {% endblock %}
+{% block page_name %}Просмотр квитанции: #{{ invoice.number }}{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'cabinet_invoices' %}">Квитанции</a></li>
+    <li class="active">Просмотр квитанции: #{{ invoice.number }}</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<div class="box" style="overflow-x: auto">
+    <div class="box-header with-border pull-right">
+        <a class="btn btn-primary" href="">Распечатать</a>
+    </div>
+    <div class="grid-view">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered">
+                <thead>
+                <th>#</th>
+                <th>Услуга</th>
+                <th>Количество потребления(расход)</th>
+                <th>Ед. изм.</th>
+                <th>Цена за ед., грн</th>
+                <th>Стоимость, грн</th>
+                </thead>
+                <tbody>
+                {% for obj in services %}
+                <tr>
+                    <td></td>
+                    <td>{{ obj.service }}</td>
+                    <td>{{ obj.consumption }}</td>
+                    <td>{{ obj.service.unit }}</td>
+                    <td>{{ obj.price }}</td>
+                    <td class="info_sum">{{ obj.sum }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="5"></td>
+                    <td><b>Итоги: <span id="total_info_invoice"></span> грн. </b></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="box-footer with-border pull-right">
+        <a class="btn btn-warning" href="">Скачать в PDF</a>
+        <a class="btn btn-success" href="">Оплатить</a>
+    </div>
+</div>
+
+{% endblock %}

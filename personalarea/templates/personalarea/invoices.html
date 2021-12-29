@@ -23,7 +23,7 @@
         <a class="btn btn-default" href="{% url 'cabinet_invoices' %}">Очистить</a>
     </div>
     <div class="grid-view">
-        <table id="InvoiceUser" class="table table-striped table-bordered table-hover table_sort">
+        <table id="InvoiceUserCabinet" class="table table-striped table-bordered table-hover table_sort">
             <thead>
             <tr>
                 <th class="col" style="min-width:120px">#</th>
@@ -34,10 +34,18 @@
             </thead>
             <tbody>
             {% for obj in invoices %}
-            <tr onclick="location.href=''" class="table-data">
+            <tr onclick="location.href='{% url 'cabinet_invoice_info' obj.id %}'" class="table-data">
                 <td>{{ obj.number }}</td>
-                <td>{{ obj.date }}</td>
-                <td>{{ obj.status }}</td>
+                <td>{{ obj.date | date:'d.m.Y'}}</td>
+                <td>
+                    {% if obj.status.id == 1 %}
+                    <label class="label label-danger">{{ obj.status }}</label>
+                    {% elif obj.status.id == 2 %}
+                    <label class="label label-warning">{{ obj.status }}</label>
+                    {% else %}
+                    <label class="label label-success">{{ obj.status }}</label>
+                    {% endif %}
+                </td>
                 <td>{{ obj.sum }}</td>
             </tr>
             {% endfor %}
