@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from django.db.models import Max, Sum, Q
 from django.db.models.functions import Coalesce
+from openpyxl import load_workbook
+from openpyxl.writer.excel import save_virtual_workbook
 from decimal import Decimal
 from .forms import LoginForm
 from adminpanel.models import *
@@ -84,6 +86,40 @@ def cabinet_invoice_print(request, id):
         'service': ServiceIsInvoice.objects.filter(invoice=id)
     }
     return render(request, 'personalarea/invoice_print.html', data)
+
+def cabinet_invoice_pdf(request, id):
+    data_invoice = Invoice.objects.get(id=id)
+    data_account = Account.objects.filter(id=data_invoice.flat.account.id).annotate(
+        saldo=Coalesce(Sum('accounttransaction__sum'), Decimal(0)) - Coalesce(Sum('flat__invoice__sum'),
+                                                                              Decimal(0))).first()
+
+    temp = TemplatePrintInvoice.objects.get(is_default=True)
+    full_address = data_invoice.flat.house.name + ', кв.' + data_invoice.flat.number_flat + ', ' + data_invoice.flat.house.address
+
+    wb = load_workbook(temp.document.path)
+    sheet_ranges = wb['Sheet1']
+    sheet_ranges['B1'] = sheet_ranges[
+        'B10'] = data_invoice.flat.owner.last_name + ' ' + data_invoice.flat.owner.first_name + ' ' + data_invoice.flat.owner.patronymic
+    sheet_ranges['B5'] = sheet_ranges['B14'] = full_address
+    sheet_ranges['B6'] = sheet_ranges['B8'] = sheet_ranges['B15'] = sheet_ranges['B17'] = sheet_ranges[
+        'I30'] = data_invoice.sum
+    sheet_ranges['H2'] = sheet_ranges['H11'] = data_invoice.flat.account.number
+    sheet_ranges['B7'] = sheet_ranges['B16'] = data_account.saldo
+    sheet_ranges['J2'] = sheet_ranges['J11'] = data_invoice.number
+    sheet_ranges['J3'] = sheet_ranges['J12'] = sheet_ranges['D7'] = sheet_ranges['D16'] = data_invoice.date
+    sheet_ranges['D8'] = sheet_ranges['D17'] = data_invoice.date_first.strftime("%B")
+
+    start_service = 19
+    for obj in ServiceIsInvoice.objects.filter(invoice=id):
+        sheet_ranges[f'A{start_service}'] = obj.service.name
+        sheet_ranges[f'C{start_service}'] = obj.price
+        sheet_ranges[f'E{start_service}'] = obj.service.unit.unit
+        sheet_ranges[f'G{start_service}'] = obj.consumption
+        sheet_ranges[f'I{start_service}'] = obj.sum
+        start_service += 1
+    response = HttpResponse(content=save_virtual_workbook(wb), content_type='application/ms-excel')
+    response['Content-Disposition'] = f'attachment; filename=invoice_{data_invoice.number}.pdf'
+    return response
 
 def cabinet_tariff(request, flat_id):
     flat = Flat.objects.get(id=flat_id)
