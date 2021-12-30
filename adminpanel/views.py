@@ -1627,7 +1627,7 @@ def invoice_print(request, id):
 
 def invoice_template(request):
     if request.user.useradmin.role.invoice == 1:
-        templates = TemplatePrintInvoice.objects.all()
+        templates = TemplatePrintInvoice.objects.all().order_by('id')
 
         if request.method == "POST":
             form = TemplatePrintInvoiceForm(request.POST, request.FILES)
@@ -1642,6 +1642,21 @@ def invoice_template(request):
             'templates': templates
         }
         return render(request, 'adminpanel/invoice/template.html', data)
+    else:
+        return render(request, 'adminpanel/no_access.html')
+
+def invoice_setdefault_template(request, id):
+    if request.user.useradmin.role.invoice == 1:
+        TemplatePrintInvoice.objects.all().update(is_default=False)
+        TemplatePrintInvoice.objects.filter(id=id).update(is_default=True)
+        return redirect('invoice_template')
+    else:
+        return render(request, 'adminpanel/no_access.html')
+
+def invoice_template_delete(request, id):
+    if request.user.useradmin.role.invoice == 1:
+        TemplatePrintInvoice.objects.filter(id=id).delete()
+        return redirect('invoice_template')
     else:
         return render(request, 'adminpanel/no_access.html')
 

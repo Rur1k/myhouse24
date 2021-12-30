@@ -106,6 +106,8 @@ urlpatterns = [
     path('invoice/update/<int:id>', views.invoice_update, name='invoice_update'),
     path('invoice/print/<int:id>', views.invoice_print, name='invoice_print'),
     path('invoice/template', views.invoice_template, name='invoice_template'),
+    path('invoice/template/setdefault=<int:id>', views.invoice_setdefault_template, name='invoice_setdefault_template'),
+path('invoice/template/delete=<int:id>', views.invoice_template_delete, name='invoice_template_delete'),
     # Заявки мастера
     path('master-request', views.master_request, name='master_request'),
     path('master-request/create', views.master_request_create, name='master_request_create'),

@@ -28,10 +28,10 @@
             <div class="col-md-12 margin-bottom-20">
                 {% for obj in templates %}
                 <div class="template col-md-7 margin-bottom-15">
-                    <p>{{ obj.name }} <span class="text-bold">(по-умолчанию)</span></p>
+                    <p>{{ obj.name }} {% if obj.is_default %}<span class="text-bold">(по-умолчанию)</span>{% endif %}</p>
                     <a href="{{ obj.document.url }}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                    <a href="" class="text-success">• Назначить шаблоном по умоланию</a>
-                    <a href="" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                    <a href="{% url 'invoice_setdefault_template' obj.id %}" class="text-success">• Назначить шаблоном по умоланию</a>
+                    <a href="{% url 'invoice_template_delete' obj.id %}" class="text-danger" onclick="return confirmDelete()"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
                 </div>
                 {% endfor %}
             </div>
