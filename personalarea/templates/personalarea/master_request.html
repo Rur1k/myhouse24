@@ -20,7 +20,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="btn-group pull-right margin-bottom">
-            <a class="btn btn-success" href="" >Создать заявку</a>
+            <a class="btn btn-success" href="{% url 'cabinet_master_request_create' %}" >Создать заявку</a>
         </div>
     </div>
 </div>
@@ -55,7 +55,7 @@
                 </td>
                 <td class="text-center">
                     <div class="btn-group pull-center">
-                        <a class="btn btn-default btn-sm" href="" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
+                        <a class="btn btn-default btn-sm" href="{% url 'cabinet_master_request_delete' obj.id %}" onclick="return confirmDelete()" title="Удалить" data-toggle="tooltip">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

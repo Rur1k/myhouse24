@@ -1077,9 +1077,13 @@ class MasterRequestForm(forms.ModelForm):
             self.initial['date'] = datetime.datetime.now().date().isoformat()
             self.initial['time'] = datetime.datetime.now().strftime('%H:%M')
 
-            owner_id = self.data.get('owner')
-            if owner_id:
-                self.fields['flat'].queryset = Flat.objects.filter(owner=owner_id)
+
+            if 'owner' in self.initial:
+                self.fields['flat'].queryset = Flat.objects.filter(owner=self.initial['owner'])
+            else:
+                owner_id = self.data.get('owner')
+                if owner_id:
+                    self.fields['flat'].queryset = Flat.objects.filter(owner=owner_id)
 
 
     def clean(self):

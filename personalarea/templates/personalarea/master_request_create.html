@@ -1,0 +1,59 @@
+{% extends 'personalarea/base.html' %}
+{% load static %}
+{%block cabinet_master_request%}class="active"{%endblock%}
+{% block title %}Новая заявка{% endblock %}
+{% block page_name %}Новая заявка{% endblock %}
+{% block mini_page_name %}
+    <li><a href="{% url 'cabinet_master_request' %}">Вызов мастера</a></li>
+    <li class="active">Новая заявка</li>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box">
+        <div class="box-body">
+            <div class="row">
+                <div hidden="hidden">{{ master_request.status }}{{ master_request.owner }}</div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Тип мастера</label>
+                    {{ master_request.type_master }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <label>Квартира</label>
+                    {{ master_request.flat }}
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                    <div class="col-md-6 margin-bottom-20">
+                        <label>Дата работ</label>
+                        {{ master_request.date }}
+                    </div>
+                    <div class="col-md-6 margin-bottom-20">
+                        <label>Время работ</label>
+                        {{ master_request.time }}
+                    </div>
+                </div>
+                <div class="col-md-12 margin-bottom-20">
+                        <label>Описание</label>
+                        {{ master_request.description }}
+                </div>
+                <div class="col-md-12 text-right">
+                    <div class="form-group">
+                        <button type="submit" name="save" class="btn btn-success">Отправить заявку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+

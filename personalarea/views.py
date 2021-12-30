@@ -15,6 +15,7 @@ from django.db.models.functions import Coalesce
 from decimal import Decimal
 from .forms import LoginForm
 from adminpanel.models import *
+from adminpanel.forms import MasterRequestForm, ApartmentOwnerForm
 from operator import or_
 from functools import reduce
 
@@ -127,9 +128,94 @@ def cabinet_message_info(request, id):
     return render(request, 'personalarea/message_info.html', data)
 
 def cabinet_master_request(request):
+    flats = Flat.objects.filter(owner=request.user.id)
+    flat_id = flats.values_list('id', flat=True)
     data = {
-        'master_request': MasterRequest.objects.filter(owner=request.user.id),
-        'flats': Flat.objects.filter(owner=request.user.id)
+        'master_request': MasterRequest.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)])).order_by('id'),
+        'flats': flats
     }
     return render(request, 'personalarea/master_request.html', data)
+
+def cabinet_master_request_create(request):
+    if request.method == 'POST':
+        print(request.POST)
+        form = MasterRequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Заявка успешно создана!")
+            return redirect('cabinet_master_request')
+        else:
+            for error in form.non_field_errors():
+                message = form.non_field_errors()
+            messages.error(request, message)
+            print(form.errors)
+    else:
+        form = MasterRequestForm(initial={'owner':request.user.id})
+
+    data = {
+        'master_request': form,
+        'flats': Flat.objects.filter(owner=request.user.id)
+    }
+    return render(request, 'personalarea/master_request_create.html', data)
+
+def cabinet_master_request_delete(request, id):
+    obj = MasterRequest.objects.get(id=id)
+    if obj:
+        obj.delete()
+    messages.success(request, f"Заявка успешно удалена")
+    return redirect('cabinet_master_request')
+
+def cabinet_profile(request):
+    data = {
+        'user': ApartmentOwner.objects.get(id=request.user.id),
+        'flats': Flat.objects.filter(owner=request.user.id)
+    }
+    return render(request, 'personalarea/profile.html', data)
+
+def cabinet_profile_update(request):
+    try:
+        user = ApartmentOwner.objects.get(id=request.user.id)
+        old_password = user.password2
+
+        message = None
+        if request.method == "POST":
+            user_form = ApartmentOwnerForm(request.POST, instance=user)
+            print(request.POST)
+            if user_form.is_valid():
+                edit_user = user_form.save(commit=False)
+
+                if user_form.cleaned_data['password'] is None or user_form.cleaned_data['password'] == '':
+                    edit_user.set_password(old_password)
+                    edit_user.password2 = old_password
+                else:
+                    edit_user.set_password(user_form.cleaned_data['password'])
+                    edit_user.password2 = user_form.cleaned_data['password']
+
+                if user_form.cleaned_data['status'].id != 0:
+                    edit_user.is_active = 1
+                else:
+                    edit_user.is_active = 0
+
+                edit_user.save()
+
+                return redirect('cabinet_profile')
+            else:
+                for error in user_form.non_field_errors():
+                    message = error
+        else:
+            user_form = ApartmentOwnerForm(instance=user)
+
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    except Exception:
+        message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
+        user = ApartmentOwner.objects.get(id=id)
+        user_form = ApartmentOwnerForm(request.POST, instance=user)
+        data = {
+            'user': user_form,
+            'message_error': message
+        }
+    return render(request, 'personalarea/profile_update.html', data)
 
