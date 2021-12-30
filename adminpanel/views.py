@@ -1592,7 +1592,7 @@ def invoice_print(request, id):
 
                 wb = load_workbook(temp.document.path)
                 sheet_ranges = wb['Sheet1']
-                sheet_ranges['B1'] = sheet_ranges['B10'] = data_invoice.flat.owner.first_name+' '+data_invoice.flat.owner.last_name
+                sheet_ranges['B1'] = sheet_ranges['B10'] = data_invoice.flat.owner.last_name+' '+data_invoice.flat.owner.first_name+' '+ data_invoice.flat.owner.patronymic
                 sheet_ranges['B5'] = sheet_ranges['B14'] = full_address
                 sheet_ranges['B6'] = sheet_ranges['B8'] = sheet_ranges['B15'] = sheet_ranges['B17'] = sheet_ranges['I30'] = data_invoice.sum
                 sheet_ranges['H2'] = sheet_ranges['H11'] = data_invoice.flat.account.number

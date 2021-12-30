@@ -77,6 +77,14 @@ def cabinet_invoice_info(request, id):
     }
     return render(request, 'personalarea/invoice_info.html', data)
 
+def cabinet_invoice_print(request, id):
+    data_invoice = Invoice.objects.get(id=id)
+    data = {
+        'invoice': data_invoice,
+        'service': ServiceIsInvoice.objects.filter(invoice=id)
+    }
+    return render(request, 'personalarea/invoice_print.html', data)
+
 def cabinet_tariff(request, flat_id):
     flat = Flat.objects.get(id=flat_id)
     services = SettingServiceIsTariff.objects.filter(tariff=flat.tariff)
