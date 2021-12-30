@@ -1,5 +1,7 @@
 import csv
 import time
+import datetime
+import locale
 
 
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
@@ -1579,29 +1581,38 @@ def invoice_info(request, id):
 def invoice_print(request, id):
     if request.user.useradmin.role.invoice == 1:
         templates = TemplatePrintInvoice.objects.all()
+        data_invoice = Invoice.objects.get(id=id)
+        data_account = Account.objects.filter(id=data_invoice.flat.account.id).annotate(
+            saldo=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0))).first()
         if request.method == "POST":
             temp_id = request.POST.get('template')
             if temp_id:
                 temp = TemplatePrintInvoice.objects.get(id=temp_id)
+                full_address = data_invoice.flat.house.name+', кв.'+data_invoice.flat.number_flat+', '+data_invoice.flat.house.address
 
-                print(temp.document.path)
                 wb = load_workbook(temp.document.path)
                 sheet_ranges = wb['Sheet1']
-                sheet_ranges['B1'] = sheet_ranges['B10'] = 'Компания, получатель'
-                sheet_ranges['B5'] = sheet_ranges['B14'] = 'Адресс'
-                sheet_ranges['B6'] = sheet_ranges['B8'] = sheet_ranges['B15'] = sheet_ranges['B17'] = sheet_ranges['I30'] = 'Общая сумма'
-                sheet_ranges['H2'] = sheet_ranges['H11'] = 'Номер ЛС'
-                sheet_ranges['B7'] = sheet_ranges['B16'] = 'Баланс ЛС'
-                sheet_ranges['J2'] = sheet_ranges['J11'] = 'Номер Квитанции'
-                sheet_ranges['J3'] = sheet_ranges['J12'] = sheet_ranges['D7'] = sheet_ranges['D16'] = 'Дата формировании квитанции'
-                sheet_ranges['D8'] = sheet_ranges['D17'] = 'Месяц за который оплата'
+                sheet_ranges['B1'] = sheet_ranges['B10'] = data_invoice.flat.owner.first_name+' '+data_invoice.flat.owner.last_name
+                sheet_ranges['B5'] = sheet_ranges['B14'] = full_address
+                sheet_ranges['B6'] = sheet_ranges['B8'] = sheet_ranges['B15'] = sheet_ranges['B17'] = sheet_ranges['I30'] = data_invoice.sum
+                sheet_ranges['H2'] = sheet_ranges['H11'] = data_invoice.flat.account.number
+                sheet_ranges['B7'] = sheet_ranges['B16'] = data_account.saldo
+                sheet_ranges['J2'] = sheet_ranges['J11'] = data_invoice.number
+                sheet_ranges['J3'] = sheet_ranges['J12'] = sheet_ranges['D7'] = sheet_ranges['D16'] = data_invoice.date
+                sheet_ranges['D8'] = sheet_ranges['D17'] = data_invoice.date_first.strftime("%B")
 
-
+                start_service = 19
+                for obj in ServiceIsInvoice.objects.filter(invoice=id):
+                    sheet_ranges[f'A{start_service}'] = obj.service.name
+                    sheet_ranges[f'C{start_service}'] = obj.price
+                    sheet_ranges[f'E{start_service}'] = obj.service.unit.unit
+                    sheet_ranges[f'G{start_service}'] = obj.consumption
+                    sheet_ranges[f'I{start_service}'] =obj.sum
+                    start_service += 1
 
                 response = HttpResponse(content=save_virtual_workbook(wb), content_type='application/ms-excel')
-                response['Content-Disposition'] = f'attachment; filename=invoice_{0}.xlsx'
+                response['Content-Disposition'] = f'attachment; filename=invoice_{data_invoice.number}.xlsx'
                 return response
-
 
         else:
             pass
