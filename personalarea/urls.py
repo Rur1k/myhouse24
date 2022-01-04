@@ -5,6 +5,8 @@ urlpatterns = [
     path('', views.cabinet, name='cabinet'),
     path('flat_id=<int:id>', views.cabinet_summary, name='cabinet_summary'),
     path('oldmonth', views.cabinet_summary_oldmonth, name='cabinet_summary_oldmonth'),
+    path('thisyear', views.cabinet_summary_thisyear, name='cabinet_summary_thisyear'),
+    path('allyear', views.cabinet_summary_allyear, name='cabinet_summary_allyear'),
     path('invoices', views.cabinet_invoices, name='cabinet_invoices'),
     path('invoices/flat_id=<int:flat_id>', views.cabinet_invoices, name='cabinet_invoices_to_flat'),
     path('invoice/<int:id>', views.cabinet_invoice_info, name='cabinet_invoice_info'),

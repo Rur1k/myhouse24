@@ -87,13 +87,14 @@
         </div>
         <div class="col-md-6 text-center">
             <h4>за текущий год</h4>
-            <canvas id="ChartThisYear" data-thisyear-url=""></canvas>
+            <canvas id="ChartThisYear" data-thisyear-url="{% url 'cabinet_summary_thisyear'%}"></canvas>
         </div>
     </div>
 </div>
 <div class="box" style="overflow-x: auto">
     <div class="col-md-12">
         <h4>Диаграмма расходов по месяцам за год</h4>
+        <canvas id="ChartAllYear" data-allyear-url="{% url 'cabinet_summary_allyear' %}"></canvas>
     </div>
 </div>
 

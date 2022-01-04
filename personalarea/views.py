@@ -77,10 +77,41 @@ def cabinet_summary_oldmonth(request):
                 dict_service[subobj.service.name] = dict_service[subobj.service.name] + float(subobj.sum)
             else:
                 dict_service[subobj.service.name] = float(subobj.sum)
-
-
-
     return JsonResponse(dict_service, safe=False)
+
+def cabinet_summary_thisyear(request):
+    year = datetime.datetime.now().year
+    flat_id = request.GET.get('flat')
+
+    invoices = Invoice.objects.filter(flat=flat_id, date__year=year)
+    dict_service = {}
+
+    for obj in invoices:
+        services = ServiceIsInvoice.objects.filter(invoice=obj.id)
+        for subobj in services:
+            if subobj.service.name in dict_service:
+                dict_service[subobj.service.name] = dict_service[subobj.service.name] + float(subobj.sum)
+            else:
+                dict_service[subobj.service.name] = float(subobj.sum)
+    return JsonResponse(dict_service, safe=False)
+
+def cabinet_summary_allyear(request):
+    currentYear = datetime.datetime.now().year
+    flat_id = request.GET.get('flat')
+    arr = []
+
+    for i in range(1,13):
+        invoice = Invoice.objects.filter(flat=flat_id, date__year=currentYear, date__month=i).aggregate(month_sum=Sum('sum'))
+        rate = 0
+        if invoice['month_sum']:
+            arr.append(float(invoice['month_sum']))
+        else:
+            arr.append(rate)
+
+    rates = str(arr).replace('[', '')
+    rates = rates.replace(']', '')
+
+    return HttpResponse(rates)
 
 def cabinet_invoices(request, flat_id=None):
     flats = Flat.objects.filter(owner=request.user.id)
