@@ -19,6 +19,8 @@ from adminpanel.forms import MasterRequestForm, ApartmentOwnerForm
 from operator import or_
 from functools import reduce
 
+def toFixed(numObj, digits=0):
+    return f"{numObj:.{digits}f}"
 
 # Логика входа в ЛК
 def login_user(request):
@@ -44,18 +46,31 @@ def logout_user(request):
 
 # базовый шаблон
 def cabinet(request):
-    print(request.user.id)
-    data = {
-        'flats': Flat.objects.filter(owner=request.user.id)
-    }
-    return render(request, 'personalarea/base.html', data)
+    flats =  Flat.objects.filter(owner=request.user.id).first()
+
+    if flats is not None:
+        print('ПРошли условие')
+        return redirect('cabinet_summary', flats.id)
+    else:
+        return redirect('cabinet_profile')
+
 
 def cabinet_summary(request, id):
     flat = Flat.objects.filter(id=id).annotate(
         saldo=Coalesce(Sum('account__accounttransaction__sum'), Decimal(0)) - Coalesce(Sum('invoice__sum'), Decimal(0))).first()
+
+    invoice = Invoice.objects.filter(flat=id)
+    if invoice:
+        aggr = invoice.aggregate(all_sum=Sum('sum'))
+        count = invoice.count()
+        consMonth = toFixed(float(aggr['all_sum']) / count, 2)
+    else:
+        consMonth = 0
+
     data = {
         'flat': flat,
-        'flats': Flat.objects.filter(owner=request.user.id)
+        'flats': Flat.objects.filter(owner=request.user.id),
+        'consMonth': consMonth
     }
     return render(request, 'personalarea/summary.html', data)
 
@@ -173,7 +188,7 @@ def cabinet_invoice_pdf(request, id):
         sheet_ranges[f'I{start_service}'] = obj.sum
         start_service += 1
     response = HttpResponse(content=save_virtual_workbook(wb), content_type='application/ms-excel')
-    response['Content-Disposition'] = f'attachment; filename=invoice_{data_invoice.number}.pdf'
+    response['Content-Disposition'] = f'attachment; filename=invoice_{data_invoice.number}.xlsx'
     return response
 
 def cabinet_tariff(request, flat_id):

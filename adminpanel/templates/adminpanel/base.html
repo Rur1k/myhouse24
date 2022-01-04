@@ -34,7 +34,6 @@
     </head>
 
     <body class="hold-transition skin-black-light sidebar-mini fixed">
-        {% if request.user.is_superuser or request.user.is_staff %}
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
@@ -284,11 +283,6 @@
             </footer>
         </div>
         <!-- ./wrapper -->
-        {% else %}
-        <div class="text-center">
-            <H1>Вы не авторизованы! Для получения доступа к странице, <a href="{% url 'login_admin' %}">авторизуйтесь</a></H1>
-        </div>
-        {% endif %}
         <!-- jQuery 3 -->
         <script src="{% static 'adminpanel/bower_components/jquery/dist/jquery.min.js'%}"></script>
 

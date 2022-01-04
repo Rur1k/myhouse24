@@ -121,6 +121,7 @@
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
+                        {% if flats %}
                         <li {%block summary%}class="treeview"{%endblock%}>
                             <a href="#">
                                 <i class="fa fa-line-chart"></i>
@@ -130,7 +131,6 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href=""><i class="fa fa-building-o"></i> Все квартиры</a></li>
                                 {% for obj in flats %}
                                 <li><a href="{% url 'cabinet_summary' obj.id %}"><i class="fa fa-building-o"></i>{{ obj }}</a></li>
                                 {% endfor %}
@@ -177,14 +177,13 @@
                                 <span>Вызов мастера</span>
                             </a>
                         </li>
+                        {% endif %}
                         <li {%block cabinet_profile%}{%endblock%}>
                             <a href="{% url 'cabinet_profile' %}">
                                 <i class="fa fa-user-circle-o"></i>
                                 <span>Профиль</span>
                             </a>
                         </li>
-
-
                     </ul>
                 </section>
                 <!-- /.sidebar -->
