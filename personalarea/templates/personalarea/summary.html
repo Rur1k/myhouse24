@@ -18,6 +18,9 @@
     {% endfor %}
 {% endif %}
 <div class="row">
+    <div hidden="hidden">
+        <input type="text" id="FlatID" value="{{flat.id}}">
+    </div>
     <div class="col-md-12">
         <div class="col-md-12">
             <div class="row">
@@ -78,11 +81,13 @@
 <div class="box" style="overflow-x: auto">
     <div class="col-md-12">
         <h4>Диаграмма расходов</h4>
-        <div class="col-md-6">
-            <canvas id="ChartOldMonth"></canvas>
+        <div class="col-md-6 text-center">
+            <h4>за предыдущий месяц</h4>
+            <canvas id="ChartOldMonth" data-oldmonth-url="{% url 'cabinet_summary_oldmonth' %}"></canvas>
         </div>
-        <div class="col-md-6">
-            <canvas id="ChartThisYear"></canvas>
+        <div class="col-md-6 text-center">
+            <h4>за текущий год</h4>
+            <canvas id="ChartThisYear" data-thisyear-url=""></canvas>
         </div>
     </div>
 </div>

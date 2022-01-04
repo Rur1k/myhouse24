@@ -1,10 +1,11 @@
 import csv
 import time
+import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from django.db.models import Max, Sum, Q
@@ -57,6 +58,29 @@ def cabinet_summary(request, id):
         'flats': Flat.objects.filter(owner=request.user.id)
     }
     return render(request, 'personalarea/summary.html', data)
+
+def cabinet_summary_oldmonth(request):
+    oldMonth = datetime.datetime.now().month - 1
+    year = datetime.datetime.now().year
+    flat_id = request.GET.get('flat')
+    if oldMonth == 0:
+        oldMonth = 12
+        year = year - 1
+
+    invoices = Invoice.objects.filter(flat=flat_id, date__year=year, date__month=oldMonth)
+    dict_service = {}
+
+    for obj in invoices:
+        services = ServiceIsInvoice.objects.filter(invoice=obj.id)
+        for subobj in services:
+            if subobj.service.name in dict_service:
+                dict_service[subobj.service.name] = dict_service[subobj.service.name] + float(subobj.sum)
+            else:
+                dict_service[subobj.service.name] = float(subobj.sum)
+
+
+
+    return JsonResponse(dict_service, safe=False)
 
 def cabinet_invoices(request, flat_id=None):
     flats = Flat.objects.filter(owner=request.user.id)

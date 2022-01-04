@@ -1,30 +1,74 @@
 $("document").ready(function() {
-    // chart Диаграмма раходов для ЛК
-    const ctx2 = document.getElementById('barChart2').getContext('2d');
-    const myChart2 = new Chart(ctx2, {
-        data: {
-            labels: ['Янв.', 'Февр.', 'Март', 'Апр.', 'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.','Окт.','Нояб.','Дек'],
-            datasets: [
+
+    var OldMonthJson = GetDataOldMonth();
+
+    var jsonfile = {
+        "jsonarray":[OldMonthJson]
+    };
+
+    console.log(jsonfile)
+    
+    // Расходы за предыдщий месяц
+    var OldMonthCanvas = document.getElementById("ChartOldMonth");
+
+    var OldMonthData = {
+        labels: OldMonthJson[0],
+        datasets: [
             {
-                type: 'bar',
-                label: 'Приход',
-                data: getComing(),
-                backgroundColor:  'rgba(0, 255, 0, 0.7)',
-            },
-            {
-                type: 'bar',
-                label: 'Расход',
-                data: getExp(),
-                backgroundColor:  'rgba(255, 99, 71, 1)',
-            }
-            ]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+                data: OldMonthJson[1],
+                backgroundColor: [
+                    "#FF6384",
+                    "#63FF84",
+                    "#84FF63",
+                ]
+            }]
+    };
+
+    var doughnutChart = new Chart(OldMonthCanvas, {
+      type: 'doughnut',
+      data: OldMonthData
     });
+
+    // Расходы за текущий год
+    var ThisYearCanvas = document.getElementById("ChartThisYear");
+
+    var ThisYearData = {
+        labels: [
+            "Вода",
+            "Електроенегрия",
+            "Газ",
+        ],
+        datasets: [
+            {
+                data: [133.3, 86.2, 52.2],
+                backgroundColor: [
+                    "#FF6384",
+                    "#63FF84",
+                    "#84FF63"
+                ]
+            }]
+    };
+
+    var doughnutChart = new Chart(ThisYearCanvas, {
+      type: 'doughnut',
+      data: ThisYearData
+    });
+
 });
+
+function GetDataOldMonth(){
+    var url = $("#ChartOldMonth").attr("data-oldmonth-url");
+    var flat = $("#FlatID").val()
+    var json = {}
+
+    $.ajax({
+        url: url,
+        data: {'flat': flat},
+        async: false,
+        success: function (data) {
+            json = data
+        }
+      });
+
+    return json
+}
