@@ -36,6 +36,92 @@ $("document").ready(function() {
         TableMessage.search($(this).val()).draw();
     });
 
+    // chart График погашения квитанций
+    const ctx = document.getElementById('barChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        data: {
+            labels: ['Янв.', 'Февр.', 'Март', 'Апр.', 'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.','Окт.','Нояб.','Дек'],
+            datasets: [
+            {
+                type: 'bar',
+                label: 'Задолженность',
+                data: getDebt(),
+                backgroundColor:  'rgba(255, 99, 71, 1)',
+            },
+            {
+                type: 'bar',
+                label: 'Погашение задолженности',
+                data: getRepaymant(),
+                backgroundColor:  'rgba(0, 255, 0, 0.7)',
+            }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // chart График приходов и расходов
+    const ctx2 = document.getElementById('barChart2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+        data: {
+            labels: ['Янв.', 'Февр.', 'Март', 'Апр.', 'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.','Окт.','Нояб.','Дек'],
+            datasets: [
+            {
+                type: 'bar',
+                label: 'Приход',
+                data: getComing(),
+                backgroundColor:  'rgba(0, 255, 0, 0.7)',
+            },
+            {
+                type: 'bar',
+                label: 'Расход',
+                data: getExp(),
+                backgroundColor:  'rgba(255, 99, 71, 1)',
+            }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // chart Диаграмма раходов для ЛК
+    const ctx2 = document.getElementById('barChart2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+        data: {
+            labels: ['Янв.', 'Февр.', 'Март', 'Апр.', 'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.','Окт.','Нояб.','Дек'],
+            datasets: [
+            {
+                type: 'bar',
+                label: 'Приход',
+                data: getComing(),
+                backgroundColor:  'rgba(0, 255, 0, 0.7)',
+            },
+            {
+                type: 'bar',
+                label: 'Расход',
+                data: getExp(),
+                backgroundColor:  'rgba(255, 99, 71, 1)',
+            }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 });
 
 $(document).on('change', 'input[type=checkbox]', function () {
@@ -54,6 +140,73 @@ $(document).on('change', 'input[type=checkbox]', function () {
       $all.prop('indeterminate', true);
   }
 });
+
+
+// Chart
+function getDebt(){
+    var strDebt = ''
+    var url = $("#barChart").attr("data-getdebt-url");
+
+    $.ajax({
+        url: url,
+        async: false,
+        success: function (data) {
+          strDebt = data
+        }
+      });
+
+    var Debt = strDebt.split(',')
+    return Debt
+}
+
+function getRepaymant(){
+    var strPay = ''
+    var url = $("#barChart").attr("data-getrep-url");
+
+    $.ajax({
+        url: url,
+        async: false,
+        success: function (data) {
+          strPay = data
+        }
+      });
+
+    var Pay = strPay.split(',')
+    return Pay
+}
+
+function getComing(){
+    var strComing = ''
+    var url = $("#barChart2").attr("data-getcoming-url");
+
+    $.ajax({
+        url: url,
+        async: false,
+        success: function (data) {
+          strComing = data
+        }
+      });
+
+    var Coming = strComing.split(',')
+    return Coming
+}
+
+function getExp(){
+    var strExp = ''
+    var url = $("#barChart2").attr("data-getexp-url");
+
+    $.ajax({
+        url: url,
+        async: false,
+        success: function (data) {
+            strExp = data
+        }
+      });
+
+    var Exp = strExp.split(',')
+    return Exp
+}
+
 
 //Получение токена для AJAX запросов
 function getCookie(name) {

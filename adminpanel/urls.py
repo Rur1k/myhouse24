@@ -3,6 +3,11 @@ from adminpanel import views
 
 urlpatterns = [
     path('', views.admin, name='admin'),
+    # Статистика
+    path('statisctics/getDebt', views.statistics_get_debt, name='stat_get_debt'),
+    path('statisctics/getRepayment', views.statistics_get_repayment, name='stat_get_repayment'),
+    path('statisctics/getComing', views.statistics_get_coming, name='stat_get_coming'),
+    path('statisctics/getExp', views.statistics_get_exp, name='stat_get_exp'),
     # Дома
     path('house', views.house, name='house'),
     path('house/create', views.create_house, name='create_house'),

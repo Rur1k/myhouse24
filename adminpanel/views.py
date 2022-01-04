@@ -82,6 +82,66 @@ def admin(request):
     else:
         return render(request, 'adminpanel/no_access.html')
 
+def statistics_get_debt(request):
+    currentYear = datetime.datetime.now().year
+    debt_arr = []
+
+    for i in range(1,13):
+        debtInvoice = Invoice.objects.filter(status=1, date__year=currentYear, date__month=i)
+        debt = 0
+        for obj in debtInvoice:
+            debt += obj.sum
+        debt_arr.append(float(debt))
+    debts = str(debt_arr).replace('[', '')
+    debts = debts.replace(']', '')
+
+    return HttpResponse(debts)
+
+def statistics_get_repayment(request):
+    currentYear = datetime.datetime.now().year
+    rep_arr = []
+
+    for i in range(1,13):
+        repInvoice = Invoice.objects.filter(status=3, date__year=currentYear, date__month=i)
+        rep = 0
+        for obj in repInvoice:
+            rep += obj.sum
+        rep_arr.append(float(rep))
+    reps = str(rep_arr).replace('[', '')
+    reps = reps.replace(']', '')
+
+    return HttpResponse(reps)
+
+def statistics_get_coming(request):
+    currentYear = datetime.datetime.now().year
+    coming_arr = []
+
+    for i in range(1,13):
+        comingInvoice = AccountTransaction.objects.filter(type=1, date__year=currentYear, date__month=i)
+        coming = 0
+        for obj in comingInvoice:
+            coming += obj.sum
+        coming_arr.append(float(coming))
+    comings = str(coming_arr).replace('[', '')
+    comings = comings.replace(']', '')
+
+    return HttpResponse(comings)
+
+def statistics_get_exp(request):
+    currentYear = datetime.datetime.now().year
+    exp_arr = []
+
+    for i in range(1,13):
+        expInvoice = AccountTransaction.objects.filter(type=2, date__year=currentYear, date__month=i)
+        exp = 0
+        for obj in expInvoice:
+            exp += obj.sum * (-1)
+        exp_arr.append(float(exp))
+    exps = str(exp_arr).replace('[', '')
+    exps = exps.replace(']', '')
+
+    return HttpResponse(exps)
+
 # Бизнес логика вкладки "Дома"
 def house(request):
     if request.user.useradmin.role.house == 1:
