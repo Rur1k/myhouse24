@@ -4,7 +4,11 @@
 {% block title %}Новая заявка{% endblock %}
 {% block page_name %}Новая заявка{% endblock %}
 {% block mini_page_name %}
+    {% if info_user %}
+    <li><a href="{% url 'cabinet_master_request_adm' info_user.id %}">Вызов мастера</a></li>
+    {% else %}
     <li><a href="{% url 'cabinet_master_request' %}">Вызов мастера</a></li>
+    {% endif %}
     <li class="active">Новая заявка</li>
 {% endblock %}
 {% block content %}

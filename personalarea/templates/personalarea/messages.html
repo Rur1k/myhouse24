@@ -33,11 +33,19 @@
             </thead>
             <tbody>
             {% for obj in message_list %}
-            <tr>
-                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.sender }}</td>
-                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.title }}</td>
-                <td onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">{{ obj.time }}</td>
+            {% if info_user %}
+            <tr onclick="location.href='{% url 'cabinet_message_info_adm' info_user.id obj.id %}'">
+                <td>{{ obj.sender }}</td>
+                <td>{{ obj.title }}</td>
+                <td>{{ obj.time }}</td>
             </tr>
+            {% else %}
+            <tr onclick="location.href='{% url 'cabinet_message_info' obj.id %}'">
+                <td>{{ obj.sender }}</td>
+                <td>{{ obj.title }}</td>
+                <td>{{ obj.time }}</td>
+            </tr>
+            {% endif %}
             {% endfor %}
             </tbody>
         </table>

@@ -19,7 +19,7 @@
                         <img class="profile-user-img img-responsive img-circle" src="{% static 'img/default.jpg' %}" alt="Аватар">
                         {% endif %}
 
-                        <h3 class="profile-username text-center">{{ user }}</h3>
+                        <h3 class="profile-username text-center">{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</h3>
 
                         <p class="text-muted text-center">Владелец квартиры</p>
 
@@ -41,8 +41,11 @@
                                 <span class="pull-right">{{ user.email }}</span>
                             </li>
                         </ul>
-
+                        {% if info_user %}
+                        <a href="{% url 'cabinet_profile_update_adm' info_user.id %}" class="btn btn-primary btn-block">Изменить</a>
+                        {% else %}
                         <a href="{% url 'cabinet_profile_update' %}" class="btn btn-primary btn-block">Изменить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

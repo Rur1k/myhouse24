@@ -4,7 +4,11 @@
 {% block title %}Просмотр квитанции: #{{ invoice.number }} {% endblock %}
 {% block page_name %}Просмотр квитанции: #{{ invoice.number }}{% endblock %}
 {% block mini_page_name %}
+    {% if info_user %}
+    <li><a href="{% url 'cabinet_invoices_adm' info_user.id %}">Квитанции</a></li>
+    {% else %}
     <li><a href="{% url 'cabinet_invoices' %}">Квитанции</a></li>
+    {% endif %}
     <li class="active">Просмотр квитанции: #{{ invoice.number }}</li>
 {% endblock %}
 {% block content %}
@@ -21,7 +25,11 @@
 
 <div class="box" style="overflow-x: auto">
     <div class="box-header with-border pull-right">
+        {% if info_user %}
+        <a class="btn btn-primary" href="{% url 'cabinet_invoice_print_adm' info_user.id invoice.id %}">Распечатать</a>
+        {% else %}
         <a class="btn btn-primary" href="{% url 'cabinet_invoice_print' invoice.id %}">Распечатать</a>
+        {% endif %}
     </div>
     <div class="grid-view">
         <div class="col-md-12">
@@ -56,7 +64,11 @@
         </div>
     </div>
     <div class="box-footer with-border pull-right">
+        {% if info_user %}
+        <a class="btn btn-warning" href="{% url 'cabinet_invoice_pdf_adm' info_user.id invoice.id %}">Скачать</a>
+        {% else %}
         <a class="btn btn-warning" href="{% url 'cabinet_invoice_pdf' invoice.id %}">Скачать</a>
+        {% endif %}
         <a class="btn btn-success" href="">Оплатить</a>
     </div>
 </div>

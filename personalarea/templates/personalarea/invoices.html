@@ -20,7 +20,11 @@
 
 <div class="box" style="overflow-x: auto">
     <div class="box-header with-border pull-right">
+        {% if info_user %}
+        <a class="btn btn-default" href="{% url 'cabinet_invoices_adm' info_user.id %}">Очистить</a>
+        {% else %}
         <a class="btn btn-default" href="{% url 'cabinet_invoices' %}">Очистить</a>
+        {% endif %}
     </div>
     <div class="grid-view">
         <table id="InvoiceUserCabinet" class="table table-striped table-bordered table-hover table_sort">
@@ -34,6 +38,22 @@
             </thead>
             <tbody>
             {% for obj in invoices %}
+            {% if info_user %}
+            <tr onclick="location.href='{% url 'cabinet_invoice_info_adm' info_user.id obj.id %}'" class="table-data">
+                <td>{{ obj.number }}</td>
+                <td>{{ obj.date | date:'d.m.Y'}}</td>
+                <td>
+                    {% if obj.status.id == 1 %}
+                    <label class="label label-danger">{{ obj.status }}</label>
+                    {% elif obj.status.id == 2 %}
+                    <label class="label label-warning">{{ obj.status }}</label>
+                    {% else %}
+                    <label class="label label-success">{{ obj.status }}</label>
+                    {% endif %}
+                </td>
+                <td>{{ obj.sum }}</td>
+            </tr>
+            {% else %}
             <tr onclick="location.href='{% url 'cabinet_invoice_info' obj.id %}'" class="table-data">
                 <td>{{ obj.number }}</td>
                 <td>{{ obj.date | date:'d.m.Y'}}</td>
@@ -48,6 +68,7 @@
                 </td>
                 <td>{{ obj.sum }}</td>
             </tr>
+            {% endif %}
             {% endfor %}
             </tbody>
         </table>

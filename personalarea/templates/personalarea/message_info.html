@@ -4,7 +4,11 @@
 {% block title %}Сообщение{% endblock %}
 {% block page_name %}Сообщение{% endblock %}
 {% block mini_page_name %}
+    {% if info_user %}
+    <li><a href="{% url 'cabinet_messages_adm' info_user.id %}">Сообщения</a></li>
+    {% else %}
     <li><a href="{% url 'cabinet_messages' %}">Сообщения</a></li>
+    {% endif %}
     <li class="active">Сообщение</li>
 {% endblock %}
 {% csrf_token %}

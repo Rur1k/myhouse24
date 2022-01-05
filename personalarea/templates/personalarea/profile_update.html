@@ -4,7 +4,11 @@
 {% block title %}Профиль{% endblock %}
 {% block page_name %}Профиль{% endblock %}
 {% block mini_page_name %}
+    {% if info_user %}
+    <li><a href="{% url 'cabinet_profile_adm' info_user.id %}">Профиль</a></li>
+    {% else %}
     <li><a href="{% url 'cabinet_profile' %}">Профиль</a></li>
+    {% endif %}
     <li class="active">Редактирование</li>
 {% endblock %}
 {% block content %}
@@ -117,7 +121,11 @@
             </div>
             <div class="col-md-12 text-center">
                 <div class="form-group">
+                    {% if info_user %}
+                    <a href="{% url 'cabinet_profile_adm' info_user.id %}" class="btn btn-default">Отменить</a>
+                    {% else %}
                     <a href="{% url 'cabinet_profile' %}" class="btn btn-default">Отменить</a>
+                    {% endif %}
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </div>
             </div>

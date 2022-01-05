@@ -53,25 +53,33 @@ def logout_user(request):
         return redirect('login_user')
 
 # базовый шаблон
-def cabinet(request):
+def cabinet(request, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
-        flats =  Flat.objects.filter(owner=request.user.id).first()
-        if flats is not None:
-            print('ПРошли условие')
-            return redirect('cabinet_summary', flats.id)
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id).first()
         else:
-            return redirect('cabinet_profile')
+            flats =  Flat.objects.filter(owner=request.user.id).first()
+        if flats is not None:
+            if user_id:
+                return redirect('cabinet_summary_adm', user_id, flats.id)
+            else:
+                return redirect('cabinet_summary', flats.id)
+        else:
+            if user_id:
+                return redirect('cabinet_profile_adm', user_id)
+            else:
+                return redirect('cabinet_profile')
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_summary(request, id):
+def cabinet_summary(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
@@ -86,10 +94,20 @@ def cabinet_summary(request, id):
         else:
             consMonth = 0
 
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
+
+
+
         data = {
             'flat': flat,
-            'flats': Flat.objects.filter(owner=request.user.id),
-            'consMonth': consMonth
+            'flats': flats,
+            'consMonth': consMonth,
+            'info_user': info_user
         }
         return render(request, 'personalarea/summary.html', data)
     else:
@@ -150,13 +168,19 @@ def cabinet_summary_allyear(request):
 
     return HttpResponse(rates)
 
-def cabinet_invoices(request, flat_id=None):
+def cabinet_invoices(request, flat_id=None, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
-        flats = Flat.objects.filter(owner=request.user.id)
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
+
         if flat_id:
             invoices = Invoice.objects.filter(flat=flat_id)
         else:
@@ -164,32 +188,41 @@ def cabinet_invoices(request, flat_id=None):
             invoices = Invoice.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_list)]))
         data = {
             'invoices': invoices,
-            'flats': flats
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/invoices.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_invoice_info(request, id):
+def cabinet_invoice_info(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
+
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
 
         data = {
             'invoice': Invoice.objects.get(id=id),
             'services': ServiceIsInvoice.objects.filter(invoice=id),
-            'flats': Flat.objects.filter(owner=request.user.id)
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/invoice_info.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_invoice_print(request, id):
+def cabinet_invoice_print(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
@@ -203,9 +236,9 @@ def cabinet_invoice_print(request, id):
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_invoice_pdf(request, id):
+def cabinet_invoice_pdf(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
@@ -245,38 +278,52 @@ def cabinet_invoice_pdf(request, id):
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_tariff(request, flat_id):
+def cabinet_tariff(request, flat_id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
         flat = Flat.objects.get(id=flat_id)
         services = SettingServiceIsTariff.objects.filter(tariff=flat.tariff)
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
         data = {
             'flat': flat,
             'services': services,
-            'flats': Flat.objects.filter(owner=request.user.id)
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/tariff.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_messages(request):
+def cabinet_messages(request, id=None, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
-        flats = Flat.objects.filter(owner=request.user.id)
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            user_message = Message.objects.filter(user=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            user_message = Message.objects.filter(user=request.user.id)
+            info_user = None
+
         flat_id = flats.values_list('id', flat=True)
         flat_section = flats.values_list('section', flat=True)
         flat_house = flats.values_list('house', flat=True)
 
         message_list = []
         all_message = Message.objects.filter(house=None, section=None, flat=None)
-        user_message = Message.objects.filter(user=request.user.id)
         house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None)
         section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None)
         flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]))
@@ -294,48 +341,64 @@ def cabinet_messages(request):
 
         data = {
             'message_list': set(message_list),
-            'flats': flats
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/messages.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_message_info(request, id):
+def cabinet_message_info(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
+
         data = {
             'user_message': Message.objects.get(id=id),
-            'flats': Flat.objects.filter(owner=request.user.id)
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/message_info.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_master_request(request):
+def cabinet_master_request(request, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
-        flats = Flat.objects.filter(owner=request.user.id)
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
+
         flat_id = flats.values_list('id', flat=True)
         data = {
             'master_request': MasterRequest.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)])).order_by('id'),
-            'flats': flats
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/master_request.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_master_request_create(request):
+def cabinet_master_request_create(request, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
@@ -354,18 +417,25 @@ def cabinet_master_request_create(request):
         else:
             form = MasterRequestForm(initial={'owner':request.user.id})
 
+        if user_id:
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
         data = {
             'master_request': form,
-            'flats': Flat.objects.filter(owner=request.user.id)
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/master_request_create.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_master_request_delete(request, id):
+def cabinet_master_request_delete(request, id, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
@@ -378,29 +448,44 @@ def cabinet_master_request_delete(request, id):
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_profile(request):
+def cabinet_profile(request, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
 
+        if user_id:
+            print('Бла бла')
+            owner = ApartmentOwner.objects.get(id=user_id)
+            flats = Flat.objects.filter(owner=user_id)
+            info_user = ApartmentOwner.objects.get(id=user_id)
+        else:
+            owner = ApartmentOwner.objects.get(id=request.user.id)
+            flats = Flat.objects.filter(owner=request.user.id)
+            info_user = None
+
         data = {
-            'user': ApartmentOwner.objects.get(id=request.user.id),
-            'flats': Flat.objects.filter(owner=request.user.id)
+            'user': owner,
+            'flats': flats,
+            'info_user': info_user
         }
         return render(request, 'personalarea/profile.html', data)
     else:
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_user')
 
-def cabinet_profile_update(request):
+def cabinet_profile_update(request, user_id=None):
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")
             return redirect('login_user')
-
         try:
-            user = ApartmentOwner.objects.get(id=request.user.id)
+            if user_id:
+                user = ApartmentOwner.objects.get(id=user_id)
+                info_user = ApartmentOwner.objects.get(id=user_id)
+            else:
+                user = ApartmentOwner.objects.get(id=request.user.id)
+                info_user = None
             old_password = user.password2
 
             message = None
@@ -431,9 +516,16 @@ def cabinet_profile_update(request):
             else:
                 user_form = ApartmentOwnerForm(instance=user)
 
+            if user_id:
+                flats = Flat.objects.filter(owner=user_id)
+            else:
+                flats = Flat.objects.filter(owner=request.user.id)
+
             data = {
                 'user': user_form,
-                'message_error': message
+                'message_error': message,
+                'flats':flats,
+                'info_user': info_user
             }
         except Exception:
             message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"

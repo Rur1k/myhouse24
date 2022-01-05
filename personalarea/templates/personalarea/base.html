@@ -62,50 +62,64 @@
                             <!-- Notifications -->
                             <li class="dropdown notifications-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-child fa-lg"></i>
-                                    <span class="label label-warning">{}</span>
+                                    <i class="fa fa-bell fa-lg"></i>
+                                    <span class="label label-warning"></span>
                                 </a>
                                 <ul class="dropdown-menu">
 
-                                    <li class="header">Новых пользователей: {}</li>
+                                    <li class="header">Нет новых сообщений</li>
                                     <li>
                                         <!-- inner menu: contains the actual data -->
                                         <ul class="menu">
-                                            <li>
-                                                <a href="">
-                                                    Имя пользователя
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    Имя пользователя
-                                                </a>
-                                            </li>
+
                                         </ul>
                                     </li>
-                                    <li class="footer"><a href="">Перейти в раздел пользователей</a></li>
-
+                                    {% if flats %}
+                                    {% if info_user %}
+                                    <li class="footer"><a href="{% url 'cabinet_messages_adm' info_user.id %}">Перейти в раздел сообщений</a></li>
+                                    {% else %}
+                                    <li class="footer"><a href="{% url 'cabinet_messages' %}">Перейти в раздел сообщений</a></li>
+                                    {% endif %}
+                                    {% endif %}
                                 </ul>
                             </li>
                             <!-- User Account -->
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-user-circle text-purple"></i>
-                                    <span class="hidden-xs">{{ request.user.fist_name }} {{ request.user.last_name }}</span>
+                                    <span class="hidden-xs">
+                                        {% if info_user %}
+                                        {{ info_user.first_name }} {{ info_user.last_name }}
+                                        {% else %}
+                                        {{ request.user.first_name }} {{ request.user.last_name }}
+                                        {% endif %}
+                                    </span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
                                         <span><i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i></span>
-                                        <p>{{ request.user.fist_name }} {{ request.user.last_name }} (Роль)</p>
+                                        {% if info_user %}
+                                        <p>{{ info_user.first_name }} {{ info_user.last_name }}</p>
+                                        {% else %}
+                                        <p>{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                        {% endif %}
                                     </li>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
                                         <div class="pull-left">
-                                            <a class="btn btn-default btn-flat" href="">Профиль</a>
+                                            {% if info_user %}
+                                            <a class="btn btn-default btn-flat" href="{% url 'cabinet_profile_adm' info_user.id %}">Профиль</a>
+                                            {% else %}
+                                            <a class="btn btn-default btn-flat" href="{% url 'cabinet_profile' %}">Профиль</a>
+                                            {% endif %}
                                         </div>
                                         <div class="pull-right">
+                                            {% if info_user %}
+                                            <a class="btn btn-default btn-flat" href="{% url 'admin' %}" data-method="post">Выход</a>
+                                            {% else %}
                                             <a class="btn btn-default btn-flat" href="{% url 'logout_user' %}" data-method="post">Выход</a>
+                                            {% endif %}
                                         </div>
                                     </li>
                                 </ul>
@@ -132,7 +146,11 @@
                             </a>
                             <ul class="treeview-menu">
                                 {% for obj in flats %}
+                                {% if info_user %}
+                                <li><a href="{% url 'cabinet_summary_adm' info_user.id obj.id %}"><i class="fa fa-building-o"></i>{{ obj }}</a></li>
+                                {% else %}
                                 <li><a href="{% url 'cabinet_summary' obj.id %}"><i class="fa fa-building-o"></i>{{ obj }}</a></li>
+                                {% endif %}
                                 {% endfor %}
                             </ul>
                         </li>
@@ -145,9 +163,17 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
+                                {% if info_user %}
+                                <li><a href="{% url 'cabinet_invoices_adm' info_user.id %}"><i class="fa fa-files-o"></i> Все квитанции</a></li>
+                                {% else %}
                                 <li><a href="{% url 'cabinet_invoices' %}"><i class="fa fa-files-o"></i> Все квитанции</a></li>
+                                {% endif %}
                                 {% for obj in flats %}
+                                {% if info_user %}
+                                <li><a href="{% url 'cabinet_invoices_to_flat_adm' info_user.id obj.id %}"><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
+                                {% else %}
                                 <li><a href="{% url 'cabinet_invoices_to_flat' obj.id %}"><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
+                                {% endif %}
                                 {% endfor %}
                             </ul>
                         </li>
@@ -161,28 +187,53 @@
                             </a>
                             <ul class="treeview-menu">
                                 {% for obj in flats %}
+                                {% if info_user %}
+                                <li><a href="{% url 'cabinet_tariff_adm' info_user.id obj.id %}"><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
+                                {% else %}
                                 <li><a href="{% url 'cabinet_tariff' obj.id %}"><i class="fa fa-file-text-o"></i>{{ obj }}</a></li>
+                                {% endif %}
                                 {% endfor %}
                             </ul>
                         </li>
                         <li {%block cabinet_message%}{%endblock%}>
+                            {% if info_user %}
+                            <a href="{% url 'cabinet_messages_adm' info_user.id %}">
+                                <i class="fa fa-envelope-o"></i>
+                                <span>Сообщения</span>
+                            </a>
+                            {% else %}
                             <a href="{% url 'cabinet_messages' %}">
                                 <i class="fa fa-envelope-o"></i>
                                 <span>Сообщения</span>
                             </a>
+                            {% endif %}
                         </li>
                         <li {%block cabinet_master_request%}{%endblock%}>
+                            {% if info_user %}
+                            <a href="{% url 'cabinet_master_request_adm' info_user.id %}">
+                                <i class="fa fa-wrench"></i>
+                                <span>Вызов мастера</span>
+                            </a>
+                            {% else %}
                             <a href="{% url 'cabinet_master_request' %}">
                                 <i class="fa fa-wrench"></i>
                                 <span>Вызов мастера</span>
                             </a>
+                            {% endif %}
                         </li>
                         {% endif %}
                         <li {%block cabinet_profile%}{%endblock%}>
+                            {% if info_user %}
+                            <a href="{% url 'cabinet_profile_adm' info_user.id %}">
+                                <i class="fa fa-user-circle-o"></i>
+                                <span>Профиль</span>
+                            </a>
+                            {% else  %}
                             <a href="{% url 'cabinet_profile' %}">
                                 <i class="fa fa-user-circle-o"></i>
                                 <span>Профиль</span>
                             </a>
+                            {% endif %}
                         </li>
                     </ul>
                 </section>
@@ -197,7 +248,11 @@
                     {% block page_name %}{% endblock %}
                   </h1>
                   <ol class="breadcrumb">
+                      {% if info_user %}
+                        <li><a href="{% url 'cabinet_adm' info_user.id %}"><i class="fa fa-home"></i> Главная</a></li>
+                      {% else %}
                     <li><a href="{% url 'cabinet' %}"><i class="fa fa-home"></i> Главная</a></li>
+                      {% endif %}
                     {% block mini_page_name %}{% endblock %}
                   </ol>
                 </section>

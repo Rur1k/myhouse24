@@ -10,7 +10,7 @@
 {% block content %}
 <div class="box col-md-12">
     <div class="box-header with-border text-right">
-        <a href="" class="btn btn-default">
+        <a href="{% url 'cabinet_adm' user.id %}" class="btn btn-default" target="_blank">
             <i class="fa fa-external-link"></i>
             Перейти в кабинет
         </a>
@@ -105,7 +105,7 @@
                     <td><a href="{% url 'info_house' obj.house.id %}">{{ obj.house }}</a></td>
                     <td>{{ obj.section }}</td>
                     <td><a href="{% url 'flat_info' obj.id %}">{{ obj.number_flat }}</a></td>
-                    <td><a href="">{{ obj.account }}</a></td>
+                    <td><a href="{% url 'account_info' obj.account.id %}">{{ obj.account }}</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
