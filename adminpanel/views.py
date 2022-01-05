@@ -86,6 +86,7 @@ def admin(request):
                 'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
                 'account_balance': AccountBalance(1),
                 'account_debt': AccountBalance(2),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/statistics.html', data)
         else:
@@ -157,11 +158,12 @@ def statistics_get_exp(request):
 # Бизнес логика вкладки "Дома"
 def house(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.house == 1:
+        if request.user.is_staff and request.user.useradmin.role.house == 1:
             info = House.objects.all()
             data = {
                 'list': info,
                 'count': info.count(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/house/index.html', data)
         else:
@@ -172,7 +174,7 @@ def house(request):
 
 def create_house(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.house == 1:
+        if request.user.is_staff and request.user.useradmin.role.house == 1:
             form = HouseForm()
             SectionFormSet = modelformset_factory(Section, form=SectionForm, fields=['name'], extra=0, can_delete=True)
             FloorFormSet = modelformset_factory(Floor, form=FloorForm, fields=['name'], extra=0, can_delete=True)
@@ -238,6 +240,7 @@ def create_house(request):
                 'SectionFormSet': SectionFormSet(prefix='section', queryset=Section.objects.none()),
                 'FloorFormSet': FloorFormSet(prefix='floor', queryset=Floor.objects.none()),
                 'PersonalFormSet': PersonalFormSet(prefix='personal', queryset=UserAdmin.objects.none()),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, "adminpanel/house/create.html", data)
         else:
@@ -248,7 +251,7 @@ def create_house(request):
 
 def update_house(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.house == 1:
+        if request.user.is_staff and request.user.useradmin.role.house == 1:
             house_data = get_object_or_404(House, id=id)
             sections = Section.objects.filter(house=id)
             floors = Floor.objects.filter(house=id)
@@ -327,6 +330,7 @@ def update_house(request, id):
                 'sections': sections_form,
                 'floors': floors_form,
                 'personal': form_personal,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/house/update.html', data)
         else:
@@ -337,7 +341,7 @@ def update_house(request, id):
 
 def delete_house(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.house == 1:
+        if request.user.is_staff and request.user.useradmin.role.house == 1:
             obj = House.objects.filter(id=id)
             if obj:
                 obj.delete()
@@ -351,7 +355,7 @@ def delete_house(request, id):
 
 def info_house(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.house == 1:
+        if request.user.is_staff and request.user.useradmin.role.house == 1:
             house = House.objects.get(id=id)
             sections = Section.objects.filter(house=house)
             floors = Floor.objects.filter(house=house)
@@ -363,6 +367,7 @@ def info_house(request, id):
                 'sections': count_section,
                 'floors': count_floor,
                 'personal': personal,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, "adminpanel/house/info.html", data)
         else:
@@ -387,7 +392,7 @@ def select_personal_role(request):
 # Настройки системы
 def setting_service(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.service == 1:
+        if request.user.is_staff and request.user.useradmin.role.service == 1:
             units = ServiceUnit.objects.all()
             services = SettingService.objects.all()
             services_form = modelformset_factory(SettingService, form=SettingServiceForm, extra=0, can_delete=True)
@@ -431,7 +436,8 @@ def setting_service(request):
             data = {
                 'services_formset': services_formset,
                 'units_formset': units_formset,
-                'message': message
+                'message': message,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/service.html', data)
         else:
@@ -442,7 +448,7 @@ def setting_service(request):
 
 def setting_tariffs(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.tariff == 1:
+        if request.user.is_staff and request.user.useradmin.role.tariff == 1:
             data = {
                 'tariffs': SettingTariff.objects.all()
             }
@@ -455,7 +461,7 @@ def setting_tariffs(request):
 
 def setting_tariffs_create(request, id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.tariff == 1:
+        if request.user.is_staff and request.user.useradmin.role.tariff == 1:
             if id is not None:
                 tariff_info = SettingTariff.objects.filter(id=id).first()
                 services_is_tariff = SettingServiceIsTariff.objects.filter(tariff=id)
@@ -495,6 +501,7 @@ def setting_tariffs_create(request, id=None):
             data = {
                 'tariff': form,
                 'services': formset,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/create_tariff.html', data)
         else:
@@ -505,7 +512,7 @@ def setting_tariffs_create(request, id=None):
 
 def setting_tariffs_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.tariff == 1:
+        if request.user.is_staff and request.user.useradmin.role.tariff == 1:
             tariff_info = SettingTariff.objects.filter(id=id).first()
             services_is_tariff = SettingServiceIsTariff.objects.filter(tariff=id)
             service_form = modelformset_factory(SettingServiceIsTariff, form=SettingServiceIsTariffForm, extra=0, can_delete=True)
@@ -538,16 +545,18 @@ def setting_tariffs_update(request, id):
             data = {
                 'tariff': form,
                 'services': formset,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/update_tariff.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_tariffs_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.tariff == 1:
+        if request.user.is_staff and request.user.useradmin.role.tariff == 1:
             obj = SettingTariff.objects.filter(id=id)
             if obj:
                 obj.delete()
@@ -555,20 +564,23 @@ def setting_tariffs_delete(request, id):
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_tariffs_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.tariff == 1:
+        if request.user.is_staff and request.user.useradmin.role.tariff == 1:
             data = {
                 'tariff': SettingTariff.objects.get(id=id),
-                'services': SettingServiceIsTariff.objects.filter(tariff=id)
+                'services': SettingServiceIsTariff.objects.filter(tariff=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/tariff_info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_service_unit(request):
     service_id = request.GET.get('service')
@@ -578,33 +590,37 @@ def select_service_unit(request):
 
 def setting_user_admin(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.user_admin == 1:
+        if request.user.is_staff and request.user.useradmin.role.user_admin == 1:
             data = {
                 'users': UserAdmin.objects.all(),
                 'role': UserRole.objects.all(),
-                'status': UserStatus.objects.all()
+                'status': UserStatus.objects.all(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/users.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_user_admin_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.user_admin == 1:
+        if request.user.is_staff and request.user.useradmin.role.user_admin == 1:
             data = {
                 'user': UserAdmin.objects.get(id=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/settings/user_info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_user_admin_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.user_admin == 1:
+        if request.user.is_staff and request.user.useradmin.role.user_admin == 1:
             try:
                 message = None
                 if request.method == "POST":
@@ -625,24 +641,27 @@ def setting_user_admin_create(request):
 
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             except Exception:
                 message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
                 user_form = UserAdminForm(request.POST)
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             return render(request, 'adminpanel/settings/user_create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_user_admin_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.user_admin == 1:
+        if request.user.is_staff and request.user.useradmin.role.user_admin == 1:
             try:
                 user = UserAdmin.objects.get(id=id)
                 old_password = user.password2
@@ -677,7 +696,8 @@ def setting_user_admin_update(request, id):
 
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             except Exception:
                 message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
@@ -685,25 +705,30 @@ def setting_user_admin_update(request, id):
                 user_form = UserAdminForm(request.POST, instance=user)
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             return render(request, 'adminpanel/settings/user_update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
     else:
-        pass
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_user_admin_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.user_admin == 1:
+        if request.user.is_staff and request.user.useradmin.role.user_admin == 1:
             UserAdmin.objects.filter(id=id).update(is_active=0, status_id = 0)
             return redirect('setting_user_admin')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_pay_company(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.pay_company == 1:
+        if request.user.is_staff and request.user.useradmin.role.pay_company == 1:
             info = SettingPayCompany.objects.all().first()
 
             if request.method == "POST":
@@ -715,24 +740,32 @@ def setting_pay_company(request):
 
             data = {
                 'pay_company': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/settings/pay-company.html', data )
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_transaction_purpose(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.transaction_purpose == 1:
+        if request.user.is_staff and request.user.useradmin.role.transaction_purpose == 1:
             data = {
                 'transaction': SettingTransactionPurpose.objects.all(),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/settings/transaction-purpose.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_transaction_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.transaction_purpose == 1:
+        if request.user.is_staff and request.user.useradmin.role.transaction_purpose == 1:
             if request.method == "POST":
                 form = SettingTransactionPurposeForm(request.POST)
                 if form.is_valid():
@@ -743,14 +776,18 @@ def setting_transaction_create(request):
 
             data = {
                 'form': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/settings/transaction_create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_transaction_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.transaction_purpose == 1:
+        if request.user.is_staff and request.user.useradmin.role.transaction_purpose == 1:
             info = SettingTransactionPurpose.objects.get(id=id)
 
             if request.method == "POST":
@@ -762,24 +799,31 @@ def setting_transaction_update(request, id):
                 form = SettingTransactionPurposeForm(instance=info)
             data = {
                 'form': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/settings/transaction_update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_transaction_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.transaction_purpose == 1:
+        if request.user.is_staff and request.user.useradmin.role.transaction_purpose == 1:
             obj = SettingTransactionPurpose.objects.get(id=id)
             if obj:
                 obj.delete()
             return redirect('setting_transaction_purpose')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def setting_role(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.role == 1:
+        if request.user.is_staff and request.user.useradmin.role.role == 1:
             role = UserRole.objects.all().order_by('id')
             formset = modelformset_factory(UserRole, form=UserRoleForm, extra=0)
 
@@ -788,11 +832,11 @@ def setting_role(request):
                 if form.is_valid():
                     for subform in form:
                         subform.save()
-                        # is_admin = subform.save(commit=False)
-                        # if is_admin.id == 1:
-                        #     continue
-                        # else:
-                        #     is_admin.save()
+                        is_admin = subform.save(commit=False)
+                        if is_admin.id == 1:
+                            continue
+                        else:
+                            is_admin.save()
                     messages.success(request, 'Уровнь доступа обновлен', extra_tags='alert')
                 else:
                     print(form.errors)
@@ -801,16 +845,20 @@ def setting_role(request):
                 form = formset(queryset=role)
             data = {
                 'role': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/settings/role.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 
 # Бизнес логика "Владельцы квартир"
 def apartment_owner(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             users = ApartmentOwner.objects.all().annotate(
                 saldo=Coalesce(Sum('flat__account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
             balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
@@ -818,31 +866,42 @@ def apartment_owner(request):
             data = {
                 'users': users,
                 'count': ApartmentOwner.objects.all().count(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/user/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def apartment_owner_invite(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             return render(request, 'adminpanel/user/invite.html')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def apartment_owner_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             data = {
                 'user': ApartmentOwner.objects.get(id=id),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/user/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def apartment_owner_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             try:
                 message = None
                 if request.method == "POST":
@@ -864,22 +923,27 @@ def apartment_owner_create(request):
 
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             except Exception:
                 message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
                 user_form = ApartmentOwnerForm(request.POST)
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             return render(request, 'adminpanel/user/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def apartment_owner_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             try:
                 user = ApartmentOwner.objects.get(id=id)
                 old_password = user.password2
@@ -914,7 +978,8 @@ def apartment_owner_update(request, id):
 
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             except Exception:
                 message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
@@ -922,37 +987,48 @@ def apartment_owner_update(request, id):
                 user_form = ApartmentOwnerForm(request.POST, instance=user)
                 data = {
                     'user': user_form,
-                    'message_error': message
+                    'message_error': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
             return render(request, 'adminpanel/user/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def apartment_owner_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.owner == 1:
+        if request.user.is_staff and request.user.useradmin.role.owner == 1:
             ApartmentOwner.objects.filter(id=id).update(is_active=0, status_id = 0)
             return redirect('apartment_owner')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 # Бизнес логика "Квартиры"
 def flat(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.flat == 1:
+        if request.user.is_staff and request.user.useradmin.role.flat == 1:
             flats = Flat.objects.all().annotate(
                 saldo=Coalesce(Sum('account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('invoice__sum'),Decimal(0)))
             data = {
                 'flats': flats.order_by('-id'),
                 'count': flats.count(),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/flat/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def flat_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.flat == 1:
+        if request.user.is_staff and request.user.useradmin.role.flat == 1:
             if request.method == "POST":
                 print(request.POST)
                 form = FlatForm(request.POST)
@@ -979,14 +1055,18 @@ def flat_create(request):
             data = {
                 'flat': form,
                 'free_account': Account.objects.filter(flat=None),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return  render(request, 'adminpanel/flat/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def flat_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.flat == 1:
+        if request.user.is_staff and request.user.useradmin.role.flat == 1:
             flat_info= Flat.objects.get(id=id)
             if request.method == "POST":
                 form = FlatForm(request.POST, instance=flat_info)
@@ -1016,14 +1096,18 @@ def flat_update(request, id):
             data = {
                 'flat': form,
                 'free_account': Account.objects.filter(flat=None),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return  render(request, 'adminpanel/flat/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def flat_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.flat == 1:
+        if request.user.is_staff and request.user.useradmin.role.flat == 1:
             obj = Flat.objects.filter(id=id)
             if obj:
                 obj.delete()
@@ -1031,33 +1115,45 @@ def flat_delete(request, id):
             return redirect('flat')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def flat_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.flat == 1:
+        if request.user.is_staff and request.user.useradmin.role.flat == 1:
             data = {
                 'flat': Flat.objects.get(id=id),
             }
             return render(request, 'adminpanel/flat/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_section_flat(request):
     if request.user.is_authenticated:
         house_id = request.GET.get('house')
         section = Section.objects.filter(house=house_id)
         return render(request, 'adminpanel/flat/ajax/select_section_flat.html', { 'section':section })
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_floor_flat(request):
     if request.user.is_authenticated:
         house_id = request.GET.get('house')
         floors = Floor.objects.filter(house=house_id)
         return render(request, 'adminpanel/flat/ajax/select_floor_flat.html', { 'floors':floors })
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 # Лицевые счета
 def account(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account == 1:
+        if request.user.is_staff and request.user.useradmin.role.account == 1:
             accounts = Account.objects.all().annotate(
                 saldo=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
             balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
@@ -1068,15 +1164,19 @@ def account(request):
                 'account_balance': account_balance,
                 'account_debt': account_debt,
                 'accounts': accounts.order_by('-id'),
-                'count': accounts.count()
+                'count': accounts.count(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account == 1:
+        if request.user.is_staff and request.user.useradmin.role.account == 1:
             status_none = StatusAccount.objects.filter(id=1).first()
             if request.method == 'POST':
                 print(request.POST)
@@ -1098,25 +1198,33 @@ def account_create(request):
                 form = AccountForm()
             data = {
                 'account': form,
-                'house': House.objects.all()
+                'house': House.objects.all(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account == 1:
+        if request.user.is_staff and request.user.useradmin.role.account == 1:
             data = {
-                'account': Account.objects.get(id=id)
+                'account': Account.objects.get(id=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account == 1:
+        if request.user.is_staff and request.user.useradmin.role.account == 1:
             account_info = Account.objects.get(id=id)
 
             if account_info.flat:
@@ -1142,15 +1250,19 @@ def account_update(request, id):
                 'account': form,
                 'owner': owner,
                 'house': House.objects.all(),
-                'section': section
+                'section': section,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account == 1:
+        if request.user.is_staff and request.user.useradmin.role.account == 1:
             obj = Account.objects.filter(id=id)
             if obj:
                 obj.delete()
@@ -1158,6 +1270,9 @@ def account_delete(request, id):
             return redirect('account')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_section_account(request):
     house_id = request.GET.get('house')
@@ -1202,12 +1317,15 @@ def export_account_csv(request):
                 writer.writerow(
                     [obj.number, obj.status, '', '', '', '', obj.saldo])
         return response
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 
 # Бизнес логика "Касса"
 def account_transaction(request, account_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account_transaction == 1:
+        if request.user.is_staff and request.user.useradmin.role.account_transaction == 1:
             if account_id:
                 AccountTransactionList = AccountTransaction.objects.filter(account=account_id).order_by('-id')
             else:
@@ -1220,24 +1338,31 @@ def account_transaction(request, account_id=None):
                 'AccountTransaction': AccountTransactionList,
                 'sum_coming': AccountTransaction.objects.filter(type=1, is_complete=1).aggregate(Sum('sum')),
                 'sum_consumption': AccountTransaction.objects.filter(type=2, is_complete=1).aggregate(Sum('sum')),
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/account-transaction/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_transaction_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account_transaction == 1:
+        if request.user.is_staff and request.user.useradmin.role.account_transaction == 1:
             data = {
                 'transaction': AccountTransaction.objects.get(id=id)
             }
             return render(request, 'adminpanel/account-transaction/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_transaction_create(request, type=None, id=None, account_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account_transaction == 1:
+        if request.user.is_staff and request.user.useradmin.role.account_transaction == 1:
             if type:
                 TransactionType = SettingPaymentItem.objects.get(id=type)
             else:
@@ -1286,15 +1411,19 @@ def account_transaction_create(request, type=None, id=None, account_id=None):
                     form = AccountTransactionForm(initial={'type': TransactionType, 'owner':None, 'manager':request.user.id})
             data = {
                 'transaction': form,
-                'type': type
+                'type': type,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account-transaction/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_transaction_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account_transaction == 1:
+        if request.user.is_staff and request.user.useradmin.role.account_transaction == 1:
             account_transaction_info = AccountTransaction.objects.get(id=id)
 
             if request.method == 'POST':
@@ -1323,15 +1452,19 @@ def account_transaction_update(request, id):
                 form = AccountTransactionForm(instance=account_transaction_info)
             data = {
                 'transaction': form,
-                'type': account_transaction_info.type.id
+                'type': account_transaction_info.type.id,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account-transaction/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def account_transaction_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.account_transaction == 1:
+        if request.user.is_staff and request.user.useradmin.role.account_transaction == 1:
             obj = AccountTransaction.objects.filter(id=id).first()
             if obj:
                 obj.delete()
@@ -1339,6 +1472,9 @@ def account_transaction_delete(request, id):
             return redirect('account_transaction')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_account_trans(request):
     owner_id = request.GET.get('owner')
@@ -1378,22 +1514,29 @@ def export_account_transaction_csv(request):
                 account = obj.account
             writer.writerow([obj.number, obj.date, obj.type, is_complete, transaction, '', '', obj.sum, 'UAN', owner, account])
         return response
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 # Бизнес логика "Показания счетчиков"
 def counter_data_counters(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             counters = CounterData.objects.all().order_by('flat', 'counter', '-counter_data').distinct('flat', 'counter')
             data = {
-                'counters': counters
+                'counters': counters,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/counter-data/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def counter_data_create(request, flat_id=None, service_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             section = None
             flat_obj = Flat.objects.filter(id=flat_id).first()
             if request.method == 'POST':
@@ -1424,15 +1567,19 @@ def counter_data_create(request, flat_id=None, service_id=None):
                 'counter': form,
                 'house': House.objects.all(),
                 'section': section,
-                'flat': flat_obj
+                'flat': flat_obj,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/counter-data/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def counter_data_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             data = CounterData.objects.get(id=id)
 
             if request.method == 'POST':
@@ -1457,15 +1604,19 @@ def counter_data_update(request, id):
             data = {
                 'counter': form,
                 'house': House.objects.all(),
-                'section': Section.objects.filter(house=data.flat.house)
+                'section': Section.objects.filter(house=data.flat.house),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/counter-data/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def counter_data_list(request, id, counter_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             counters = CounterData.objects.filter(flat=id).order_by('-id')
             data = {
                 'flat': Flat.objects.filter(id=id).first(),
@@ -1473,26 +1624,34 @@ def counter_data_list(request, id, counter_id=None):
                 'house': House.objects.all(),
                 'status': StatusCounter.objects.all(),
                 'counter_unit': SettingService.objects.all(),
-                'selected_counter': counter_id
+                'selected_counter': counter_id,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/counter-data/counter-list.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def counter_data_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             counter = CounterData.objects.get(id=id)
             data = {
                 'counter': counter,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/counter-data/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def counter_data_delete(request, id, flat_id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.counter_data == 1:
+        if request.user.is_staff and request.user.useradmin.role.counter_data == 1:
             obj = CounterData.objects.filter(id=id)
             if obj:
                 obj.delete()
@@ -1500,12 +1659,18 @@ def counter_data_delete(request, id, flat_id):
             return redirect('counter_data_list', flat_id)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_section_counter(request):
-    if request.user.is_authenticated:
+    if request.user.is_staff and request.user.is_authenticated:
         house_id = request.GET.get('house')
         sections = Section.objects.filter(house=house_id)
         return render(request, 'adminpanel/account/ajax/select_section_account.html', { 'sections':sections })
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_flat_counter(request):
     house_id = request.GET.get('house')
@@ -1520,7 +1685,7 @@ def order_flat_counter(request):
 # бизнес логика вкладки "Квитанции на оплату"
 def invoice(request, flat_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             if flat_id:
                 invoices = Invoice.objects.filter(flat=flat_id).order_by('-id')
             else:
@@ -1531,10 +1696,14 @@ def invoice(request, flat_id=None):
                 'balance': AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum')),
                 'account_balance': AccountBalance(1),
                 'account_debt': AccountBalance(2),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_account_invoice(request):
     flat_id = request.GET.get('flat')
@@ -1572,7 +1741,7 @@ def select_counter_id_inv(request):
 
 def invoice_create(request, invoice_id=None, flat_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             if invoice_id:
                 data_invoice = Invoice.objects.get(id=invoice_id)
                 data_service = ServiceIsInvoice.objects.filter(invoice=invoice_id)
@@ -1643,15 +1812,19 @@ def invoice_create(request, invoice_id=None, flat_id=None):
                 'invoice': form,
                 'house': House.objects.all(),
                 'flat': flat_info,
-                'section': section
+                'section': section,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             data_invoice = Invoice.objects.get(id=id)
             data_service = ServiceIsInvoice.objects.filter(invoice=id)
 
@@ -1716,15 +1889,19 @@ def invoice_update(request, id):
                 'service': form_service,
                 'invoice': form,
                 'house': House.objects.all(),
-                'section': section
+                'section': section,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_delete(request, id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             if id:
                 obj = Invoice.objects.get(id=id)
                 if obj:
@@ -1739,21 +1916,28 @@ def invoice_delete(request, id=None):
             return redirect('invoice')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             data = {
                 'invoice': Invoice.objects.get(id=id),
-                'services': ServiceIsInvoice.objects.filter(invoice=id)
+                'services': ServiceIsInvoice.objects.filter(invoice=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_print(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             templates = TemplatePrintInvoice.objects.all()
             data_invoice = Invoice.objects.get(id=id)
             data_account = Account.objects.filter(id=data_invoice.flat.account.id).annotate(
@@ -1796,15 +1980,19 @@ def invoice_print(request, id):
 
             data = {
                 'invoice': Invoice.objects.get(id=id),
-                'templates': templates
+                'templates': templates,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/print.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_template(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             templates = TemplatePrintInvoice.objects.all().order_by('id')
 
             if request.method == "POST":
@@ -1817,53 +2005,71 @@ def invoice_template(request):
 
             data = {
                 'template': form,
-                'templates': templates
+                'templates': templates,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/invoice/template.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_setdefault_template(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             TemplatePrintInvoice.objects.all().update(is_default=False)
             TemplatePrintInvoice.objects.filter(id=id).update(is_default=True)
             return redirect('invoice_template')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def invoice_template_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.invoice == 1:
+        if request.user.is_staff and request.user.useradmin.role.invoice == 1:
             TemplatePrintInvoice.objects.filter(id=id).delete()
             return redirect('invoice_template')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 # Заявки на вызов мастера
 def master_request(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             data = {
-                'master_request': MasterRequest.objects.all()
+                'master_request': MasterRequest.objects.all(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/master-request/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def master_request_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             data = {
-                'master_request': MasterRequest.objects.get(id=id)
+                'master_request': MasterRequest.objects.get(id=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/master-request/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def master_request_create(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             if request.method == "POST":
                 form = MasterRequestForm(request.POST)
                 if form.is_valid():
@@ -1879,14 +2085,18 @@ def master_request_create(request):
                 form = MasterRequestForm()
             data = {
                 'master_request': form,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/master-request/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def master_request_update(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             data = MasterRequest.objects.get(id=id)
             if request.method == "POST":
                 form = MasterRequestForm(request.POST, instance=data)
@@ -1903,14 +2113,18 @@ def master_request_update(request, id):
                 form = MasterRequestForm(instance=data)
             data = {
                 'master_request': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/master-request/update.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def master_request_delete(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             obj = MasterRequest.objects.get(id=id)
             if obj:
                 obj.delete()
@@ -1918,40 +2132,54 @@ def master_request_delete(request, id):
             return redirect('master_request')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_flat_master(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.master_request == 1:
+        if request.user.is_staff and request.user.useradmin.role.master_request == 1:
             owner_id = request.GET.get('owner')
             flat = Flat.objects.filter(owner=owner_id)
             return render(request, 'adminpanel/master-request/ajax/select_flat_master.html', { 'flat':flat })
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 # Сообщения
 def user_message(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.message == 1:
+        if request.user.is_staff and request.user.useradmin.role.message == 1:
             data = {
-                'message_list': Message.objects.all()
+                'message_list': Message.objects.all(),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/message/index.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def user_message_info(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.message == 1:
+        if request.user.is_staff and request.user.useradmin.role.message == 1:
             data = {
-                'user_message': Message.objects.get(id=id)
+                'user_message': Message.objects.get(id=id),
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/message/info.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def user_message_create(request, is_debt=None, user_id=None):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.message == 1:
+        if request.user.is_staff and request.user.useradmin.role.message == 1:
             if request.method == "POST":
                 form = MessageForm(request.POST)
                 if form.is_valid():
@@ -1974,13 +2202,17 @@ def user_message_create(request, is_debt=None, user_id=None):
 
             data = {
                 'new_message': form,
+                'new_users': ApartmentOwner.objects.filter(status=2),
             }
             return render(request, 'adminpanel/message/create.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def user_message_delete(request, id=None):
-    if request.user.is_authenticated:
+    if request.user.is_staff and request.user.is_authenticated:
         if request.user.useradmin.role.message == 1:
             if id:
                 obj = Message.objects.get(id=id)
@@ -1996,6 +2228,9 @@ def user_message_delete(request, id=None):
             return redirect('user_message')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def select_section_message_house(request):
     house_id = request.GET.get('house')
@@ -2026,7 +2261,7 @@ def select_flat_message_floor(request):
 # Бизнес логика складки "Управление сайтом"
 def website_home(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             slider = MainPageSlider.objects.all().first()
             info = MainPageInfo.objects.all().first()
             seo = SeoInfo.objects.filter(page='MainPage').first()
@@ -2063,14 +2298,18 @@ def website_home(request):
                 'info_form': info_form,
                 'formset': nearby_formset,
                 'seo': seo_form,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/website/home.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def website_about(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             main_info = AboutPageInfo.objects.all().first()
             dop_info = AboutPageDopInfo.objects.all().first()
             gallery = PhotoGallery.objects.all()
@@ -2123,34 +2362,44 @@ def website_about(request):
                 'gallery_dop_form': PhotoDopGalleryForm(),
                 'formset': formset,
                 'seo': seo_form,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/website/about.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def website_about_delete_photo(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             obj = PhotoGallery.objects.filter(id=id)
             if obj:
                 obj.delete()
             return redirect('website_about')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def website_about_delete_dopphoto(request, id):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             obj = PhotoDopGallery.objects.filter(id=id)
             if obj:
                 obj.delete()
             return redirect('website_about')
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def website_services(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             try:
                 seo = SeoInfo.objects.filter(page='ServicesPage').first()
                 services = Service.objects.all()
@@ -2179,6 +2428,7 @@ def website_services(request):
                 data = {
                     'formset': formset,
                     'seo': seo_form,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
                 return render(request, 'adminpanel/website/services.html', data)
             except Exception:
@@ -2195,16 +2445,20 @@ def website_services(request):
                     'formset': formset,
                     'seo': seo_form,
                     'message': message,
+                    'new_users': ApartmentOwner.objects.filter(status=2)
                 }
                 print('Ошибка валиддации однйо из форм, данные не сохранены')
 
                 return render(request, 'adminpanel/website/services.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')
 
 def website_contact(request):
     if request.user.is_authenticated:
-        if request.user.useradmin.role.site_management == 1:
+        if request.user.is_staff and request.user.useradmin.role.site_management == 1:
             info = ContactPage.objects.all().first()
             seo = SeoInfo.objects.filter(page='ContactPage').first()
             if request.method == "POST":
@@ -2224,8 +2478,11 @@ def website_contact(request):
             data = {
                 'form': form,
                 'seo': seo_form,
+                'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/website/contact.html', data)
         else:
             return render(request, 'adminpanel/no_access.html')
-
+    else:
+        messages.error(request, "Пожалуйста, авторизуйтесь")
+        return redirect('login_admin')

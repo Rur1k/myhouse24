@@ -63,27 +63,24 @@
                             <li class="dropdown notifications-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-child fa-lg"></i>
-                                    <span class="label label-warning">{}</span>
+                                    <span class="label label-warning">{{ new_users.count }}</span>
                                 </a>
                                 <ul class="dropdown-menu">
 
-                                    <li class="header">Новых пользователей: {}</li>
+                                    <li class="header">Новых пользователей: {{ new_users.count }}</li>
                                     <li>
                                         <!-- inner menu: contains the actual data -->
                                         <ul class="menu">
+                                            {% for obj in new_users %}
                                             <li>
-                                                <a href="">
-                                                    Имя пользователя
+                                                <a href="{% url 'apartment_owner_info' obj.id %}">
+                                                    {{ obj }}
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="">
-                                                    Имя пользователя
-                                                </a>
-                                            </li>
+                                            {% endfor %}
                                         </ul>
                                     </li>
-                                    <li class="footer"><a href="">Перейти в раздел пользователей</a></li>
+                                    <li class="footer"><a href="{% url 'apartment_owner' %}">Перейти в раздел пользователей</a></li>
 
                                 </ul>
                             </li>
@@ -91,18 +88,18 @@
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-user-circle text-purple"></i>
-                                    <span class="hidden-xs">{{ request.user.fist_name }} {{ request.user.last_name }}</span>
+                                    <span class="hidden-xs">{{ request.user.first_name }} {{ request.user.last_name }}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
                                         <span><i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i></span>
-                                        <p>{{ request.user.fist_name }} {{ request.user.last_name }} (Роль)</p>
+                                        <p>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.useradmin.role }} </p>
                                     </li>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
                                         <div class="pull-left">
-                                            <a class="btn btn-default btn-flat" href="">Профиль</a>
+                                            <a class="btn btn-default btn-flat" href="{% url 'setting_user_admin_info' request.user.id %}">Профиль</a>
                                         </div>
                                         <div class="pull-right">
                                             <a class="btn btn-default btn-flat" href="{% url 'logout_admin' %}" data-method="post">Выход</a>
