@@ -11,7 +11,7 @@ from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
 from django.db.models import Max, Sum
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Greatest
 from decimal import Decimal
 from openpyxl import load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -40,6 +40,11 @@ def AccountBalance(type=None):
 
 # Логика входа в админку
 def login_admin(request):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
+        return redirect('admin')
+
+    print(request.session.get)
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -70,6 +75,7 @@ def login_admin(request):
 
 def logout_admin(request):
         logout(request)
+
         return redirect('login_admin')
 
 # Страница с статистикой
@@ -1150,12 +1156,20 @@ def select_floor_flat(request):
         messages.error(request, "Пожалуйста, авторизуйтесь")
         return redirect('login_admin')
 
+def evil(sum_1, sum_2):
+    return
+
 # Лицевые счета
 def account(request):
     if request.user.is_authenticated:
         if request.user.is_staff and request.user.useradmin.role.account == 1:
             accounts = Account.objects.all().annotate(
-                saldo=Coalesce(Sum('accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
+                saldo =
+                Greatest(Sum('accounttransaction__sum'),Decimal(0))
+                -
+                (Greatest(Sum('flat__invoice__sum'),Decimal(0))*Decimal(0.5))
+            )
+
             balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
             account_balance = AccountBalance(1)
             account_debt = AccountBalance(2)
@@ -1211,8 +1225,15 @@ def account_create(request):
 def account_info(request, id):
     if request.user.is_authenticated:
         if request.user.is_staff and request.user.useradmin.role.account == 1:
+            account = Account.objects.filter(id=id).annotate(
+                saldo=
+                Greatest(Sum('accounttransaction__sum'), Decimal(0))
+                -
+                (Greatest(Sum('flat__invoice__sum'), Decimal(0)) * Decimal(0.5))
+            ).first()
+
             data = {
-                'account': Account.objects.get(id=id),
+                'account': account,
                 'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/account/info.html', data)
@@ -1775,16 +1796,17 @@ def invoice_create(request, invoice_id=None, flat_id=None):
                     sum_save = form.save(commit=False)
                     sum_save.sum = sum
                     sum_save.save()
-                    print(sum_save.status.id)
-                    if sum_save.status.id == 1:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=1)
-                    elif sum_save.status.id == 2:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=2)
-                    elif sum_save.status.id == 3:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=3)
+
+                    if counter_list_id:
+                        if sum_save.status.id == 1:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=1)
+                        elif sum_save.status.id == 2:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=2)
+                        elif sum_save.status.id == 3:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=3)
 
                     messages.success(request, f"Квитанция успешно создана.")
                     return redirect('invoice')
@@ -1863,15 +1885,16 @@ def invoice_update(request, id):
                     sum_save = form.save(commit=False)
                     sum_save.sum = sum
                     sum_save.save()
-                    if sum_save.status.id == 1:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=1)
-                    elif sum_save.status.id == 2:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=2)
-                    elif sum_save.status.id == 3:
-                        for obj in counter_list_id.split(','):
-                            CounterData.objects.filter(id=obj).update(status=3)
+                    if counter_list_id:
+                        if sum_save.status.id == 1:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=1)
+                        elif sum_save.status.id == 2:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=2)
+                        elif sum_save.status.id == 3:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=3)
 
                     messages.success(request, f"Квитанция успешно отредактирована.")
                     return redirect('invoice_info', id)

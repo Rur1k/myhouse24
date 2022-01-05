@@ -84,7 +84,7 @@ def cabinet_summary(request, id, user_id=None):
             return redirect('login_user')
 
         flat = Flat.objects.filter(id=id).annotate(
-            saldo=Coalesce(Sum('account__accounttransaction__sum'), Decimal(0)) - Coalesce(Sum('invoice__sum'), Decimal(0))).first()
+            saldo=Coalesce(Sum('account__accounttransaction__sum'), Decimal(0)) - (Coalesce(Sum('invoice__sum'), Decimal(0))* Decimal(0.5))).first()
 
         invoice = Invoice.objects.filter(flat=id)
         if invoice:
@@ -455,7 +455,6 @@ def cabinet_profile(request, user_id=None):
             return redirect('login_user')
 
         if user_id:
-            print('Бла бла')
             owner = ApartmentOwner.objects.get(id=user_id)
             flats = Flat.objects.filter(owner=user_id)
             info_user = ApartmentOwner.objects.get(id=user_id)
