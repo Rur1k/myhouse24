@@ -24,6 +24,7 @@ def toFixed(numObj, digits=0):
 
 # Логика входа в ЛК
 def login_user(request):
+    request.session.clear_expired()
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -37,6 +38,11 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    is_save_session = request.POST.get('is_save_session')
+                    if is_save_session:
+                        request.session.set_expiry(259200)
+                    else:
+                        request.session.set_expiry(0)
                     return redirect('cabinet')
             else:
                 messages.error(request, "Логин или пароль указаны не корректно")
@@ -50,10 +56,13 @@ def login_user(request):
 
 def logout_user(request):
         logout(request)
+        request.session.clear_expired()
+        request.session.flush()
         return redirect('login_user')
 
 # базовый шаблон
 def cabinet(request, user_id=None):
+    request.session.clear_expired()
     if request.user.is_authenticated:
         if request.user.is_staff and user_id is None:
             messages.error(request, "Пожалуйста, авторизуйтесь как пользователь!")

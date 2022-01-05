@@ -3,7 +3,7 @@ import time
 import datetime
 
 
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse
@@ -40,11 +40,10 @@ def AccountBalance(type=None):
 
 # Логика входа в админку
 def login_admin(request):
+    request.session.clear_expired()
+
     if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
         return redirect('admin')
-
-    print(request.session.get)
-
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -59,6 +58,12 @@ def login_admin(request):
                 if user.is_active:
                     login(request, user)
                     if user.is_superuser or user.is_staff:
+                        is_save_session = request.POST.get('is_save_session')
+                        if is_save_session:
+                            request.session.set_expiry(259200)
+                        else:
+                            request.session.set_expiry(0)
+
                         return redirect('admin')
                     else:
                         messages.error(request, "Вы не являетесь администратором, выберите вкладку 'Для жильца'")
@@ -75,11 +80,13 @@ def login_admin(request):
 
 def logout_admin(request):
         logout(request)
-
+        request.session.clear_expired()
+        request.session.flush()
         return redirect('login_admin')
 
 # Страница с статистикой
 def admin(request):
+    request.session.clear_expired()
     if request.user.is_authenticated:
         if request.user.is_staff and request.user.useradmin.role.statistics == 1:
             data = {
