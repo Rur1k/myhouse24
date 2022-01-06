@@ -19,7 +19,7 @@
 {% endif %}
 <div class="box">
     <div class="box-body">
-        <form novalidate method="post" action="" enctype="multipart/form-data">
+        <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6">
@@ -42,7 +42,8 @@
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>ID</label>
-                        {{ user.personal_id }}
+                        <input class="form-control" value="{{ user.instance.personal_id }}" readonly>
+                        <div hidden="hidden">{{ user.personal_id }}</div>
                     </div>
                 </div>
             </div>
@@ -61,7 +62,7 @@
                         {{ user.patronymic }}
                     </div>
                     <div class="col-md-12 margin-bottom-20">
-                        <label>Дата рождения ({{ user.instance.birthday }})</label>
+                        <label>Дата рождения</label>
                         {{ user.birthday }}
                     </div>
                 </div>
@@ -89,7 +90,8 @@
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <label>Email(Логин)</label>
-                        {{ user.email }}
+                        <input class="form-control" value="{{ user.instance.email }}" readonly>
+                        <div hidden="hidden">{{ user.email }}</div>
                     </div>
                 </div>
                 <div class="col-md-6">

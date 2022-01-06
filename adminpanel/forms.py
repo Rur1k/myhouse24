@@ -19,11 +19,10 @@ def generationNumber(Model):
     return genNumber
 
 def generationPersonalId():
-    new_id = 0
-    max_id = ApartmentOwner.objects.aggregate(Max('personal_id'))
-    obj = ApartmentOwner.objects.filter(max_id).first()
-    print(obj)
-
+    while True:
+        new_id = random.randrange(999999)
+        if ApartmentOwner.objects.filter(personal_id=new_id).first() is None:
+            break
     return new_id
 
 # Формы авторизации
@@ -438,6 +437,8 @@ class ApartmentOwnerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
             self.fields['personal_id'].initial = generationPersonalId()
+        else:
+            self.initial['birthday'] = self.instance.birthday.isoformat()
 
 
     def clean(self):
@@ -463,6 +464,14 @@ class ApartmentOwnerForm(forms.ModelForm):
                     raise forms.ValidationError(cd['email'] + ' - занят!')
             else:
                 raise forms.ValidationError('E-mail(Логин) - не корректный формат. Пример: example@gmail.com')
+            if 'personal_id' in cd:
+                if cd['personal_id'] is None or cd['personal_id'] == '':
+                    raise forms.ValidationError('ID - объязательное поле!')
+                if ApartmentOwner.objects.filter(personal_id=cd['personal_id']).first() is not None:
+                    raise forms.ValidationError(cd['personal_id'] + ' - ID уже используеться, укажите другой!')
+            else:
+                raise forms.ValidationError('ID - не может быть пустым')
+
             if 'password' in cd:
                 if cd['password'] is None or cd['password2'] is None :
                     raise forms.ValidationError('Одно из полей с паролем не заполнено!')

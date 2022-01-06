@@ -55,7 +55,7 @@
             <tbody>
             {% for user in users %}
             <tr onclick="location.href='{% url 'apartment_owner_info' user.id %}'">
-                <td>{{ user.id }} - {{ user.personal_id }}</td>
+                <td>{{ user.personal_id }}</td>
                 <td>{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</td>
                 <td>{{ user.telephone }}</td>
                 <td>{{ user.email }}</td>
@@ -107,7 +107,7 @@
         <div class="box-footer clearfix">
         <div>
             Количество владельцев:
-            <span class="text-bolt">{{ count }}</span>
+            <span class="text-bolt">{{ users.count }}</span>
         </div>
     </div>
 </div>

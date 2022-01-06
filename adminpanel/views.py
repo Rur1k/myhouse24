@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from django.views.generic import UpdateView, DeleteView
-from django.db.models import Max, Sum
+from django.db.models import Max, Sum, Avg
 from django.db.models.functions import Coalesce, Greatest
 from decimal import Decimal
 from openpyxl import load_workbook
@@ -878,7 +878,6 @@ def apartment_owner(request):
 
             data = {
                 'users': users,
-                'count': ApartmentOwner.objects.all().count(),
                 'new_users': ApartmentOwner.objects.filter(status=2)
             }
             return render(request, 'adminpanel/user/index.html', data)
@@ -1172,9 +1171,9 @@ def account(request):
         if request.user.is_staff and request.user.useradmin.role.account == 1:
             accounts = Account.objects.all().annotate(
                 saldo =
-                Greatest(Sum('accounttransaction__sum'),Decimal(0))
+                Greatest(Sum('accounttransaction__sum', distinct=True), Decimal(0))
                 -
-                (Greatest(Sum('flat__invoice__sum'),Decimal(0))*Decimal(0.5))
+                Greatest(Sum('flat__invoice__sum', distinct=True), Decimal(0))
             )
 
             balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
@@ -1234,9 +1233,9 @@ def account_info(request, id):
         if request.user.is_staff and request.user.useradmin.role.account == 1:
             account = Account.objects.filter(id=id).annotate(
                 saldo=
-                Greatest(Sum('accounttransaction__sum'), Decimal(0))
+                Greatest(Sum('accounttransaction__sum', distinct=True), Decimal(0))
                 -
-                (Greatest(Sum('flat__invoice__sum'), Decimal(0)) * Decimal(0.5))
+                Greatest(Sum('flat__invoice__sum', distinct=True), Decimal(0))
             ).first()
 
             data = {
