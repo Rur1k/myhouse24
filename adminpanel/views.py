@@ -637,7 +637,7 @@ def setting_user_admin_create(request):
             try:
                 message = None
                 if request.method == "POST":
-                    user_form = UserAdminForm(request.POST)
+                    user_form = UserAdminForm(request.POST, request.FILES)
                     if user_form.is_valid():
                         new_user = user_form.save(commit=False)
                         new_user.username = new_user.email
@@ -659,7 +659,7 @@ def setting_user_admin_create(request):
                 }
             except Exception:
                 message = "Ошибка сохранения формы. Свяжитесь с разработчиком!"
-                user_form = UserAdminForm(request.POST)
+                user_form = UserAdminForm(request.POST, request.FILES)
                 data = {
                     'user': user_form,
                     'message_error': message,
@@ -681,7 +681,7 @@ def setting_user_admin_update(request, id):
 
                 message = None
                 if request.method == "POST":
-                    user_form = UserAdminForm(request.POST, instance=user)
+                    user_form = UserAdminForm(request.POST,request.FILES, instance=user)
                     print(request.POST)
                     if user_form.is_valid():
                         edit_user = user_form.save(commit=False)
