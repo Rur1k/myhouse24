@@ -76,35 +76,35 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
                         {% if  obj.house.image_1 %}
-                        <img src="{{ obj.house.image_1 }}" class="img-responsive largeImg margin-bottom-30" alt="">
+                        <img src="{{ obj.house.image_1.url }}" class="img-responsive largeImg margin-bottom-30" alt="">
                         {% else %}
                         <img src="{% static 'img/default.jpg' %}" class="img-responsive largeImg margin-bottom-30" alt="">
                         {% endif %}
                     </div>
                     <div class="col-xs-6 col-md-3">
                         {% if  obj.house.image_2 %}
-                        <img src="{{ obj.house.image_2 }}" class="img-responsive smallImg margin-bottom-30" alt="">
+                        <img src="{{ obj.house.image_2.url }}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% else %}
                         <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% endif %}
                     </div>
                     <div class="col-xs-6 col-md-3">
                         {% if  obj.house.image_3 %}
-                        <img src="{{ obj.house.image_3 }}" class="img-responsive smallImg margin-bottom-30" alt="">
+                        <img src="{{ obj.house.image_3.url }}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% else %}
                         <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% endif %}
                     </div>
                     <div class="col-xs-6 col-md-3">
                         {% if  obj.house.image_4 %}
-                        <img src="{{ obj.house.image_4 }}" class="img-responsive smallImg margin-bottom-30" alt="">
+                        <img src="{{ obj.house.image_4.url }}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% else %}
                         <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% endif %}
                     </div>
                     <div class="col-xs-6 col-md-3">
                         {% if  obj.house.image_5 %}
-                        <img src="{{ obj.house.image_5 }}" class="img-responsive smallImg margin-bottom-30" alt="">
+                        <img src="{{ obj.house.image_5.url }}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% else %}
                         <img src="{% static 'img/default.jpg' %}" class="img-responsive smallImg margin-bottom-30" alt="">
                         {% endif %}
