@@ -846,7 +846,7 @@ def setting_role(request):
                     for subform in form:
                         subform.save()
                         is_admin = subform.save(commit=False)
-                        if is_admin.id == 1:
+                        if is_admin.role == 1:
                             continue
                         else:
                             is_admin.save()
