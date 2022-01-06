@@ -682,7 +682,6 @@ def setting_user_admin_update(request, id):
                 message = None
                 if request.method == "POST":
                     user_form = UserAdminForm(request.POST,request.FILES, instance=user)
-                    print(request.POST)
                     if user_form.is_valid():
                         edit_user = user_form.save(commit=False)
 
@@ -2000,12 +1999,6 @@ def invoice_print(request, id):
                     response = HttpResponse(content=save_virtual_workbook(wb), content_type='application/ms-excel')
                     response['Content-Disposition'] = f'attachment; filename=invoice_{data_invoice.number}.xlsx'
                     return response
-            else:
-                message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
-                print(form.errors)
-                for error in form.non_field_errors():
-                    message = form.non_field_errors()
-                messages.error(request, message)
 
             data = {
                 'invoice': Invoice.objects.get(id=id),
