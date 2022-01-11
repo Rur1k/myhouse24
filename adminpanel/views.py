@@ -843,9 +843,9 @@ def setting_role(request):
                 form = formset(request.POST, queryset=role)
                 if form.is_valid():
                     for subform in form:
-                        subform.save()
                         is_admin = subform.save(commit=False)
-                        if is_admin.role == 1:
+                        print(is_admin.id)
+                        if is_admin.id == 1:
                             continue
                         else:
                             is_admin.save()

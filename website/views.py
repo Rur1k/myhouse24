@@ -3,10 +3,12 @@ from adminpanel.models import MainPageSlider, MainPageInfo, MainPageNearby, Cont
     PhotoDopGallery, Document, AboutPageDopInfo, Service
 
 def main(request):
+
     data = {
         'slider': MainPageSlider.objects.all().first(),
         'info': MainPageInfo.objects.all().first(),
-        'nearby':  MainPageNearby.objects.all(),
+        'nearby1':  MainPageNearby.objects.order_by('id')[:3],
+        'nearby2': MainPageNearby.objects.order_by('-id')[:3],
         'contact': ContactPage.objects.all().first()
     }
     return render(request, 'website/index.html', data)
