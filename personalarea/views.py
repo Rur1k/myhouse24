@@ -460,7 +460,10 @@ def cabinet_master_request_create(request, user_id=None):
                 messages.error(request, message)
                 print(form.errors)
         else:
-            form = MasterRequestForm(initial={'owner':request.user.id})
+            if user_id:
+                form = MasterRequestForm(initial={'owner': user_id})
+            else:
+                form = MasterRequestForm(initial={'owner':request.user.id})
 
         if user_id:
             flats = Flat.objects.filter(owner=user_id)
