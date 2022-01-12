@@ -169,14 +169,6 @@ class SettingServiceIsTariffForm(forms.ModelForm):
             })
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['unit_service'].queryset = ServiceUnit.objects.none()
-    #
-    #     if 'setting_tariff_service-0-unit_service' in self.data:
-    #         service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
-    #         unit_id = SettingService.objects.get(id=service_id).unit.id
-    #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
 
 class UserAdminForm(forms.ModelForm):
     password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
@@ -936,12 +928,13 @@ class InvoiceForm(forms.ModelForm):
                 if cd['date_last'] is None:
                     raise forms.ValidationError('"Дата конца" - не может быть пустым')
                 if cd['date_first'] is not None and cd['date_last'] is not None:
-                    primt('Даты начала и коца')
-                    print(cd['date_first'])
-                    print(cd['date_last'])
+                    unixtime_first = int(time.mktime(cd['date_first'].timetuple()))
+                    unixtime_last = int(time.mktime(cd['date_last'].timetuple()))
 
-                    if cd['date_last'] <  cd['date_first']:
-                        raise forms.ValidationError('"Дата конца" - должна быть больше или соответсвовать "Дата начала"')
+                    if unixtime_last < unixtime_first:
+                        print('Зашли в проверку')
+                        raise forms.ValidationError(
+                            '"Период по" - должен быть больше или соответствовать "Период с"')
 
                 if 'flat' in cd:
                     if cd['flat'] is None:
@@ -1125,6 +1118,13 @@ class MasterRequestForm(forms.ModelForm):
         cd = self.cleaned_data
         if cd['date'] is None:
             raise forms.ValidationError('"Дата" - не может быть пустым')
+        else:
+            unixtime = int(time.mktime(cd['date'].timetuple()))
+            today = datetime.datetime.now().date()
+            unix_today = int(time.mktime(today.timetuple()))
+            if unixtime < unix_today:
+                raise forms.ValidationError('"Дата" - нельзя вызвать мастера задним числом')
+
         if cd['time'] is None:
             raise forms.ValidationError('"Время" - не может быть пустым')
         if (cd['description'] is None) or (cd['description'] == ''):

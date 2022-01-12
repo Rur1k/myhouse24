@@ -1,6 +1,9 @@
-
+{% if flat %}
 <option value="">Выберите...</option>
 {% for obj in flat %}
 <option value="{{ obj.id }}">{{ obj }}</option>
 {% endfor %}
+{% else %}
+<option value="">Квартиры отсутствуют</option>
+{% endif %}
 

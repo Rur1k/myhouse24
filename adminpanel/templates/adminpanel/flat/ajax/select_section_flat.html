@@ -1,5 +1,9 @@
+{% if sections %}
 <option value="">Выберите...</option>
 {% for obj in section %}
 <option value="{{ obj.id }}">{{ obj.name }}</option>
 {% endfor %}
+{% else %}
+<option value="">Секции отсутствуют</option>
+{% endif %}
 

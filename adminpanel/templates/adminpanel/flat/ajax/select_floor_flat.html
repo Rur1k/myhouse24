@@ -1,4 +1,8 @@
+{% if floors %}
 <option value="">Выберите...</option>
 {% for obj in floors %}
 <option value="{{ obj.id }}">{{ obj.name }}</option>
 {% endfor %}
+{% else %}
+<option value="">Этажи отсутствуют</option>
+{% endif %}

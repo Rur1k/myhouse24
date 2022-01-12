@@ -1787,36 +1787,35 @@ def invoice_create(request, invoice_id=None, flat_id=None):
                 form_service = serviceFormSet(request.POST, prefix='service_invoice')
                 sum = 0
                 if form.is_valid() and form_service.is_valid():
-                    pass
-                    # form.save()
-                    # counter_list_id = form.cleaned_data['counters_id']
-                    #
-                    # for subform in form_service:
-                    #     if 'DELETE' in subform.cleaned_data:
-                    #         if not subform.cleaned_data['DELETE']:
-                    #             obj = subform.save(commit=False)
-                    #             obj.invoice = form.save(commit=False)
-                    #             obj.save()
-                    #             sum += obj.sum
-                    #
-                    # sum_save = form.save(commit=False)
-                    # sum_save.sum = sum
-                    # sum_save.save()
-                    #
-                    #
-                    # if counter_list_id:
-                    #     if sum_save.status.id == 1:
-                    #         for obj in counter_list_id.split(','):
-                    #             CounterData.objects.filter(id=obj).update(status=1)
-                    #     elif sum_save.status.id == 2:
-                    #         for obj in counter_list_id.split(','):
-                    #             CounterData.objects.filter(id=obj).update(status=2)
-                    #     elif sum_save.status.id == 3:
-                    #         for obj in counter_list_id.split(','):
-                    #             CounterData.objects.filter(id=obj).update(status=3)
-                    #
-                    # messages.success(request, f"Квитанция успешно создана.")
-                    # return redirect('invoice')
+                    form.save()
+                    counter_list_id = form.cleaned_data['counters_id']
+
+                    for subform in form_service:
+                        if 'DELETE' in subform.cleaned_data:
+                            if not subform.cleaned_data['DELETE']:
+                                obj = subform.save(commit=False)
+                                obj.invoice = form.save(commit=False)
+                                obj.save()
+                                sum += obj.sum
+
+                    sum_save = form.save(commit=False)
+                    sum_save.sum = sum
+                    sum_save.save()
+
+
+                    if counter_list_id:
+                        if sum_save.status.id == 1:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=1)
+                        elif sum_save.status.id == 2:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=2)
+                        elif sum_save.status.id == 3:
+                            for obj in counter_list_id.split(','):
+                                CounterData.objects.filter(id=obj).update(status=3)
+
+                    messages.success(request, f"Квитанция успешно создана.")
+                    return redirect('invoice')
                 else:
                     message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
 

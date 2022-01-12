@@ -415,7 +415,6 @@ def cabinet_master_request_create(request, user_id=None):
             return redirect('login_user')
 
         if request.method == 'POST':
-            print(request.POST)
             form = MasterRequestForm(request.POST)
             if form.is_valid():
                 form.save()
