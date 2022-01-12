@@ -339,7 +339,9 @@ function FilterBase(Table, arr_input, arr_select, arr_empty, date, dop) {
                             .draw();
                     } );
                 column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option>'+d+'</option>' )
+                    if (d != ''){
+                        select.append( '<option>'+d+'</option>' )
+                    }
                 } );
             } );
             }
@@ -513,7 +515,9 @@ function FilterUser(Table, arr_input, arr_select, arr_empty, date, dop) {
                     } );
                 column.data().unique().sort().each( function ( d, j ) {
                     d = d.split(',')[0];
-                    select.append( '<option>'+d+'</option>' )
+                    if (d != ''){
+                        select.append( '<option>'+d+'</option>' )
+                    }
                 } );
             } );
             }
@@ -623,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for(const cell of target.parentNode.cells)
             cell.classList.toggle('sorted', cell === target);
     };
-    document.querySelectorAll('.table_sort thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+    document.querySelectorAll('.table_sort thead .sort').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
 });
 
 
