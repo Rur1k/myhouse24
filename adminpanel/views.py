@@ -1786,41 +1786,49 @@ def invoice_create(request, invoice_id=None, flat_id=None):
                 form = InvoiceForm(request.POST)
                 form_service = serviceFormSet(request.POST, prefix='service_invoice')
                 sum = 0
-
-                if form.is_valid():
-                    form.save()
-                    counter_list_id = form.cleaned_data['counters_id']
-                    if form_service.is_valid():
-                        for subform in form_service:
-                            if 'DELETE' in subform.cleaned_data:
-                                if not subform.cleaned_data['DELETE']:
-                                    obj = subform.save(commit=False)
-                                    obj.invoice = form.save(commit=False)
-                                    obj.save()
-                                    sum += obj.sum
-                    sum_save = form.save(commit=False)
-                    sum_save.sum = sum
-                    sum_save.save()
-
-                    if counter_list_id:
-                        if sum_save.status.id == 1:
-                            for obj in counter_list_id.split(','):
-                                CounterData.objects.filter(id=obj).update(status=1)
-                        elif sum_save.status.id == 2:
-                            for obj in counter_list_id.split(','):
-                                CounterData.objects.filter(id=obj).update(status=2)
-                        elif sum_save.status.id == 3:
-                            for obj in counter_list_id.split(','):
-                                CounterData.objects.filter(id=obj).update(status=3)
-
-                    messages.success(request, f"Квитанция успешно создана.")
-                    return redirect('invoice')
+                if form.is_valid() and form_service.is_valid():
+                    pass
+                    # form.save()
+                    # counter_list_id = form.cleaned_data['counters_id']
+                    #
+                    # for subform in form_service:
+                    #     if 'DELETE' in subform.cleaned_data:
+                    #         if not subform.cleaned_data['DELETE']:
+                    #             obj = subform.save(commit=False)
+                    #             obj.invoice = form.save(commit=False)
+                    #             obj.save()
+                    #             sum += obj.sum
+                    #
+                    # sum_save = form.save(commit=False)
+                    # sum_save.sum = sum
+                    # sum_save.save()
+                    #
+                    #
+                    # if counter_list_id:
+                    #     if sum_save.status.id == 1:
+                    #         for obj in counter_list_id.split(','):
+                    #             CounterData.objects.filter(id=obj).update(status=1)
+                    #     elif sum_save.status.id == 2:
+                    #         for obj in counter_list_id.split(','):
+                    #             CounterData.objects.filter(id=obj).update(status=2)
+                    #     elif sum_save.status.id == 3:
+                    #         for obj in counter_list_id.split(','):
+                    #             CounterData.objects.filter(id=obj).update(status=3)
+                    #
+                    # messages.success(request, f"Квитанция успешно создана.")
+                    # return redirect('invoice')
                 else:
                     message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
-                    print(form.errors)
-                    for error in form.non_field_errors():
+
+                    if form.errors:
                         message = form.non_field_errors()
+                    elif form_service.errors:
+                        for dict in form_service.errors:
+                            for error in dict.values():
+                                print(error)
+                                message = error
                     messages.error(request, message)
+
             else:
                 if invoice_id:
                     form = InvoiceForm(instance=data_invoice, initial={'number': None})
@@ -1866,7 +1874,7 @@ def invoice_update(request, id):
                 form_service = serviceFormSet(request.POST, prefix='service_invoice', queryset=data_service)
                 sum = 0
 
-                if form.is_valid():
+                if form.is_valid() and form_service.is_valid():
                     form.save()
                     counter_list_id = form.cleaned_data['counters_id']
                     if form_service.is_valid():
@@ -1905,9 +1913,14 @@ def invoice_update(request, id):
                     return redirect('invoice_info', id)
                 else:
                     message = "Усп, что-то поломалось, свяжитесь с разработчиком!"
-                    print(form.errors)
-                    for error in form.non_field_errors():
+
+                    if form.errors:
                         message = form.non_field_errors()
+                    elif form_service.errors:
+                        for dict in form_service.errors:
+                            for error in dict.values():
+                                print(error)
+                                message = error
                     messages.error(request, message)
             else:
                 form = InvoiceForm(instance=data_invoice)

@@ -176,7 +176,11 @@
                                 {{ obj.service }}
                             </td>
                             <td scope="row">{{ obj.consumption }}</td>
-                            <td scope="row"><select class="form-control" name="select-invoice-unit"></select></td>
+                            <td scope="row">
+                                <select class="form-control" name="select-invoice-unit">
+                                    <option>{{ obj.instance.service.unit }}</option>
+                                </select>
+                            </td>
                             <td scope="row">{{ obj.price }}</td>
                             <td scope="row">{{ obj.sum }}</td>
                             <td scope="row">
@@ -285,4 +289,9 @@
         </div>
     </div>
 </form>
+<!--<script>-->
+<!--    $("document").ready(function() {-->
+<!--        $('#formset_service_invoice').trigger('select')-->
+<!--    });-->
+<!--</script>-->
 {% endblock %}

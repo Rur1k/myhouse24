@@ -5,6 +5,7 @@ from django.db.models import Max
 from .models import *
 import random
 import datetime
+import time
 import re
 
 
@@ -886,7 +887,6 @@ class InvoiceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.instance.id:
-
             if self.initial['number'] is None:
                 self.initial['number'] = generationNumber(Invoice)
             self.initial['date'] = self.instance.date.isoformat()
@@ -924,6 +924,7 @@ class InvoiceForm(forms.ModelForm):
     def clean(self):
         cd = self.cleaned_data
         if self.instance.id:
+
             if 'number' in cd:
                 is_invoice = Invoice.objects.filter(number=cd['number']).first()
                 if is_invoice is not None and is_invoice.number != self.instance.number:
@@ -934,6 +935,14 @@ class InvoiceForm(forms.ModelForm):
                     raise forms.ValidationError('"Дата начала" - не может быть пустым')
                 if cd['date_last'] is None:
                     raise forms.ValidationError('"Дата конца" - не может быть пустым')
+                if cd['date_first'] is not None and cd['date_last'] is not None:
+                    primt('Даты начала и коца')
+                    print(cd['date_first'])
+                    print(cd['date_last'])
+
+                    if cd['date_last'] <  cd['date_first']:
+                        raise forms.ValidationError('"Дата конца" - должна быть больше или соответсвовать "Дата начала"')
+
                 if 'flat' in cd:
                     if cd['flat'] is None:
                         raise forms.ValidationError('"Квартира" - не может быть пустым')
@@ -956,6 +965,15 @@ class InvoiceForm(forms.ModelForm):
                     raise forms.ValidationError('"Дата начала" - не может быть пустым')
                 if cd['date_last'] is None:
                     raise forms.ValidationError('"Дата конца" - не может быть пустым')
+                if cd['date_first'] is not None and cd['date_last'] is not None:
+                    unixtime_first = int(time.mktime(cd['date_first'].timetuple()))
+                    unixtime_last = int(time.mktime(cd['date_last'].timetuple()))
+
+                    if unixtime_last < unixtime_first:
+                        print('Зашли в проверку')
+                        raise forms.ValidationError(
+                            '"Период по" - должен быть больше или соответствовать "Период с"')
+
                 if 'flat' in cd:
                     if cd['flat'] is None:
                         raise forms.ValidationError('"Квартира" - не может быть пустым')
@@ -992,14 +1010,22 @@ class ServiceIsInvoiceForm(forms.ModelForm):
             })
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['unit_service'].queryset = ServiceUnit.objects.none()
-    #
-    #     if 'setting_tariff_service-0-unit_service' in self.data:
-    #         service_id = int(self.data.get('setting_tariff_service-0-unit_service'))
-    #         unit_id = SettingService.objects.get(id=service_id).unit.id
-    #         self.fields['unit_service'].queryset = ServiceUnit.objects.filter(id=unit_id)
+    def clean(self):
+        cd = self.cleaned_data
+        print(cd)
+
+        if cd['DELETE'] is False:
+            if cd['consumption'] is not None:
+                if int(cd['consumption']) == 0 or int(cd['consumption']) < 0:
+                    raise forms.ValidationError('"Расход" - не может быть нулевым или отрицательным')
+            else:
+                raise forms.ValidationError('"Расход" - не указан')
+
+            if cd['price'] is not None:
+                if float(cd['price']) == 0 or float(cd['price']) < 0:
+                    raise forms.ValidationError('"Цена за ед., грн." - не может быть нулевой или отрицательной')
+            else:
+                raise forms.ValidationError('"Цена за ед., грн." - не указана')
 
 class TemplatePrintInvoiceForm(forms.ModelForm):
     class Meta:
