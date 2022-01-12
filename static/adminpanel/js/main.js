@@ -24,6 +24,7 @@ $("document").ready(function() {
     // Фильтры личного кабинета
     FilterBase('#InvoiceUserCabinet', [], [2], [0,3], 1, undefined) // Заявки мастера
 
+
     var TableMessage = $('#MessageTable').DataTable({
         dom: 't',
         ordering: false,
@@ -502,24 +503,27 @@ function FilterUser(Table, arr_input, arr_select, arr_empty, date, dop) {
             //Поля select
             if (arr_select){
                 api.columns(arr_select).every( function () {
-                var column = this;
-                var select = $('<select class="form-control"><option value=""></option></select>')
-                    .appendTo( $(column.header()).empty() )
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        column
-                            .search(val ? $(this).val() : val, true, false)
-                            .draw();
-                    } );
-                column.data().unique().sort().each( function ( d, j ) {
-                    d = d.split('   ')[0];
-                    if (d != ''){
-                        select.append( '<option>'+d+'</option>' )
-                    }
-                } );
-            } );
+                    var column = this;
+                    var select = $('<select class="form-control evil"><option value=""></option></select>')
+                        .appendTo( $(column.header()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column
+                                .search(val ? $(this).val() : val, true, false)
+                                .draw();
+                        } );
+
+                    column.data().unique().sort().each( function ( d, j ) {
+                        obj = d.split('<br>');
+                        for (i=0; i<obj.length; i++){
+                            if (obj[i] != ''){
+                                select.append( '<option>'+obj[i].trim()+'</option>' )
+                            }
+                        }
+                    });
+                });
             }
             // Поле с диапазаном дат
             if (date) {
