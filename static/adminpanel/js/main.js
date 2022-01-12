@@ -514,7 +514,7 @@ function FilterUser(Table, arr_input, arr_select, arr_empty, date, dop) {
                             .draw();
                     } );
                 column.data().unique().sort().each( function ( d, j ) {
-                    d = d.split(',')[0];
+                    d = d.split('   ')[0];
                     if (d != ''){
                         select.append( '<option>'+d+'</option>' )
                     }
