@@ -325,8 +325,9 @@ def cabinet_messages(request, id=None, user_id=None):
             flats = Flat.objects.filter(owner=user_id)
             user_message = Message.objects.filter(user=user_id)
             info_user = ApartmentOwner.objects.get(id=user_id)
-            user_saldo = ApartmentOwner.objects.get(filter=user_id).annotate(
-                saldo=Coalesce(Sum('flat__account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
+            user_saldo = ApartmentOwner.objects.filter(id=user_id).annotate(
+                saldo=Coalesce(Sum('flat__account__accounttransaction__sum'), Decimal(0)) - Coalesce(
+                    Sum('flat__invoice__sum'), Decimal(0)))
             balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
         else:
             flats = Flat.objects.filter(owner=request.user.id)
@@ -344,12 +345,6 @@ def cabinet_messages(request, id=None, user_id=None):
         message_list = []
 
         all_message = Message.objects.filter(house=None, section=None, flat=None, is_debt=False, user=None) # Всем
-
-        all_message_debt = Message.objects.filter(is_debt=True) # Всем должникам
-
-        debt_house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None, is_debt=True)
-        debt_section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None, is_debt=True)
-        debt_flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]), is_debt=True)
 
         house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None)
         section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None)
