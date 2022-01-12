@@ -44,6 +44,7 @@
             <thead>
             <tr class="sort">
                 <th class="col" style="min-width:10px"></th>
+                <th class="col" style="width:100px">Должникам</th>
                 <th class="col" style="min-width:100px">Получатели</th>
                 <th class="col" style="min-width: 100px">Тема</th>
                 <th class="col" style="min-width:100px">Дата</th>
@@ -53,6 +54,13 @@
             {% for obj in message_list %}
             <tr>
                 <td><input type="checkbox" name="check_message" class="check_message" value="{{ obj.id }}"></td>
+                <td>
+                    {% if obj.is_debt %}
+                        Да
+                    {% else %}
+                        Нет
+                    {% endif %}
+                </td>
                 {% if obj.user %}
                     <td onclick="location.href='{% url 'user_message_info' obj.id %}'">
                         {{ obj.user }}

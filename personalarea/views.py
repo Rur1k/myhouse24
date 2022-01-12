@@ -325,20 +325,54 @@ def cabinet_messages(request, id=None, user_id=None):
             flats = Flat.objects.filter(owner=user_id)
             user_message = Message.objects.filter(user=user_id)
             info_user = ApartmentOwner.objects.get(id=user_id)
+            user_saldo = ApartmentOwner.objects.get(filter=user_id).annotate(
+                saldo=Coalesce(Sum('flat__account__accounttransaction__sum'),Decimal(0))-Coalesce(Sum('flat__invoice__sum'),Decimal(0)))
+            balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
         else:
             flats = Flat.objects.filter(owner=request.user.id)
             user_message = Message.objects.filter(user=request.user.id)
             info_user = None
+            user_saldo = ApartmentOwner.objects.filter(id=request.user.id).annotate(
+                saldo=Coalesce(Sum('flat__account__accounttransaction__sum'), Decimal(0)) - Coalesce(
+                    Sum('flat__invoice__sum'), Decimal(0)))
+            balance = AccountTransaction.objects.filter(is_complete=1).aggregate(Sum('sum'))
 
         flat_id = flats.values_list('id', flat=True)
         flat_section = flats.values_list('section', flat=True)
         flat_house = flats.values_list('house', flat=True)
 
         message_list = []
-        all_message = Message.objects.filter(house=None, section=None, flat=None)
+
+        all_message = Message.objects.filter(house=None, section=None, flat=None, is_debt=False, user=None) # Всем
+
+        all_message_debt = Message.objects.filter(is_debt=True) # Всем должникам
+
+        debt_house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None, is_debt=True)
+        debt_section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None, is_debt=True)
+        debt_flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]), is_debt=True)
+
         house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None, section=None)
         section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]), flat=None)
         flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]))
+
+
+        if user_saldo.first().saldo < 0:
+            all_message_debt = Message.objects.filter(house=None, section=None, flat=None, is_debt=True, user=None)  # Всем должникам
+
+            debt_house_message = Message.objects.filter(reduce(or_, [Q(house=i) for i in list(flat_house)]), flat=None,
+                                                        section=None, is_debt=True)
+            debt_section_message = Message.objects.filter(reduce(or_, [Q(section=i) for i in list(flat_section)]),
+                                                          flat=None, is_debt=True)
+            debt_flat_message = Message.objects.filter(reduce(or_, [Q(flat=i) for i in list(flat_id)]), is_debt=True)
+
+            for i in all_message_debt:
+                message_list.append(i)
+            for i in debt_house_message:
+                message_list.append(i)
+            for i in debt_section_message:
+                message_list.append(i)
+            for i in debt_flat_message:
+                message_list.append(i)
 
         for i in all_message:
             message_list.append(i)
